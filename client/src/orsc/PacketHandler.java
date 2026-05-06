@@ -946,7 +946,7 @@ public class PacketHandler {
 		int wantBankPresets, wantParties, miningRocksExtended, movePerFrame, wantLeftclickWebs, npcKillCounters;
 		int wantCustomUI, wantGlobalFriend, characterCreationMode, skillingExpRate, wantHarvesting, hideLoginBox;
 		int globalFriendChat, wantRightClickTrade, featuresSleep, wantExtendedCatsBehavior, wantCertAsNotes, wantOpenPkPoints, openPkPointsToGpRatio, wantOpenPkPresets;
-		int disableMinimapRotation, allowBeardedLadies, prideMonth, groundItemNames, wantNatureRuneProtection;
+		int disableMinimapRotation, allowBeardedLadies, prideMonth, groundItemNames, wantNatureRuneProtection, wantSlayer;
 
 		String logoSpriteID;
 
@@ -1041,6 +1041,7 @@ public class PacketHandler {
 			MiscFunctions.RSA_MODULUS = new BigInteger(this.getClientStream().readString()); // 88
 			groundItemNames = this.getClientStream().getUnsignedByte(); // 89
 			wantNatureRuneProtection = this.getClientStream().getUnsignedByte(); // 90
+			wantSlayer = this.getClientStream().getUnsignedByte(); // 91 (OGRS additive skill)
 		} else {
 			serverName = packetsIncoming.readString(); // 1
 			serverNameWelcome = packetsIncoming.readString(); // 2
@@ -1132,6 +1133,7 @@ public class PacketHandler {
 			MiscFunctions.RSA_MODULUS = new BigInteger(packetsIncoming.readString()); // 88
 			groundItemNames = packetsIncoming.getUnsignedByte(); // 89
 			wantNatureRuneProtection = packetsIncoming.getUnsignedByte(); // 90
+			wantSlayer = packetsIncoming.getUnsignedByte(); // 91 (OGRS additive skill)
 		}
 
 		if (Config.DEBUG) {
@@ -1225,7 +1227,8 @@ public class PacketHandler {
 					"\nRSA_EXPONENT " + MiscFunctions.RSA_EXPONENT + // 87
 					"\nRSA_MODULUS " + MiscFunctions.RSA_MODULUS + // 88
 					"\nS_GROUND_ITEM_NAMES " + groundItemNames + // 89
-					"\nS_WANT_NATURE_RUNE_PROTECTION " + wantNatureRuneProtection // 90
+					"\nS_WANT_NATURE_RUNE_PROTECTION " + wantNatureRuneProtection + // 90
+					"\nS_WANT_SLAYER " + wantSlayer // 91 (OGRS)
 			);
 		}
 
@@ -1321,6 +1324,7 @@ public class PacketHandler {
 		props.setProperty("S_PRIDE_MONTH", prideMonth == 1 ? "true" : "false"); // 86
 		props.setProperty("S_GROUND_ITEM_NAMES", groundItemNames == 1 ? "true" : "false"); // 89
 		props.setProperty("S_WANT_NATURE_RUNE_PROTECTION", wantNatureRuneProtection == 1 ? "true" : "false"); // 90
+		props.setProperty("S_WANT_SLAYER", wantSlayer == 1 ? "true" : "false"); // 91 (OGRS)
 		Config.updateServerConfiguration(props);
 
 		mc.authenticSettings = !(

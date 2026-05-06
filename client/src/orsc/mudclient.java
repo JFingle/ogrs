@@ -18043,6 +18043,9 @@ public final class mudclient implements Runnable {
 			addSkill("Runecraft");
 		if (S_WANT_HARVESTING)
 			addSkill("Harvesting");
+		// OGRS additive skill — order MUST match PayloadCustomGenerator's stat-block append order.
+		if (Config.S_WANT_SLAYER)
+			addSkill("Slayer");
 	}
 
 	private void addSkill(String skillname) {

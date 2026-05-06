@@ -237,6 +237,10 @@ public class PayloadCustomGenerator implements PayloadGenerator<OpcodeOut> {
 					if (player.getConfig().WANT_HARVESTING) {
 						builder.writeByte((byte) si.currentHarvesting);
 					}
+					// OGRS additive skill — order MUST match client's loadSkills() append order.
+					if (player.getConfig().WANT_SLAYER) {
+						builder.writeByte((byte) si.currentSlayer);
+					}
 
 					// 18 skills minimum - max level
 					builder.writeByte((byte) si.maxAttack);
@@ -263,6 +267,9 @@ public class PayloadCustomGenerator implements PayloadGenerator<OpcodeOut> {
 					if (player.getConfig().WANT_HARVESTING) {
 						builder.writeByte((byte) si.maxHarvesting);
 					}
+					if (player.getConfig().WANT_SLAYER) {
+						builder.writeByte((byte) si.maxSlayer);
+					}
 
 					// 18 skills minimum - experiences
 					builder.writeInt(si.experienceAttack);
@@ -288,6 +295,9 @@ public class PayloadCustomGenerator implements PayloadGenerator<OpcodeOut> {
 					}
 					if (player.getConfig().WANT_HARVESTING) {
 						builder.writeInt(si.experienceHarvesting);
+					}
+					if (player.getConfig().WANT_SLAYER) {
+						builder.writeInt(si.experienceSlayer);
 					}
 
 					builder.writeByte((byte) si.questPoints);

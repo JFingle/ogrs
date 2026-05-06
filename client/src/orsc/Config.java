@@ -143,6 +143,8 @@ public class Config {
 	public static int S_CHARACTER_CREATION_MODE = 0;
 	public static int S_SKILLING_EXP_RATE = 1;
 	public static boolean S_WANT_HARVESTING = false;
+	/** OGRS additive skill — Slayer. Mirrors server's WANT_SLAYER flag. */
+	public static boolean S_WANT_SLAYER = false;
 	public static boolean S_FEATURES_SLEEP = true;
 	public static boolean S_WANT_EXTENDED_CATS_BEHAVIOR = false;
 	public static boolean S_WANT_CERT_AS_NOTES = false;

@@ -896,6 +896,7 @@ public class ActionSender {
 		configs.add(Crypto.getPublicModulus().toString()); // 88
 		configs.add((byte) (server.getConfig().GROUND_ITEM_NAMES ? 1 : 0)); // 89
 		configs.add((byte) (server.getConfig().WANT_NATURE_RUNE_PROTECTION ? 1 : 0)); // 90
+		configs.add((byte) (server.getConfig().WANT_SLAYER ? 1 : 0)); // 91 (OGRS additive skill)
 
 		struct.configs = configs;
 		struct.setOpcode(OpcodeOut.SEND_SERVER_CONFIGS);
@@ -1460,6 +1461,9 @@ public class ActionSender {
 				case "Harvesting":
 					struct.currentHarvesting = lvl;
 					break;
+				case "Slayer":
+					struct.currentSlayer = lvl;
+					break;
 				case "Influence":
 					struct.currentInfluence = lvl;
 					break;
@@ -1546,6 +1550,9 @@ public class ActionSender {
 				case "Harvesting":
 					struct.maxHarvesting = lvl;
 					break;
+				case "Slayer":
+					struct.maxSlayer = lvl;
+					break;
 				case "Influence":
 					struct.maxInfluence = lvl;
 					break;
@@ -1631,6 +1638,9 @@ public class ActionSender {
 					break;
 				case "Harvesting":
 					struct.experienceHarvesting = exp;
+					break;
+				case "Slayer":
+					struct.experienceSlayer = exp;
 					break;
 				case "Influence":
 					struct.experienceInfluence = exp;

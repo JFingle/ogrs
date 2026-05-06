@@ -123,6 +123,11 @@ public class StatInfoStruct  extends AbstractStruct<OpcodeOut> {
 	public int maxHarvesting = 1;
 	public int experienceHarvesting;
 
+	// OGRS additive skill — gated by WANT_SLAYER on the world.
+	public int currentSlayer = 1;
+	public int maxSlayer = 1;
+	public int experienceSlayer;
+
 	public int questPoints;
 	public int computedInfluence = 1; // computed from quest points
 	public int computedExperienceInfluence; // computed from quest points (based on exp curve)
