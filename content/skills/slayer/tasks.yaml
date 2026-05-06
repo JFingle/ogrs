@@ -1,0 +1,48 @@
+# OGRS slayer tasks.
+#
+# Adding a new task = one entry in this file, then restart server. No code change.
+#
+# Each task:
+#   name           : display name shown to the player ("Goblin", "Cow", etc.)
+#   npc_ids        : list of all NPC defs that count toward the task. Many
+#                    creatures have multiple sprite/stat variants under one
+#                    name; include them ALL or kills won't register.
+#                    See server/conf/server/defs/NpcDefs.json for ids.
+#   count          : { min, max } — random kill count assigned in this range
+#   combat_level_req: optional, gates the task to players above this level
+#                    (NOT YET ENFORCED — backlog item)
+#   area           : optional, free-form region tag for narrative hints
+#                    (NOT YET ENFORCED — backlog item)
+#
+# When a master assigns a task, one entry is picked at random from this list.
+# Slayer XP per kill = the killed NPC's `hits` (max HP) value.
+#
+# Verified against NpcDefs.json — every id listed has its expected family name.
+
+tasks:
+  - name: Goblin
+    npc_ids: [4, 62, 153, 154, 660]   # 5 Goblin variants
+    count: { min: 5, max: 8 }
+    area: lumbridge
+
+  - name: Cow
+    npc_ids: [6]                       # plain Cow (id 217 is non-attackable, skip)
+    count: { min: 8, max: 12 }
+    area: lumbridge
+
+  - name: Man
+    npc_ids: [11, 24, 72, 318, 750]    # 5 Man variants — peasants etc.
+    count: { min: 8, max: 12 }
+    area: varrock
+
+  - name: Spider
+    npc_ids: [34, 23]                  # spider (hits 2) + Giant Spider (hits 5)
+    count: { min: 8, max: 14 }
+    combat_level_req: 1
+    area: lumbridge swamp
+
+  - name: Skeleton
+    npc_ids: [40, 45, 46, 50, 179]     # standard skeleton variants
+    count: { min: 6, max: 10 }
+    combat_level_req: 10
+    area: varrock sewers / lumbridge swamp

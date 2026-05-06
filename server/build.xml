@@ -63,6 +63,7 @@
                 <pathelement location="${lib}/JDA-4.0.0_55-withDependencies.jar"/>
                 <pathelement location="${lib}/emoji-java-5.1.1.jar"/>
                 <pathelement location="${lib}/json-20190722.jar"/>
+                <pathelement location="${lib}/snakeyaml-2.2.jar"/>
                 <pathelement location="${lib}/gitlab4j-api-4.12.17.jar"/>
                 <pathelement location="${lib}/slf4j-nop-2.0.0-alpha5.jar"/>
                 <pathelement location="${lib}/disruptor-3.3.11.jar"/>

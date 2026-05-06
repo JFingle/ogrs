@@ -162,6 +162,7 @@ public final class EntityHandler {
 		loadNpcs(getServer().getConfig().CONFIG_DIR + "/defs/NpcDefs.json");
 		loadNpcs(getServer().getConfig().CONFIG_DIR + "/defs/NpcDefsCustom.json");
 		//loadNpcs(getServer().getConfig().CONFIG_DIR + "/defs/NpcDefsExpansion.json");
+		loadOgrsContentNpcs();
 		patchNpcs();
 		customNpcConditions();
 		loadNpcNames();
@@ -284,6 +285,29 @@ public final class EntityHandler {
 		}
 		catch (Exception e) {
 			LOGGER.error(e);
+		}
+	}
+
+	/**
+	 * OGRS content pipeline: read content/npcs/*.yaml after the upstream JSON
+	 * loaders and append the parsed defs to the same npcs list. Validates that
+	 * declared ids are sequential after the JSON-loaded count so id == index
+	 * holds (until backlog #9 lifts that constraint).
+	 */
+	private void loadOgrsContentNpcs() {
+		try {
+			final OgrsContentNpcLoader loader = new OgrsContentNpcLoader();
+			final java.util.List<OgrsContentNpcLoader.Entry> entries = loader.loadAll();
+			if (entries.isEmpty()) {
+				return;
+			}
+			OgrsContentNpcLoader.requireSequentialAfter(entries, npcs.size());
+			for (final OgrsContentNpcLoader.Entry e : entries) {
+				npcs.add(e.def);
+			}
+			LOGGER.info("OGRS: appended " + entries.size() + " YAML NPC def(s) to the registry");
+		} catch (Exception e) {
+			LOGGER.error("OGRS YAML NPC loader failed", e);
 		}
 	}
 

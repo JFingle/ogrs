@@ -39,14 +39,26 @@ public class SlayerService {
 	private static final Random rng = new Random();
 
 	/**
-	 * MVP task pool. Phase 1 moves this into content/skills/slayer/tasks.yaml.
-	 * Each TaskTemplate covers one display name + the full set of NPC ids
-	 * that count toward the task.
+	 * Task pool — loaded lazily from {@code content/skills/slayer/tasks.yaml}
+	 * via {@link SlayerTaskLoader} on first access. Falls back to a built-in
+	 * Goblin entry if the file is missing or unparseable. Adding a new task =
+	 * one entry in the YAML, no code change.
 	 */
-	private static final TaskTemplate[] TASK_POOL = {
-		// All 5 Goblin variants in NpcDefs.json.
-		new TaskTemplate("Goblin", new int[]{4, 62, 153, 154, 660}, 5, 8),
-	};
+	private static volatile SlayerTaskLoader.Template[] taskPool;
+
+	private static SlayerTaskLoader.Template[] pool() {
+		SlayerTaskLoader.Template[] p = taskPool;
+		if (p == null) {
+			synchronized (SlayerService.class) {
+				p = taskPool;
+				if (p == null) {
+					p = SlayerTaskLoader.loadOrDefault();
+					taskPool = p;
+				}
+			}
+		}
+		return p;
+	}
 
 	private SlayerService() { /* no instances */ }
 
@@ -69,7 +81,7 @@ public class SlayerService {
 			return null;
 		}
 		final String name = player.getCache().getString(KEY_TASK_NAME);
-		final TaskTemplate template = findTemplate(name);
+		final SlayerTaskLoader.Template template = findTemplate(name);
 		if (template == null) {
 			// Stale task pointing at a removed template — treat as no task.
 			return null;
@@ -83,7 +95,8 @@ public class SlayerService {
 	}
 
 	public static SlayerData assignRandomTask(final Player player) {
-		final TaskTemplate t = TASK_POOL[rng.nextInt(TASK_POOL.length)];
+		final SlayerTaskLoader.Template[] p = pool();
+		final SlayerTaskLoader.Template t = p[rng.nextInt(p.length)];
 		final int total = t.minCount + rng.nextInt(t.maxCount - t.minCount + 1);
 		player.getCache().store(KEY_TASK_NAME, t.name);
 		player.getCache().set(KEY_TASK_TOTAL, total);
@@ -103,7 +116,7 @@ public class SlayerService {
 		if (!player.getCache().hasKey(KEY_TASK_NAME)) {
 			return false;
 		}
-		final TaskTemplate t = findTemplate(player.getCache().getString(KEY_TASK_NAME));
+		final SlayerTaskLoader.Template t = findTemplate(player.getCache().getString(KEY_TASK_NAME));
 		if (t == null) {
 			return false;
 		}
@@ -126,8 +139,8 @@ public class SlayerService {
 		return true;
 	}
 
-	private static TaskTemplate findTemplate(final String name) {
-		for (final TaskTemplate t : TASK_POOL) {
+	private static SlayerTaskLoader.Template findTemplate(final String name) {
+		for (final SlayerTaskLoader.Template t : pool()) {
 			if (t.name.equals(name)) return t;
 		}
 		return null;
@@ -147,18 +160,5 @@ public class SlayerService {
 			level = i + 1;
 		}
 		return Math.min(99, level);
-	}
-
-	private static final class TaskTemplate {
-		final String name;
-		final int[] npcIds;
-		final int minCount;
-		final int maxCount;
-		TaskTemplate(String name, int[] npcIds, int min, int max) {
-			this.name = name;
-			this.npcIds = npcIds;
-			this.minCount = min;
-			this.maxCount = max;
-		}
 	}
 }
