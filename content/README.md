@@ -26,7 +26,7 @@ content/
 
 | Type | Authoring location | Hot-reload? | Client work also needed? |
 |---|---|---|---|
-| **NPCs** | `content/npcs/<name>.yaml` | No, restart | ⚠️ Yes — also add to `client/src/.../EntityHandler.java` (see backlog #6) |
+| **NPCs** | `content/npcs/<name>.yaml` | No, restart | ✅ Auto via codegen — run `python3 tools/codegen-client-npcs.py` then rebuild client |
 | **Slayer tasks** | `content/skills/slayer/tasks.yaml` | No, restart | ❌ No — tasks are server-only |
 | Items | `server/conf/server/defs/ItemDefsCustom.json` (legacy) | No | ⚠️ Yes (similar story to NPCs) |
 | Quests | Hardcoded Java plugins (legacy) | No, recompile | ❌ No |
@@ -36,12 +36,16 @@ content/
 
 ## Adding a new NPC
 
-1. **Pick the next sequential id.** Open the project memory — until backlog #9 (EntityHandler HashMap refactor) lands, NPC ids must be sequential. Today the next available id is determined by `npcs.size()` at YAML-load time. Currently that's **837** (794 stock + 42 upstream-custom + 1 OGRS YAML).
+1. **Pick the next sequential id.** Until backlog #9 (EntityHandler HashMap refactor) lands, NPC ids must be sequential. Today the next available id is determined by `npcs.size()` at YAML-load time. Currently that's **837** (794 stock + 42 upstream-custom + 1 OGRS YAML).
 2. **Create `content/npcs/<snake_case_name>.yaml`** mirroring the schema in `grizzled_traveler.yaml`.
-3. **Add the matching client-side entry** to `client/src/com/openrsc/client/entityhandling/EntityHandler.java` near the existing `npcs.add(new NPCDef(...))` block. Without this, the client falls back to "Ana (not in a barrel)" with the helpful "I should update my client" hint.
+3. **Re-run the client codegen:**
+   ```bash
+   python3 tools/codegen-client-npcs.py
+   ```
+   This rewrites `client/src/com/openrsc/client/entityhandling/generated/OgrsClientNpcs.java` so the client knows about your new NPC. **Do not hand-edit the generated file** — re-run the codegen.
 4. **Add a spawn** in `server/conf/server/defs/locs/NpcLocsCustom.json` if you want the NPC to appear in the world.
 5. **Optionally add a Talk-to plugin** under `server/plugins/com/openrsc/server/plugins/custom/npcs/` implementing `TalkNpcTrigger`. (See `GrizzledTraveler.java`.)
-6. **Restart server, rebuild client.**
+6. **Restart server, rebuild client** (`./scripts/dev-server.sh`, `cd client && ant compile`).
 
 ## Adding a new slayer task
 
