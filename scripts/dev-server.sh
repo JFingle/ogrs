@@ -43,9 +43,15 @@ case "${1:-}" in
     ;;
   "")
     echo "[ogrs] Booting OGRS world (game_tick=640ms, port 43594)..."
-    JAVA_HOME="$JDK8" ./gradlew --no-daemon run -Dconf=ogrs
+    JAVA_HOME="$JDK8" ./gradlew --no-daemon run
     ;;
   *)
-    JAVA_HOME="$JDK8" ./gradlew --no-daemon run "$@"
+    # First arg starts with -P: pass through to gradle.
+    # Otherwise treat as world name shortcut: `dev-server.sh preservation` -> `-Pconf=preservation`.
+    if [[ "$1" == -P* || "$1" == --* ]]; then
+      JAVA_HOME="$JDK8" ./gradlew --no-daemon run "$@"
+    else
+      JAVA_HOME="$JDK8" ./gradlew --no-daemon run -Pconf="$1"
+    fi
     ;;
 esac

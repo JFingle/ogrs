@@ -8,7 +8,10 @@ version "1.0-SNAPSHOT"
 
 application {
     mainClassName = "com.openrsc.server.Server"
-    applicationDefaultJvmArgs = ['-DcoloredLogging=true','-Dconf=default']
+    // OGRS default world. Override at the command line with `-Pconf=<name>`,
+    // e.g. `./gradlew run -Pconf=preservation` to boot upstream's preservation
+    // world for behavioural comparison.
+    applicationDefaultJvmArgs = ['-DcoloredLogging=true','-Dconf=ogrs']
 }
 
 repositories {
@@ -73,6 +76,12 @@ ant.importBuild('build.xml') { antTargetName ->
 
 run {
     dependsOn compile_plugins
+    // Forward `-Pconf=<name>` from Gradle into the JVM as `-Dconf=<name>`.
+    // Without this, applicationDefaultJvmArgs wins and the command-line flag
+    // is silently ignored (Gradle 7 default behaviour).
+    if (project.hasProperty('conf')) {
+        systemProperty 'conf', project.property('conf')
+    }
 }
 
 test {

@@ -32,6 +32,26 @@ Thumbs.db
 **/secrets/
 **/conf/server/*.local.conf
 
+# Local DB connection config (creds). Use connections.conf.example as the template.
+server/connections.conf
+
+# Runtime-generated server state — local to each install, never committed.
+server/ipbans.txt
+server/auctionhouse.json
+server/avatars/
+server/inc/databases/
+
+# Ant build outputs (in addition to *.jar above — these are at server root).
+server/core.jar
+server/plugins.jar
+server/buildplugins/
+
+# Server logs / Backups directory holds runtime DB dumps.
+server/logs/*
+!server/logs/.gitkeep
+server/Backups/*.sql*
+!server/Backups/.gitkeep
+
 # Logs
 *.log
 logs/
