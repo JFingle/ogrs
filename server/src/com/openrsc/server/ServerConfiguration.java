@@ -81,6 +81,9 @@ public class ServerConfiguration {
 	public boolean WANT_THREADING__BREAK_PID_PRIORITY;
 	public boolean BREAK_NPC_LOCATION_CACHE;
 	public boolean IS_LOCALHOST_RESTRICTED;
+	/** OGRS dev convenience: any session from 127.0.0.1 reports as OWNER for the
+	 *  duration of the session. Set to false in staging/prod. */
+	public boolean LOCALHOST_AUTO_ADMIN;
 
 	// Location of the server conf files.
 	public String CONFIG_DIR = "conf" + File.separator + "server";
@@ -454,6 +457,7 @@ public class ServerConfiguration {
 		REGISTRATION_LIMIT_COUNT = tryReadInt("registration_limit_count").orElse(2);
 		PACKET_LIMIT = tryReadInt("packet_limit").orElse(100);
 		IS_LOCALHOST_RESTRICTED = tryReadBool("is_localhost_restricted").orElse(true);
+		LOCALHOST_AUTO_ADMIN = tryReadBool("localhost_auto_admin").orElse(false);
 		GLOBAL_MESSAGE_COOLDOWN = tryReadInt("global_message_cooldown").orElse(0);
 		GLOBAL_MESSAGE_TOTAL_LEVEL_REQ = tryReadInt("global_message_total_level_req").orElse(0);
 		GLOBAL_MESSAGE_READING_TOTAL_LEVEL_REQ = tryReadInt("global_message_reading_total_level_req").orElse(0);

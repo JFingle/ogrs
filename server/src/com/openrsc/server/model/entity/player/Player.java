@@ -1979,6 +1979,19 @@ public final class Player extends Mob {
 	}
 
 	public int getGroupID() {
+		// OGRS dev convenience: if the world is configured for localhost auto-admin,
+		// any session connecting from 127.0.0.1 reports as OWNER. Avoids the
+		// logout / hand-update / login dance every time we register a new dev account.
+		// Production worlds leave LOCALHOST_AUTO_ADMIN off and behaviour is unchanged.
+		try {
+			if (getConfig() != null && getConfig().LOCALHOST_AUTO_ADMIN
+				&& "127.0.0.1".equals(getCurrentIP())) {
+				return Group.OWNER;
+			}
+		} catch (Exception ignored) {
+			// During early construction either getConfig() or getCurrentIP() may be
+			// null; fall through to the stored value.
+		}
 		return groupID;
 	}
 
