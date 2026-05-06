@@ -23,10 +23,11 @@ public class SlayerKillTracker implements KillNpcTrigger {
 
 	@Override
 	public boolean blockKillNpc(final Player player, final Npc n) {
-		if (!player.getCache().hasKey(SlayerService.KEY_TASK_NPC)) {
-			return false;
-		}
-		return player.getCache().getInt(SlayerService.KEY_TASK_NPC) == n.getID();
+		// Claim the kill (so onKillNpc fires) only when the killed NPC is in
+		// the player's active task family. SlayerService.isTaskTarget knows
+		// e.g. "Goblin" maps to ids {4, 62, 153, 154, 660}. Returning true
+		// does NOT skip default loot — see Npc.java#killedBy.
+		return SlayerService.isTaskTarget(player, n.getID());
 	}
 
 	@Override
