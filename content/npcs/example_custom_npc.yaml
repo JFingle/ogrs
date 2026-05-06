@@ -1,0 +1,42 @@
+# Example OGRS NPC definition — target schema for Phase 1.
+# Until the YAML loader is wired up, real custom NPCs go in
+# server/conf/server/defs/NpcDefsCustom.json (legacy JSON format).
+
+id: 5000
+ogrs_id: ogrs_grizzled_traveler
+name: Grizzled Traveler
+description: A weathered figure who has clearly seen too much.
+
+stats:
+  attack: 20
+  strength: 25
+  defense: 30
+  hits: 40
+  ranged: 1
+  combat_level: 28
+
+flags:
+  attackable: false
+  aggressive: false
+  retreats: false
+  members_only: false
+
+# Sprites use original OpenRSC sprite slots until we ship custom art.
+# 12 directional/animation slots, -1 = none.
+sprites: [23, 24, 25, 26, 27, 28, -1, -1, -1, -1, -1, -1]
+
+respawn_time_ticks: 211
+
+# Dialog reference — points to a dialog tree file once the dialog system lands.
+# For now this is metadata only.
+dialog: content/dialog/grizzled_traveler.yaml
+
+drops: []
+
+# Where this NPC appears. Multiple spawns supported.
+spawns:
+  - region: 100              # OGRS-reserved region
+    coord: { x: 200, y: 200 }
+    wander:
+      min: { x: 195, y: 195 }
+      max: { x: 205, y: 205 }

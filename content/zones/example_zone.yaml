@@ -1,0 +1,51 @@
+# Example OGRS zone (new land) — target schema for Phase 1.
+# Zones add new tile regions to unused world coordinate slabs.
+# The original Gielinor stays in upstream's binary .jag format, untouched.
+
+id: ogrs_starter_isle
+name: Starter Isle
+description: A small isle off the eastern coast, where new adventurers find their footing.
+
+# Region this zone occupies. OGRS-reserved range is 100+.
+region: 100
+
+# World coordinate offset of the zone's (0,0) tile.
+origin: { x: 800, y: 800 }
+
+# Zone dimensions in tiles. Must fit within a region (48×48 default).
+size: { width: 48, height: 48 }
+
+# Tile grid. Each cell references a tile_type by id.
+# `_` shorthand for default (grass).
+# Real zones will be authored with the tile painter; this is hand-edited
+# for the example.
+tiles: |
+  ........................
+  ...wwww.................
+  ..wggggw................
+  .wgggggw................
+  .wggggw.................
+  ..wwww..................
+  ........................
+
+tile_legend:
+  ".": { type: water_deep }
+  "w": { type: sand }
+  "g": { type: grass }
+
+# Scenery objects placed on the grid.
+scenery:
+  - { id: tree_oak, at: { x: 5, y: 3 } }
+  - { id: rock_iron, at: { x: 6, y: 3 } }
+  - { id: ogrs_ancient_tablet, at: { x: 4, y: 4 } }
+
+# Boundary objects (doors, gates, fences along tile edges).
+boundaries: []
+
+# Spawn points for ground items.
+ground_items: []
+
+# NPC spawns for this zone (also referenced from content/npcs/<npc>.yaml).
+npc_spawns:
+  - npc: ogrs_grizzled_traveler
+    at: { x: 4, y: 5 }

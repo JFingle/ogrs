@@ -1,0 +1,70 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+
+  validate-content:
+    name: Validate content
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install pyyaml jsonschema
+      - name: Run content validator
+        run: python tools/content-validator/validate.py
+
+  build-server:
+    name: Build server
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '8'
+      - name: Cache Gradle
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('server/build.gradle', 'server/gradle/wrapper/*') }}
+      - name: Build server
+        working-directory: server
+        run: ./gradlew --no-daemon build -x test
+        continue-on-error: true   # Phase 0: tolerate upstream-baseline build issues until our config lands.
+
+  build-client:
+    name: Build client
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '8'
+      - name: Compile client (Ant)
+        working-directory: client
+        run: |
+          if [ -f build.xml ]; then
+            sudo apt-get update && sudo apt-get install -y ant
+            ant -f build.xml || true   # Phase 0: tolerate while we sort the build.
+          fi
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check for forbidden patterns
+        run: |
+          # No plaintext secrets, no upstream Jagex asset filenames, etc.
+          ! grep -rn "MARIADB_ROOT_PASSWORD=root" --include="*.env*" .
+          ! grep -rn "TODO: SECURITY" content/

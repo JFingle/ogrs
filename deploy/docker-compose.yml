@@ -1,0 +1,36 @@
+# OGRS dev stack — MariaDB only.
+# The server runs on the host via `gradle run` (see docs/development.md).
+# In Phase 0/1 the server stays on the host for fast iteration; we'll
+# containerize it for staging/prod later.
+
+services:
+
+  mariadb:
+    image: mariadb:11
+    container_name: ogrs-mariadb
+    restart: unless-stopped
+    env_file:
+      - .env
+    command: ['--wait_timeout=360000']
+    environment:
+      MARIADB_DATABASE: ${MARIADB_DATABASE:-ogrs}
+      MARIADB_ROOT_USER: ${MARIADB_ROOT_USER:-root}
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD:?must set MARIADB_ROOT_PASSWORD in deploy/.env}
+      MARIADB_ALLOW_EMPTY_PASSWORD: 'no'
+      MARIADB_USER: ${MARIADB_USER:-ogrs}
+      MARIADB_PASSWORD: ${MARIADB_PASSWORD:?must set MARIADB_PASSWORD in deploy/.env}
+    ports:
+      - "127.0.0.1:3306:3306"
+    volumes:
+      - ogrs_db:/var/lib/mysql
+      - ../server/inc/my.cnf:/etc/mysql/my.cnf:ro
+      - ../server/inc/innodb.cnf:/etc/mysql/conf.d/innodb.cnf:ro
+      - ../server/database/mysql:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  ogrs_db:

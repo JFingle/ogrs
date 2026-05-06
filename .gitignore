@@ -1,0 +1,53 @@
+# Upstream reference clone — read-only, not part of our repo
+openrsc-upstream/
+
+# Build output
+**/build/
+**/out/
+**/target/
+**/.gradle/
+**/bin/
+*.class
+*.jar
+!**/lib/*.jar
+*.war
+
+# IDE
+.idea/
+*.iml
+.vscode/
+.settings/
+.project
+.classpath
+.factorypath
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Secrets / local config
+.env
+.env.local
+.env.*.local
+**/secrets/
+**/conf/server/*.local.conf
+
+# Logs
+*.log
+logs/
+**/server/logs/
+**/server/Backups/*
+!**/server/Backups/.gitkeep
+
+# Database dumps (we ship migrations, not dumps)
+*.sql.gz
+*.dump
+
+# Generated content from binary-to-JSON map decoder (cache it locally, regenerate from source)
+content/zones/_generated/
+
+# Credentials — never commit
+**/auth.json
+**/*.pem
+**/*.key
+!**/public.key

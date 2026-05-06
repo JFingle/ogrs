@@ -1,0 +1,52 @@
+# Example OGRS quest definition — target schema for Phase 1.
+# The data-driven quest system lands in Phase 1; until then quests
+# remain hardcoded Java in server/plugins/.
+
+id: ogrs_first_steps
+name: First Steps in Old Gielinor
+quest_points: 1
+
+start:
+  npc: ogrs_grizzled_traveler
+  trigger: talk
+
+requirements:
+  combat_level: 0
+  skills: {}
+  prior_quests: []
+
+steps:
+  - id: hear_the_tale
+    type: dialog
+    npc: ogrs_grizzled_traveler
+    tree: greet_the_traveler
+
+  - id: gather_proof
+    type: collect
+    description: Bring 5 cowhide as proof you're capable.
+    items:
+      - { id: cowhide, qty: 5 }
+
+  - id: deliver
+    type: dialog_with_items
+    npc: ogrs_grizzled_traveler
+    consume:
+      - { id: cowhide, qty: 5 }
+    tree: traveler_accepts_proof
+
+rewards:
+  xp:
+    attack: 250
+  items:
+    - { id: bronze_dagger, qty: 1 }
+  quest_points: 1
+  unlocks: []
+
+log_entries:
+  - "I met a grizzled traveler who tested my mettle."
+  - "I brought him the cowhides he asked for."
+  - "He accepted me as a worthy adventurer."
+
+# When `imported_from` is set, the quest came from the OSRS import pipeline
+# and any RSC-incompatible mechanics have already been flagged or stripped.
+imported_from: null

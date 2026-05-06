@@ -1,0 +1,53 @@
+# Example OGRS skill definition — target schema for Phase 1.
+# Skills today are a hardcoded enum in server/src/.../constants/Skill.java.
+# Phase 1 refactors the enum into a data-loaded registry.
+
+id: ogrs_lore
+name: Lore
+description: Knowledge of Old Gielinor's forgotten histories. Higher Lore unlocks dialog options and quest paths.
+
+max_level: 99
+
+xp_curve: classic              # 'classic' = standard RSC level table
+
+icon_sprite: lore_icon
+
+# Each action the skill can perform.
+actions:
+  - id: read_tablet
+    label: Read inscription
+    target_kind: scenery
+    target_ids: [ogrs_ancient_tablet]
+    requirements:
+      level: 1
+    success_rate:
+      formula: linear
+      base: 50
+      per_level: 1
+    duration_ticks: 4
+    xp: 25
+    failure_xp: 5
+    animation: read
+
+  - id: study_lore_book
+    label: Study
+    target_kind: item
+    target_ids: [ogrs_lore_book_basic]
+    requirements:
+      level: 5
+    success_rate: { formula: always }
+    duration_ticks: 8
+    xp: 75
+    consume_item: false
+    animation: study
+
+# Level-up unlocks (passive — no action needed)
+unlocks:
+  - level: 10
+    description: Can attempt to translate damaged inscriptions.
+  - level: 25
+    description: Reveals hidden NPC dialog branches.
+  - level: 50
+    description: Quests requiring Lore become available.
+  - level: 99
+    description: Master of forgotten histories. Completionist cape eligible.
