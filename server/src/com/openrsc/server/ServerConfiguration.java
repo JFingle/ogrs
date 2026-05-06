@@ -181,6 +181,10 @@ public class ServerConfiguration {
 	public boolean LOOTED_CHESTS_STUCK;
 	public boolean WANT_RUNECRAFT;
 	public boolean WANT_HARVESTING;
+	/** OGRS additive skill: enable the Slayer skill registry entry, DB column,
+	 *  XP routing, and master/task plumbing. Disable on worlds that don't want
+	 *  Slayer at all (e.g. strict-preservation deploys). */
+	public boolean WANT_SLAYER;
 	public boolean WANT_CUSTOM_LEATHER;
 	public boolean WANT_BETTER_JEWELRY_CRAFTING;
 	public boolean MORE_SHAFTS_PER_BETTER_LOG;
@@ -625,6 +629,7 @@ public class ServerConfiguration {
 		LOOTED_CHESTS_STUCK = tryReadBool("looted_chests_stuck").orElse(false);
 		WANT_RUNECRAFT = tryReadBool("want_runecraft").orElse(false);
 		WANT_HARVESTING = tryReadBool("want_harvesting").orElse(false);
+		WANT_SLAYER = tryReadBool("want_slayer").orElse(false);
 		WANT_CUSTOM_LEATHER = tryReadBool("want_custom_leather").orElse(false);
 		WANT_CUSTOM_LANDSCAPE = tryReadBool("custom_landscape").orElse(false);
 		WANT_EQUIPMENT_TAB = tryReadBool("want_equipment_tab").orElse(false);

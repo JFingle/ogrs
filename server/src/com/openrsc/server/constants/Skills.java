@@ -25,7 +25,8 @@ public class Skills {
 		PRAYGOOD = "PRAYGOOD", PRAYEVIL = "PRAYEVIL", PRAYER = "PRAYER", GOODMAGIC = "GOODMAGIC", EVILMAGIC = "EVILMAGIC", MAGIC = "MAGIC",
 		COOKING = "COOKING", WOODCUTTING = "WOODCUTTING", FLETCHING = "FLETCHING", FISHING = "FISHING", FIREMAKING = "FIREMAKING",
 		TAILORING = "TAILORING", CRAFTING = "CRAFTING", SMITHING = "SMITHING", MINING = "MINING", HERBLAW = "HERBLAW", AGILITY = "AGILITY",
-		THIEVING = "THIEVING", RUNECRAFT = "RUNECRAFT", HARVESTING = "HARVESTING", CARPENTRY = "CARPENTRY", INFLUENCE = "INFLUENCE";
+		THIEVING = "THIEVING", RUNECRAFT = "RUNECRAFT", HARVESTING = "HARVESTING", CARPENTRY = "CARPENTRY", INFLUENCE = "INFLUENCE",
+		SLAYER = "SLAYER";
 
 	public HashMap<SkillDef.EXP_CURVE, int[]> experienceCurves;
 	public ArrayList<SkillDef> skills;
@@ -252,6 +253,14 @@ public class Skills {
 			}
 			if(constants.getServer().getConfig().WANT_HARVESTING) {
 				skills.add(new SkillDef("Harvesting", "Harvesting", 1, 99, SkillDef.EXP_CURVE.ORIGINAL, skillIndex++));
+			}
+			if(constants.getServer().getConfig().WANT_SLAYER) {
+				// OGRS additive skill. Stats packet for protocol 177 doesn't yet have a
+				// `currentSlayer` slot, so the skill panel won't display it; XP and levels
+				// are still tracked authentically and persist via the dynamic SQL builder.
+				// Backlog: extend StatInfoStruct + payload generator/parser to surface it
+				// in the skill panel.
+				skills.add(new SkillDef("Slayer", "Slayer", 1, 99, SkillDef.EXP_CURVE.ORIGINAL, skillIndex++));
 			}
 		}
 

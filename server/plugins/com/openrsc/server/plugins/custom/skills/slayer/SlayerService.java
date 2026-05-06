@@ -1,5 +1,6 @@
 package com.openrsc.server.plugins.custom.skills.slayer;
 
+import com.openrsc.server.constants.Skill;
 import com.openrsc.server.model.entity.player.Player;
 
 import java.util.Random;
@@ -64,14 +65,47 @@ public class SlayerService {
 
 	// -- XP --
 
+	/**
+	 * If `want_slayer: true` is set on the world, slayer XP lives on the
+	 * player's `Skills` object (and persists to the `experience.slayer` DB
+	 * column). Otherwise it lives in the player_cache under `ogrs_slayer_xp`
+	 * for backward compat with worlds running before the skill registry change.
+	 */
+	private static boolean useRealSkill(final Player player) {
+		return player.getWorld().getServer().getConfig().WANT_SLAYER;
+	}
+
+	/** Returns XP in DISPLAY units (the value the player sees). Engine stores 4x. */
 	public static int getXp(final Player player) {
+		if (useRealSkill(player)) {
+			// Engine stores at 4x display units (RSC convention). Convert back.
+			return player.getSkills().getExperience(Skill.SLAYER.id()) / 4;
+		}
 		return player.getCache().hasKey(KEY_XP) ? player.getCache().getInt(KEY_XP) : 0;
 	}
 
+	/**
+	 * Adds {@code xp} display-units. Routes through the real skill XP system
+	 * when WANT_SLAYER is enabled (multiplying by 4 for the engine's storage
+	 * format and triggering the standard level-up message), or falls back to
+	 * the cache key. Returns the new total in display units.
+	 */
 	public static int addXp(final Player player, final int xp) {
+		if (useRealSkill(player)) {
+			player.getSkills().addExperience(Skill.SLAYER.id(), xp * 4);
+			return getXp(player);
+		}
 		final int total = getXp(player) + xp;
 		player.getCache().set(KEY_XP, total);
 		return total;
+	}
+
+	/** Player's current Slayer level. Uses real skill registry when WANT_SLAYER. */
+	public static int getPlayerLevel(final Player player) {
+		if (useRealSkill(player)) {
+			return player.getSkills().getMaxStat(Skill.SLAYER.id());
+		}
+		return getLevel(getXp(player));
 	}
 
 	// -- Tasks --

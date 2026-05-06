@@ -33,7 +33,8 @@ public class Skill {
 		RUNECRAFT = new Skill(Skills.RUNECRAFT),
 		HARVESTING = new Skill(Skills.HARVESTING),
 		CARPENTRY = new Skill(Skills.CARPENTRY),
-		INFLUENCE = new Skill(Skills.INFLUENCE);
+		INFLUENCE = new Skill(Skills.INFLUENCE),
+		SLAYER = new Skill(Skills.SLAYER);
 
 	static {
 		nameMap.put(Skills.NONE, new Skill(Skills.NONE, -1));

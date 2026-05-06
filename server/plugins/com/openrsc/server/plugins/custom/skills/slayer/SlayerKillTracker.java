@@ -37,7 +37,7 @@ public class SlayerKillTracker implements KillNpcTrigger {
 		}
 		final int xp = Math.max(1, n.getDef().getHits());
 		final int totalXp = SlayerService.addXp(player, xp);
-		final int level = SlayerService.getLevel(totalXp);
+		final int level = SlayerService.getPlayerLevel(player);
 		final SlayerData task = SlayerService.getActiveTask(player);
 
 		if (task != null && task.isComplete()) {

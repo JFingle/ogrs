@@ -29,8 +29,7 @@ public class GrizzledTraveler implements TalkNpcTrigger {
 	@Override
 	public void onTalkNpc(final Player player, final Npc n) {
 		final SlayerData task = SlayerService.getActiveTask(player);
-		final int xp = SlayerService.getXp(player);
-		final int lvl = SlayerService.getLevel(xp);
+		final int lvl = SlayerService.getPlayerLevel(player);
 
 		if (task == null) {
 			offerNewTask(player, n);
@@ -70,7 +69,7 @@ public class GrizzledTraveler implements TalkNpcTrigger {
 
 	private void completeTask(final Player player, final Npc n, final SlayerData task) {
 		final int total = SlayerService.addXp(player, COMPLETION_BONUS_XP);
-		final int lvl = SlayerService.getLevel(total);
+		final int lvl = SlayerService.getPlayerLevel(player);
 		SlayerService.clearTask(player);
 		npcsay(player, n,
 			"Aye, you got 'em all. Knew you had it in ye.",
