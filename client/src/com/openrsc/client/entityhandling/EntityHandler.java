@@ -2337,6 +2337,15 @@ public class EntityHandler {
 		sprites = new int[]{0, 557, 2, -1, -1, -1, -1, -1, -1, -1, -1, -1};
 		npcs.add(new NPCDef("Ash", "Groovy", "", 20, 20, 20, 20, false, sprites, 0x50321E, 0x00137F, 0x794B1E, 15523536, 160, 220, 6, 6, 5, i++));
 
+		// OGRS additive NPCs begin here (id 836+).
+		// Must mirror server-side NpcDefsCustom.json — client uses this list to render
+		// names/descriptions/sprites; if the id isn't here, the client falls back to
+		// "Ana (not in a barrel)" with the helpful "I should update my client." hint.
+		// Sprite slots: head, shirt, pants, shield, weapon, hat, body, legs, gloves, boots, amulet, cape
+		// Head 6 = bearded male. Colors give him a weathered grey-haired, brown-coated look.
+		sprites = new int[]{6, 1, 2, -1, -1, -1, -1, -1, -1, -1, -1, -1};
+		npcs.add(new NPCDef("Grizzled Traveler", "A weathered figure who has clearly seen too much.", "Talk-to", 20, 25, 40, 30, false, sprites, 0xAAAAAA, 0x6B4226, 0x4F2D1B, 13415270, 160, 220, 6, 6, 5, i++));
+
 		if (Config.S_WANT_CUSTOM_SPRITES) {
 			// Ranael
 			npcs.get(103).sprites = new int[]{3, 4, -1, -1, -1, -1, -1, 247, -1, -1, -1, -1};
