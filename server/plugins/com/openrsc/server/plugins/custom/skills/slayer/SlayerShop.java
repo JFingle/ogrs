@@ -71,4 +71,13 @@ public final class SlayerShop extends AbstractShop {
 		// Never invoked — blockTalkNpc returns false, gating dispatch off.
 		// AbstractShop's TalkNpcTrigger contract requires the method to exist.
 	}
+
+	@Override
+	public boolean blockOpNpc(final Player player, final Npc n, final String command) {
+		// Override AbstractShop's default (which delegates to blockTalkNpc).
+		// We DO want the right-click "Trade" command to fire onOpNpc so the
+		// shop opens directly without going through the dialog. Talk-to is
+		// not an Op command, so it isn't gated here.
+		return n.getID() == OWNER_NPC_ID && "Trade".equalsIgnoreCase(command);
+	}
 }

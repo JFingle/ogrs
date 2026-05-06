@@ -23,7 +23,7 @@ public final class OgrsClientNpcs {
 
 		// id 836 — from content/npcs/grizzled_traveler.yaml
 		sprites = new int[]{6, 1, 2, -1, -1, -1, -1, -1, -1, -1, -1, -1};
-		npcs.add(new NPCDef("Grizzled Traveler", "A weathered figure who has clearly seen too much.", "", 20, 25, 40, 30, false, sprites, 0xAAAAAA, 0x6B4226, 0x4F2D1B, 0xCC9966, 160, 220, 6, 6, 5, i++));
+		npcs.add(new NPCDef("Grizzled Traveler", "A weathered figure who has clearly seen too much.", "", "Trade", 20, 25, 40, 30, false, sprites, 0xAAAAAA, 0x6B4226, 0x4F2D1B, 0xCC9966, 160, 220, 6, 6, 5, i++));
 
 		return i;
 	}

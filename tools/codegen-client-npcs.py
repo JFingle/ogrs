@@ -82,6 +82,7 @@ def emit_java(npcs: list[dict]) -> str:
         name = npc["name"]
         desc = npc.get("description", "")
         cmd = npc.get("command", "")
+        cmd2 = npc.get("command2", "")
         stats = npc.get("stats", {}) or {}
         flags = npc.get("flags", {}) or {}
         colors = npc.get("colors", {}) or {}
@@ -110,16 +111,28 @@ def emit_java(npcs: list[dict]) -> str:
         name_j = name.replace("\\", "\\\\").replace("\"", "\\\"")
         desc_j = desc.replace("\\", "\\\\").replace("\"", "\\\"")
         cmd_j = cmd.replace("\\", "\\\\").replace("\"", "\\\"")
+        cmd2_j = cmd2.replace("\\", "\\\\").replace("\"", "\\\"")
 
         lines.append(f"\t\t// id {npc['id']} — from content/npcs/{npc['_source']}")
         lines.append(f"\t\tsprites = new int[]{{{', '.join(str(s) for s in sprites)}}};")
-        lines.append(
-            "\t\tnpcs.add(new NPCDef("
-            f"\"{name_j}\", \"{desc_j}\", \"{cmd_j}\", "
-            f"{att}, {st}, {hits}, {deff}, {str(ranged).lower()}, sprites, "
-            f"0x{hair & 0xFFFFFF:06X}, 0x{top & 0xFFFFFF:06X}, 0x{bottom & 0xFFFFFF:06X}, 0x{skin & 0xFFFFFF:06X}, "
-            f"{cam_x}, {cam_y}, {walk}, {combat}, {combat_sprite}, i++));"
-        )
+        if cmd2:
+            # Emit the 6-arg-prefix constructor with both commands, so the
+            # right-click menu shows BOTH options on this NPC.
+            lines.append(
+                "\t\tnpcs.add(new NPCDef("
+                f"\"{name_j}\", \"{desc_j}\", \"{cmd_j}\", \"{cmd2_j}\", "
+                f"{att}, {st}, {hits}, {deff}, {str(ranged).lower()}, sprites, "
+                f"0x{hair & 0xFFFFFF:06X}, 0x{top & 0xFFFFFF:06X}, 0x{bottom & 0xFFFFFF:06X}, 0x{skin & 0xFFFFFF:06X}, "
+                f"{cam_x}, {cam_y}, {walk}, {combat}, {combat_sprite}, i++));"
+            )
+        else:
+            lines.append(
+                "\t\tnpcs.add(new NPCDef("
+                f"\"{name_j}\", \"{desc_j}\", \"{cmd_j}\", "
+                f"{att}, {st}, {hits}, {deff}, {str(ranged).lower()}, sprites, "
+                f"0x{hair & 0xFFFFFF:06X}, 0x{top & 0xFFFFFF:06X}, 0x{bottom & 0xFFFFFF:06X}, 0x{skin & 0xFFFFFF:06X}, "
+                f"{cam_x}, {cam_y}, {walk}, {combat}, {combat_sprite}, i++));"
+            )
         lines.append("")
 
     lines.append("\t\treturn i;")

@@ -15,7 +15,7 @@ id: 836
 name: Grizzled Traveler
 description: A weathered figure who has clearly seen too much.
 command: ""              # left blank: TalkNpcTrigger plugin auto-renders Talk-to
-command2: ""
+command2: "Trade"        # right-click "Trade" opens the SlayerShop directly
 
 stats:
   attack: 20
