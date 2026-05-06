@@ -3,34 +3,32 @@ package com.openrsc.server.plugins.custom.skills.slayer;
 import com.openrsc.server.model.entity.player.Player;
 
 import java.util.Random;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * In-memory Slayer state for the OGRS world.
+ * Slayer state for the OGRS world. All state lives on
+ * {@link com.openrsc.server.model.Cache} via the player's `getCache()`,
+ * which is automatically persisted to the `player_cache` table on save.
  *
- * MVP: state lives in static maps keyed by username hash. Lost on server
- * restart and on player logout. Acceptable for proving the system; Phase 1
- * adds DB persistence (slayer_xp, slayer_task_npc, slayer_task_remaining
- * columns on players).
- *
- * The slayer skill is NOT yet integrated into the formal Skills registry,
- * so it does not appear in the client's skill panel. A separate XP+level
- * track is computed here and surfaced via chat messages until we extend
- * the engine's skill enum.
+ * Cache keys (all prefixed `ogrs_` to avoid colliding with upstream content):
+ *   ogrs_slayer_xp              int       cumulative XP
+ *   ogrs_slayer_task_npc        int       active task NPC id (absent = no task)
+ *   ogrs_slayer_task_name       string    display name for the messages
+ *   ogrs_slayer_task_total      int       original count assigned
+ *   ogrs_slayer_task_remaining  int       count remaining
  */
 public class SlayerService {
 
-	/** Player username hash → active task. */
-	private static final ConcurrentHashMap<Long, SlayerData> activeTasks = new ConcurrentHashMap<>();
-	/** Player username hash → cumulative slayer XP. */
-	private static final ConcurrentHashMap<Long, Integer> xpByPlayer = new ConcurrentHashMap<>();
+	public static final String KEY_XP = "ogrs_slayer_xp";
+	public static final String KEY_TASK_NPC = "ogrs_slayer_task_npc";
+	public static final String KEY_TASK_NAME = "ogrs_slayer_task_name";
+	public static final String KEY_TASK_TOTAL = "ogrs_slayer_task_total";
+	public static final String KEY_TASK_REMAINING = "ogrs_slayer_task_remaining";
+
 	private static final Random rng = new Random();
 
 	/**
-	 * MVP task pool. Each entry: (npc id, display name, min count, max count).
-	 * Goblin id 4 lives in NpcDefs.json. Phase 1 moves this into
-	 * content/skills/slayer/tasks.yaml as data, with combat-level requirements
-	 * and area restrictions.
+	 * MVP task pool. Phase 1 moves this into content/skills/slayer/tasks.yaml.
+	 * Goblin id 4 lives in NpcDefs.json. Add new NPC types here as you go.
 	 */
 	private static final TaskTemplate[] TASK_POOL = {
 		new TaskTemplate(4, "Goblin", 5, 8),
@@ -38,44 +36,66 @@ public class SlayerService {
 
 	private SlayerService() { /* no instances */ }
 
-	public static SlayerData assignRandomTask(final Player player) {
-		final TaskTemplate t = TASK_POOL[rng.nextInt(TASK_POOL.length)];
-		final int count = t.minCount + rng.nextInt(t.maxCount - t.minCount + 1);
-		final SlayerData task = new SlayerData(t.npcId, t.npcName, count);
-		activeTasks.put(player.getUsernameHash(), task);
-		return task;
+	// -- XP --
+
+	public static int getXp(final Player player) {
+		return player.getCache().hasKey(KEY_XP) ? player.getCache().getInt(KEY_XP) : 0;
 	}
 
+	/** Adds xp and returns the new total. */
+	public static int addXp(final Player player, final int xp) {
+		final int total = getXp(player) + xp;
+		player.getCache().set(KEY_XP, total);
+		return total;
+	}
+
+	// -- Tasks --
+
 	public static SlayerData getActiveTask(final Player player) {
-		return activeTasks.get(player.getUsernameHash());
+		if (!player.getCache().hasKey(KEY_TASK_NPC)) {
+			return null;
+		}
+		return new SlayerData(
+			player.getCache().getInt(KEY_TASK_NPC),
+			player.getCache().getString(KEY_TASK_NAME),
+			player.getCache().getInt(KEY_TASK_TOTAL),
+			player.getCache().getInt(KEY_TASK_REMAINING)
+		);
+	}
+
+	public static SlayerData assignRandomTask(final Player player) {
+		final TaskTemplate t = TASK_POOL[rng.nextInt(TASK_POOL.length)];
+		final int total = t.minCount + rng.nextInt(t.maxCount - t.minCount + 1);
+		player.getCache().set(KEY_TASK_NPC, t.npcId);
+		player.getCache().store(KEY_TASK_NAME, t.npcName);
+		player.getCache().set(KEY_TASK_TOTAL, total);
+		player.getCache().set(KEY_TASK_REMAINING, total);
+		return new SlayerData(t.npcId, t.npcName, total, total);
 	}
 
 	public static void clearTask(final Player player) {
-		activeTasks.remove(player.getUsernameHash());
+		player.getCache().remove(KEY_TASK_NPC, KEY_TASK_NAME, KEY_TASK_TOTAL, KEY_TASK_REMAINING);
 	}
 
-	/** Returns true if the kill counted toward the player's active task. */
+	/** Returns true if the kill counted toward an active task. */
 	public static boolean recordKill(final Player player, final int killedNpcId) {
-		final SlayerData task = activeTasks.get(player.getUsernameHash());
-		if (task == null || task.npcId != killedNpcId || task.isComplete()) {
+		if (!player.getCache().hasKey(KEY_TASK_NPC)) {
 			return false;
 		}
-		task.remaining--;
+		if (player.getCache().getInt(KEY_TASK_NPC) != killedNpcId) {
+			return false;
+		}
+		final int remaining = player.getCache().getInt(KEY_TASK_REMAINING);
+		if (remaining <= 0) {
+			return false;
+		}
+		player.getCache().set(KEY_TASK_REMAINING, remaining - 1);
 		return true;
 	}
 
-	public static int addXp(final Player player, final int xp) {
-		return xpByPlayer.merge(player.getUsernameHash(), xp, Integer::sum);
-	}
+	// -- Levels --
 
-	public static int getXp(final Player player) {
-		return xpByPlayer.getOrDefault(player.getUsernameHash(), 0);
-	}
-
-	/**
-	 * OSRS-style level from XP, computed via the standard XP-per-level table.
-	 * Caps at 99 to match the contract.
-	 */
+	/** OSRS-style XP-per-level table; level capped at 99 per the contract. */
 	public static int getLevel(final int xp) {
 		if (xp <= 0) {
 			return 1;

@@ -84,6 +84,9 @@ public class ServerConfiguration {
 	/** OGRS dev convenience: any session from 127.0.0.1 reports as OWNER for the
 	 *  duration of the session. Set to false in staging/prod. */
 	public boolean LOCALHOST_AUTO_ADMIN;
+	/** OGRS dev convenience: auto-skip tutorial island on login so dev accounts
+	 *  spawn straight at Lumbridge respawn. Set to false in staging/prod. */
+	public boolean SKIP_TUTORIAL_ON_REGISTER;
 
 	// Location of the server conf files.
 	public String CONFIG_DIR = "conf" + File.separator + "server";
@@ -458,6 +461,7 @@ public class ServerConfiguration {
 		PACKET_LIMIT = tryReadInt("packet_limit").orElse(100);
 		IS_LOCALHOST_RESTRICTED = tryReadBool("is_localhost_restricted").orElse(true);
 		LOCALHOST_AUTO_ADMIN = tryReadBool("localhost_auto_admin").orElse(false);
+		SKIP_TUTORIAL_ON_REGISTER = tryReadBool("skip_tutorial_on_register").orElse(false);
 		GLOBAL_MESSAGE_COOLDOWN = tryReadInt("global_message_cooldown").orElse(0);
 		GLOBAL_MESSAGE_TOTAL_LEVEL_REQ = tryReadInt("global_message_total_level_req").orElse(0);
 		GLOBAL_MESSAGE_READING_TOTAL_LEVEL_REQ = tryReadInt("global_message_reading_total_level_req").orElse(0);

@@ -1,25 +1,24 @@
 package com.openrsc.server.plugins.custom.skills.slayer;
 
 /**
- * Active slayer task assigned to a single player.
+ * In-memory snapshot of a player's active slayer task.
  *
- * MVP: in-memory only — does not survive logout. Persistence is the next
- * iteration; once the YAML/SQL content pipeline lands we'll persist active
- * tasks and slayer XP to the players table.
+ * Hydrated from {@link com.openrsc.server.model.Cache} on read; the cache
+ * itself persists to the `player_cache` table automatically when the player
+ * saves. We don't store SlayerData instances anywhere — only the underlying
+ * cache keys.
  */
 public class SlayerData {
 	public final int npcId;
 	public final String npcName;
 	public final int total;
 	public int remaining;
-	public final long assignedAtMillis;
 
-	public SlayerData(final int npcId, final String npcName, final int total) {
+	public SlayerData(final int npcId, final String npcName, final int total, final int remaining) {
 		this.npcId = npcId;
 		this.npcName = npcName;
 		this.total = total;
-		this.remaining = total;
-		this.assignedAtMillis = System.currentTimeMillis();
+		this.remaining = remaining;
 	}
 
 	public boolean isComplete() {
