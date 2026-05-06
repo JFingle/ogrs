@@ -45,8 +45,8 @@ In Phase 1, the server gains a `/reload content` admin command and a file-watche
 
 - File names: `snake_case.yaml`
 - IDs: `snake_case`, scoped (`ogrs_dragon_lich`, not `dragon_lich`, to avoid collisions with future upstream additions)
-- New IDs in additive content **must not** collide with upstream. Reserved ID range for OGRS additions:
-  - NPCs: 5000+
-  - Items: 10000+
+- New IDs in additive content **must not** collide with upstream. Current ID strategy for OGRS additions:
+  - **NPCs: 836+** (sequential after upstream's last custom NPC at id 835)
+  - **Items: next-available** (TBD — Phase 1 audits the item id space)
   - Zone region IDs: 100+
-  - These ranges may shift; check this doc before assigning.
+  - **Why sequential, not high-range?** OpenRSC's `EntityHandler.getNpcDef(int)` indexes a `List<NPCDef>` by id. Sparse ids (e.g., 5000) return null → NPEs in spawn code. Phase 1 plans a `HashMap<Integer, NPCDef>` refactor that lets us claim a high reserved range (5000+) safely; until then we use sequential ids starting at 836.

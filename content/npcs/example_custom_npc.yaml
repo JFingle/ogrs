@@ -2,7 +2,7 @@
 # Until the YAML loader is wired up, real custom NPCs go in
 # server/conf/server/defs/NpcDefsCustom.json (legacy JSON format).
 
-id: 5000
+id: 836
 ogrs_id: ogrs_grizzled_traveler
 name: Grizzled Traveler
 description: A weathered figure who has clearly seen too much.

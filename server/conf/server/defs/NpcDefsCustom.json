@@ -1681,7 +1681,7 @@
   },
   {
     "_comment": "OGRS additions begin here. Reserved id range: 5000+",
-    "id": 5000,
+    "id": 836,
     "name": "Grizzled Traveler",
     "description": "A weathered figure who has clearly seen too much.",
     "command": "Talk-to",

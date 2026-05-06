@@ -239,6 +239,10 @@ public final class WorldPopulator {
 					&& getWorld().getServer().getConfig().WANT_FIXED_BROKEN_MECHANICS) {
 					loadNpcLocs(getWorld().getServer().getConfig().CONFIG_DIR + "/defs/locs/NpcLocsDiscontinued.json");
 				}
+				// OGRS additive NPC spawns — always loaded. New OGRS NPCs (id 5000+)
+				// are placed via this file, separate from upstream's authentic spawns
+				// so upstream syncs don't conflict.
+				loadNpcLocs(getWorld().getServer().getConfig().CONFIG_DIR + "/defs/locs/NpcLocsCustom.json");
 				if (getWorld().getServer().getConfig().LOCATION_DATA == 4) {
 					if (getWorld().getServer().getConfig().WANT_PK_BOTS) {
 						loadNpcLocs(getWorld().getServer().getConfig().CONFIG_DIR + "/defs/locs/NpcLocsPkBots.json");

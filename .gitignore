@@ -41,6 +41,12 @@ server/auctionhouse.json
 server/avatars/
 server/inc/databases/
 
+# Runtime-generated client state.
+client/Cache/discord_inuse.txt
+client/Cache/hideIp.txt
+client/Cache/uid.dat
+client/Open_RSC_Client.jar
+
 # Ant build outputs (in addition to *.jar above — these are at server root).
 server/core.jar
 server/plugins.jar
