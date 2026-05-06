@@ -145,6 +145,8 @@ public class Config {
 	public static boolean S_WANT_HARVESTING = false;
 	/** OGRS additive skill — Slayer. Mirrors server's WANT_SLAYER flag. */
 	public static boolean S_WANT_SLAYER = false;
+	/** OGRS additive skill — Farming. Mirrors server's WANT_FARMING flag. */
+	public static boolean S_WANT_FARMING = false;
 	public static boolean S_FEATURES_SLEEP = true;
 	public static boolean S_WANT_EXTENDED_CATS_BEHAVIOR = false;
 	public static boolean S_WANT_CERT_AS_NOTES = false;

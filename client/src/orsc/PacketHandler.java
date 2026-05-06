@@ -946,7 +946,7 @@ public class PacketHandler {
 		int wantBankPresets, wantParties, miningRocksExtended, movePerFrame, wantLeftclickWebs, npcKillCounters;
 		int wantCustomUI, wantGlobalFriend, characterCreationMode, skillingExpRate, wantHarvesting, hideLoginBox;
 		int globalFriendChat, wantRightClickTrade, featuresSleep, wantExtendedCatsBehavior, wantCertAsNotes, wantOpenPkPoints, openPkPointsToGpRatio, wantOpenPkPresets;
-		int disableMinimapRotation, allowBeardedLadies, prideMonth, groundItemNames, wantNatureRuneProtection, wantSlayer;
+		int disableMinimapRotation, allowBeardedLadies, prideMonth, groundItemNames, wantNatureRuneProtection, wantSlayer, wantFarming;
 
 		String logoSpriteID;
 
@@ -1042,6 +1042,7 @@ public class PacketHandler {
 			groundItemNames = this.getClientStream().getUnsignedByte(); // 89
 			wantNatureRuneProtection = this.getClientStream().getUnsignedByte(); // 90
 			wantSlayer = this.getClientStream().getUnsignedByte(); // 91 (OGRS additive skill)
+			wantFarming = this.getClientStream().getUnsignedByte(); // 92 (OGRS additive skill)
 		} else {
 			serverName = packetsIncoming.readString(); // 1
 			serverNameWelcome = packetsIncoming.readString(); // 2
@@ -1134,6 +1135,7 @@ public class PacketHandler {
 			groundItemNames = packetsIncoming.getUnsignedByte(); // 89
 			wantNatureRuneProtection = packetsIncoming.getUnsignedByte(); // 90
 			wantSlayer = packetsIncoming.getUnsignedByte(); // 91 (OGRS additive skill)
+			wantFarming = packetsIncoming.getUnsignedByte(); // 92 (OGRS additive skill)
 		}
 
 		if (Config.DEBUG) {
@@ -1228,7 +1230,8 @@ public class PacketHandler {
 					"\nRSA_MODULUS " + MiscFunctions.RSA_MODULUS + // 88
 					"\nS_GROUND_ITEM_NAMES " + groundItemNames + // 89
 					"\nS_WANT_NATURE_RUNE_PROTECTION " + wantNatureRuneProtection + // 90
-					"\nS_WANT_SLAYER " + wantSlayer // 91 (OGRS)
+					"\nS_WANT_SLAYER " + wantSlayer + // 91 (OGRS)
+					"\nS_WANT_FARMING " + wantFarming // 92 (OGRS)
 			);
 		}
 
@@ -1325,6 +1328,7 @@ public class PacketHandler {
 		props.setProperty("S_GROUND_ITEM_NAMES", groundItemNames == 1 ? "true" : "false"); // 89
 		props.setProperty("S_WANT_NATURE_RUNE_PROTECTION", wantNatureRuneProtection == 1 ? "true" : "false"); // 90
 		props.setProperty("S_WANT_SLAYER", wantSlayer == 1 ? "true" : "false"); // 91 (OGRS)
+		props.setProperty("S_WANT_FARMING", wantFarming == 1 ? "true" : "false"); // 92 (OGRS)
 		Config.updateServerConfiguration(props);
 
 		mc.authenticSettings = !(

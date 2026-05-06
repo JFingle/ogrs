@@ -185,6 +185,10 @@ public class ServerConfiguration {
 	 *  XP routing, and master/task plumbing. Disable on worlds that don't want
 	 *  Slayer at all (e.g. strict-preservation deploys). */
 	public boolean WANT_SLAYER;
+	/** OGRS additive skill: enable Farming. Loaded via content/skills/farming.yaml.
+	 *  Plant/harvest mechanics are separate work; this flag just registers the
+	 *  skill so XP/levels/DB column exist. */
+	public boolean WANT_FARMING;
 	public boolean WANT_CUSTOM_LEATHER;
 	public boolean WANT_BETTER_JEWELRY_CRAFTING;
 	public boolean MORE_SHAFTS_PER_BETTER_LOG;
@@ -630,6 +634,7 @@ public class ServerConfiguration {
 		WANT_RUNECRAFT = tryReadBool("want_runecraft").orElse(false);
 		WANT_HARVESTING = tryReadBool("want_harvesting").orElse(false);
 		WANT_SLAYER = tryReadBool("want_slayer").orElse(false);
+		WANT_FARMING = tryReadBool("want_farming").orElse(false);
 		WANT_CUSTOM_LEATHER = tryReadBool("want_custom_leather").orElse(false);
 		WANT_CUSTOM_LANDSCAPE = tryReadBool("custom_landscape").orElse(false);
 		WANT_EQUIPMENT_TAB = tryReadBool("want_equipment_tab").orElse(false);

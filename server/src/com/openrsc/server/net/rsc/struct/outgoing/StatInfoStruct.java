@@ -128,6 +128,11 @@ public class StatInfoStruct  extends AbstractStruct<OpcodeOut> {
 	public int maxSlayer = 1;
 	public int experienceSlayer;
 
+	// OGRS additive skill — gated by WANT_FARMING on the world.
+	public int currentFarming = 1;
+	public int maxFarming = 1;
+	public int experienceFarming;
+
 	public int questPoints;
 	public int computedInfluence = 1; // computed from quest points
 	public int computedExperienceInfluence; // computed from quest points (based on exp curve)

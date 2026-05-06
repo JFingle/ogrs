@@ -241,6 +241,9 @@ public class PayloadCustomGenerator implements PayloadGenerator<OpcodeOut> {
 					if (player.getConfig().WANT_SLAYER) {
 						builder.writeByte((byte) si.currentSlayer);
 					}
+					if (player.getConfig().WANT_FARMING) {
+						builder.writeByte((byte) si.currentFarming);
+					}
 
 					// 18 skills minimum - max level
 					builder.writeByte((byte) si.maxAttack);
@@ -270,6 +273,9 @@ public class PayloadCustomGenerator implements PayloadGenerator<OpcodeOut> {
 					if (player.getConfig().WANT_SLAYER) {
 						builder.writeByte((byte) si.maxSlayer);
 					}
+					if (player.getConfig().WANT_FARMING) {
+						builder.writeByte((byte) si.maxFarming);
+					}
 
 					// 18 skills minimum - experiences
 					builder.writeInt(si.experienceAttack);
@@ -298,6 +304,9 @@ public class PayloadCustomGenerator implements PayloadGenerator<OpcodeOut> {
 					}
 					if (player.getConfig().WANT_SLAYER) {
 						builder.writeInt(si.experienceSlayer);
+					}
+					if (player.getConfig().WANT_FARMING) {
+						builder.writeInt(si.experienceFarming);
 					}
 
 					builder.writeByte((byte) si.questPoints);

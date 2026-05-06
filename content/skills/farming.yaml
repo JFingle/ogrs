@@ -1,0 +1,30 @@
+# OGRS skill: Farming
+#
+# Loaded by SkillsContentLoader at server boot. Becomes skill index 19
+# (or wherever the next slot is, depending on which want_flags are enabled).
+#
+# Plant/harvest gameplay mechanics are NOT yet wired up — this file just
+# registers Farming as a real skill so XP/levels/DB column/skill panel
+# display work. `::setstat farming 50` works after this lands.
+#
+# Future content (separate session):
+#   * patch scenery objects (allotment / herb / tree patches) in zones
+#   * seed items in content/items/
+#   * plant/harvest plugins reading from content/skills/farming/crops.yaml
+#     with growth ticks, success rates, XP per stage
+
+id: 19                       # next sequential slot after Thieving (17) +
+                             # Slayer (18, gated on want_slayer). Update if
+                             # other want_flags shift the count.
+
+name: Farming
+short_name: Farming
+long_name: Farming
+
+min_level: 1
+max_level: 99
+exp_curve: ORIGINAL
+
+# Only register the skill when ogrs.conf has want_farming: true. Lets us
+# disable Farming on strict-preservation deploys without removing the YAML.
+want_flag: WANT_FARMING

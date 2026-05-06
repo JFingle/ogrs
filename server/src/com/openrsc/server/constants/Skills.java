@@ -26,7 +26,7 @@ public class Skills {
 		COOKING = "COOKING", WOODCUTTING = "WOODCUTTING", FLETCHING = "FLETCHING", FISHING = "FISHING", FIREMAKING = "FIREMAKING",
 		TAILORING = "TAILORING", CRAFTING = "CRAFTING", SMITHING = "SMITHING", MINING = "MINING", HERBLAW = "HERBLAW", AGILITY = "AGILITY",
 		THIEVING = "THIEVING", RUNECRAFT = "RUNECRAFT", HARVESTING = "HARVESTING", CARPENTRY = "CARPENTRY", INFLUENCE = "INFLUENCE",
-		SLAYER = "SLAYER";
+		SLAYER = "SLAYER", FARMING = "FARMING";
 
 	public HashMap<SkillDef.EXP_CURVE, int[]> experienceCurves;
 	public ArrayList<SkillDef> skills;
@@ -255,12 +255,21 @@ public class Skills {
 				skills.add(new SkillDef("Harvesting", "Harvesting", 1, 99, SkillDef.EXP_CURVE.ORIGINAL, skillIndex++));
 			}
 			if(constants.getServer().getConfig().WANT_SLAYER) {
-				// OGRS additive skill. Stats packet for protocol 177 doesn't yet have a
-				// `currentSlayer` slot, so the skill panel won't display it; XP and levels
-				// are still tracked authentically and persist via the dynamic SQL builder.
-				// Backlog: extend StatInfoStruct + payload generator/parser to surface it
-				// in the skill panel.
+				// OGRS additive skill. Wire format support landed alongside the
+				// skill panel display work — see PayloadCustomGenerator.
 				skills.add(new SkillDef("Slayer", "Slayer", 1, 99, SkillDef.EXP_CURVE.ORIGINAL, skillIndex++));
+			}
+
+			// OGRS content pipeline: pick up any additional skills declared as
+			// content/skills/*.yaml files. Stock skills above stay hardcoded; this
+			// is the additive registry for future skills (Farming, etc.). Each
+			// YAML may have an optional `want_flag` that gates the skill on a
+			// ServerConfiguration boolean field.
+			for (final com.openrsc.server.external.SkillDef yamlSkill :
+					com.openrsc.server.external.SkillsContentLoader.loadAll(
+						constants.getServer().getConfig(), skillIndex)) {
+				skills.add(yamlSkill);
+				skillIndex++;
 			}
 		}
 
