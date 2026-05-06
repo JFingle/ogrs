@@ -9,14 +9,24 @@ import com.openrsc.server.plugins.triggers.KillNpcTrigger;
  * decrement the count and grant XP equal to the NPC's max hits (OSRS
  * convention).
  *
- * blockKillNpc returns false because we are an OBSERVER — we do not want to
- * preempt the default loot drop / death animation. We just listen.
+ * IMPORTANT — blockKillNpc semantics: despite the name and javadoc, this
+ * returning true does NOT skip the NPC's default loot/animation. The NPC's
+ * `killedBy` flow runs the plugin handler first and then continues with
+ * default loot regardless (see Npc.java:322). The dispatcher in
+ * PluginHandler#handlePlugin only invokes our onKillNpc when blockKillNpc
+ * returns true. So we MUST return true to be reached at all.
+ *
+ * We return true only when there's an active slayer task matching the NPC,
+ * so we don't interpose on every kill in the world.
  */
 public class SlayerKillTracker implements KillNpcTrigger {
 
 	@Override
 	public boolean blockKillNpc(final Player player, final Npc n) {
-		return false;
+		if (!player.getCache().hasKey(SlayerService.KEY_TASK_NPC)) {
+			return false;
+		}
+		return player.getCache().getInt(SlayerService.KEY_TASK_NPC) == n.getID();
 	}
 
 	@Override
