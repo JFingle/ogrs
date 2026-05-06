@@ -13,9 +13,8 @@ application {
 
 repositories {
     mavenCentral()
-    maven {
-        url = uri("https://repo.spring.io/libs-release/")
-    }
+    // repo.spring.io/libs-release was decommissioned in 2024.
+    // All deps that were here are on Maven Central now.
 }
 
 sourceSets {
@@ -36,7 +35,8 @@ dependencies {
     implementation "org.gitlab4j:gitlab4j-api:4.12.17"
 
     // Others
-    implementation group: 'mysql', name: 'mysql-connector-j', version: '9.4.0'
+    // mysql-connector-j moved from `mysql` to `com.mysql` groupId in v8.x.
+    implementation group: 'com.mysql', name: 'mysql-connector-j', version: '9.4.0'
 //    implementation "org.mariadb.jdbc:mariadb-java-client:2.1.2"
     implementation "org.xerial:sqlite-jdbc:3.34.0"
 
@@ -64,7 +64,12 @@ dependencies {
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine"
 }
 
-ant.importBuild("build.xml")
+// Gradle 7+ provides its own `clean` via the java plugin; rename the
+// imported Ant `clean` to avoid the duplicate-task error. All other
+// Ant target names pass through untouched (compile_plugins, etc.).
+ant.importBuild('build.xml') { antTargetName ->
+    antTargetName == 'clean' ? 'ant_clean' : antTargetName
+}
 
 run {
     dependsOn compile_plugins
