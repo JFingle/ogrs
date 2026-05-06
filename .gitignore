@@ -45,6 +45,7 @@ server/inc/databases/
 client/Cache/discord_inuse.txt
 client/Cache/hideIp.txt
 client/Cache/uid.dat
+client/Cache/credentials.txt
 client/Open_RSC_Client.jar
 
 # Ant build outputs (in addition to *.jar above — these are at server root).
