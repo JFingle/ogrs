@@ -1,0 +1,23 @@
+# OGRS item: Compost.
+# A handful of well-rotted compost. Future use: spread on a raked patch
+# before planting to boost yield (Layer 3 of the farming roadmap). For
+# now it exists in the world and stocks at Old Wat's so the visual is
+# verified end-to-end through the items pipeline.
+#
+# Sprite reuses upstream's Ashes "heap" visual (items:23), tinted dark
+# loam-brown via picture_mask so it reads as compost rather than firepit
+# leftovers.
+
+id: 1595
+name: Compost
+description: A handful of dark, well-rotted compost. Smells of the earth.
+command: ""
+stackable: false
+untradeable: false
+members_only: false
+noteable: true
+base_price: 8
+picture_mask: 0x4A2E18
+sprite:
+  id: 23
+  location: "items:23"

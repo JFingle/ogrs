@@ -1,0 +1,22 @@
+# OGRS item: Rake.
+# Used to clear weeds and break the soil on an allotment patch before a
+# seedling will take. Required by AllotmentPatch's "Rake" command — without
+# one in inventory, the patch refuses to be tilled.
+#
+# Sprite reuses upstream's Spade visual (items:96), tinted warm-wood ochre
+# via picture_mask so it reads as a different tool at a glance. A custom
+# rake sprite is on the backlog (proper sprite injection into the atlas).
+
+id: 1593
+name: Rake
+description: A wooden-handled iron rake. Pulls weeds and breaks fresh soil.
+command: ""
+stackable: false
+untradeable: false
+members_only: false
+noteable: true
+base_price: 12
+picture_mask: 0xC4895E
+sprite:
+  id: 96
+  location: "items:96"

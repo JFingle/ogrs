@@ -4,12 +4,14 @@ import com.openrsc.server.constants.ItemId;
 import com.openrsc.server.constants.Skill;
 import com.openrsc.server.event.SingleEvent;
 import com.openrsc.server.model.Point;
+import com.openrsc.server.model.container.Item;
 import com.openrsc.server.model.entity.GameObject;
 import com.openrsc.server.model.entity.player.Player;
 import com.openrsc.server.model.world.World;
 import com.openrsc.server.plugins.triggers.OpLocTrigger;
 
 import static com.openrsc.server.plugins.Functions.give;
+import static com.openrsc.server.plugins.Functions.ifheld;
 
 /**
  * OGRS Farming — spatial allotment patch state machine. First piece of
@@ -32,9 +34,10 @@ import static com.openrsc.server.plugins.Functions.give;
  * patches but that depends on the spatial-patch-claim system (memory #14
  * Layer 2 follow-on).
  *
- * Items pipeline isn't built yet, so for MVP "Rake" stands in for the
- * full rake → compost → plant cycle. When the items pipeline lands,
- * this plugin gates on having a Rake + Potato Seed in inventory.
+ * The items pipeline now exists (content/items/*.yaml), so Rake gates
+ * on a Rake + Potato Seed in inventory and consumes one seed per plant.
+ * Compost is a small bonus drop on harvest (4-in-10 odds) — soil-quality
+ * scaling using compost as an input is a Layer-3 follow-on.
  */
 public class AllotmentPatch implements OpLocTrigger {
 
@@ -78,6 +81,18 @@ public class AllotmentPatch implements OpLocTrigger {
 	}
 
 	private void plant(final Player player, final GameObject obj) {
+		// Tool + seed gating. The Rake stays in the inventory (it's a tool —
+		// reusable). The seed is consumed.
+		if (!ifheld(player, ItemId.OGRS_RAKE.id())) {
+			player.message("@yel@You need a rake to break this soil.");
+			return;
+		}
+		if (!ifheld(player, ItemId.OGRS_POTATO_SEED.id())) {
+			player.message("@yel@You'll need some potato seeds before you rake — no point breaking soil with nothing to plant.");
+			return;
+		}
+		player.getCarriedItems().remove(new Item(ItemId.OGRS_POTATO_SEED.id(), 1));
+
 		final World world = player.getWorld();
 		final Point loc = obj.getLocation();
 		final int direction = obj.getDirection();
@@ -117,6 +132,12 @@ public class AllotmentPatch implements OpLocTrigger {
 		world.replaceGameObject(obj, mudpatch);
 
 		give(player, ItemId.POTATO.id(), 1);
+		// 4-in-10 chance to find a clump of compost in the turned soil.
+		// Soil-quality scaling using compost as an input is Layer-3.
+		if (com.openrsc.server.util.rsc.DataConversions.random(1, 10) <= 4) {
+			give(player, ItemId.OGRS_COMPOST.id(), 1);
+			player.message("@gre@A clump of dark compost comes up with the roots.");
+		}
 		// Engine stores XP ×4 (RSC display convention).
 		player.getSkills().addExperience(Skill.FARMING.id(), HARVEST_XP_DISPLAY * 4);
 

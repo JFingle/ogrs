@@ -6,7 +6,7 @@ id: 837
 name: Old Wat
 description: A weathered farmer with sun-creased eyes and dirt under his nails.
 command: ""
-command2: ""
+command2: "Trade"
 stats: { attack: 1, strength: 1, defense: 1, hits: 5, combat_level: 1, ranged: false }
 flags: { members_only: false, attackable: false, aggressive: false }
 respawn_time_ticks: 211

@@ -176,6 +176,7 @@ public final class EntityHandler {
 		//loadItems(getServer().getConfig().CONFIG_DIR + "/defs/ItemDefsExpansion.json");
 		patchItems();
 		customItemConditions();
+		loadOgrsContentItems();
 		LOGGER.info("Loaded " + items.size() + " item definitions");
 
 		doors = (DoorDef[]) getPersistenceManager().load("defs/DoorDef.xml");
@@ -295,6 +296,28 @@ public final class EntityHandler {
 	 * defs. Validates declared ids are sequential after the XML count so
 	 * `gameObjects[id]` lookup keeps working.
 	 */
+	/**
+	 * OGRS content pipeline: read content/items/*.yaml after the upstream JSON
+	 * loaders + customItemConditions and append the parsed defs to the items
+	 * list. Validates that declared ids are a contiguous run after upstream's
+	 * tail so the client {@code getItemDef(id)} bounds-check passes for OGRS
+	 * items without falling through to the Unobtanium default.
+	 */
+	private void loadOgrsContentItems() {
+		try {
+			final OgrsContentItemLoader loader = new OgrsContentItemLoader();
+			final java.util.List<OgrsContentItemLoader.Entry> entries = loader.loadAll();
+			if (entries.isEmpty()) return;
+			OgrsContentItemLoader.requireSequentialAfter(entries, items.size());
+			for (final OgrsContentItemLoader.Entry e : entries) {
+				items.add(e.def);
+			}
+			LOGGER.info("OGRS: appended " + entries.size() + " YAML item def(s) to the registry");
+		} catch (Exception e) {
+			LOGGER.error("OGRS YAML item loader failed", e);
+		}
+	}
+
 	private void loadOgrsContentScenery() {
 		try {
 			final OgrsContentSceneryLoader loader = new OgrsContentSceneryLoader();

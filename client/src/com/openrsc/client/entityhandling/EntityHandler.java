@@ -4135,6 +4135,15 @@ public class EntityHandler {
 		items.add(new ItemDef("Ancient amulet", "A sinister looking amulet", "", 1, 125, "items:125", false, true, 1024, 0x010101, false, true, false, 1591));
 		items.add(new ItemDef("Boomstick", "A 12-Gauge, Double-Barreled Remington", "", 1, 606, "items:606", false, true, 16, 16737817, false, true, false, 1592));
 
+		// OGRS YAML-defined items appended right after upstream's tail. Sequential
+		// ids (1593+) keep the client `getItemDef(id)` size-bounds check happy.
+		// Generated from content/items/*.yaml — regenerate via
+		// `python3 tools/codegen-client-items.py`.
+		{
+			int i = items.size();
+			i = com.openrsc.client.entityhandling.generated.OgrsClientItems.register(items, i);
+		}
+
 		// Custom certificate names
 		if (Config.S_WANT_BANK_NOTES && !Config.S_WANT_CERT_AS_NOTES) {
 			for (int i : new int[]{1543, 1546, 1547, 1548, 1549, 1550, 1551, 1552}) {

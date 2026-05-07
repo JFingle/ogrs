@@ -1653,12 +1653,16 @@ public enum ItemId {
 	FEMALE_GREEN_CHRISTMAS_SWEATER(1589),
 	NECRONOMICON(1590),
 	ZOMBITE_AMULET(1591),
-	BOOMSTICK(1592);
+	BOOMSTICK(1592),
+	// OGRS — content pipeline items. Mirrors content/items/*.yaml.
+	OGRS_RAKE(1593),
+	OGRS_POTATO_SEED(1594),
+	OGRS_COMPOST(1595);
 
 	private int itemId;
 
 	public static final int maxAuthentic = 1289;
-	public static final int maxCustom = 1592;
+	public static final int maxCustom = 1595;
 
 	private static final Map<Integer, ItemId> byId = new HashMap<Integer, ItemId>();
 	private static final Map<String, ItemId> byName = new HashMap<String, ItemId>();

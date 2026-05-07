@@ -27,7 +27,7 @@ public final class OgrsClientNpcs {
 
 		// id 837 — from content/npcs/old_wat_the_farmer.yaml
 		sprites = new int[]{6, 1, 2, -1, -1, -1, -1, -1, -1, -1, -1, -1};
-		npcs.add(new NPCDef("Old Wat", "A weathered farmer with sun-creased eyes and dirt under his nails.", "", 1, 1, 5, 1, false, sprites, 0x6B4226, 0x886600, 0x4F2D1B, 0xC68642, 160, 220, 6, 6, 5, i++));
+		npcs.add(new NPCDef("Old Wat", "A weathered farmer with sun-creased eyes and dirt under his nails.", "", "Trade", 1, 1, 5, 1, false, sprites, 0x6B4226, 0x886600, 0x4F2D1B, 0xC68642, 160, 220, 6, 6, 5, i++));
 
 		// id 838 — from content/npcs/edith_the_baker.yaml
 		sprites = new int[]{3, 4, 2, -1, -1, -1, -1, -1, -1, -1, -1, -1};
