@@ -1,0 +1,39 @@
+# OGRS NPC: Old Man Job
+#
+# Mirrors Job (book of Job) — lost everything, kept his integrity, found
+# something deeper than what he lost. In OGRS he sits beneath a tree east of
+# Lumbridge, dust on his clothes, a faint smile. His dialog touches on
+# trials shaping the soul without ever naming the lesson.
+
+id: 839
+name: Old Man Job
+description: Ash on his cloak, calm in his eyes. He looks like he has weathered storms most never see.
+command: ""
+command2: ""
+
+stats:
+  attack: 1
+  strength: 1
+  defense: 1
+  hits: 5
+  combat_level: 1
+  ranged: false
+
+flags:
+  members_only: false
+  attackable: false
+  aggressive: false
+
+respawn_time_ticks: 211
+
+# Bearded old male — sprite 6 head matches Grizzled Traveler.
+sprites: [6, 1, 2, -1, -1, -1, -1, -1, -1, -1, -1, -1]
+
+colors:
+  hair:   0xDDDDDD    # white, weathered
+  top:    0x707070    # ash-grey cloak
+  bottom: 0x4F2D1B    # threadbare brown
+  skin:   0xC68642    # weather-tanned
+
+camera: { x: 160, y: 220 }
+models: { walk: 6, combat: 6, combat_sprite: 5 }

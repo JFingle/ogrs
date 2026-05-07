@@ -1,0 +1,40 @@
+# OGRS NPC: Hannah the Shepherdess
+#
+# First wave of populating Lumbridge with biblical-resonance NPCs (memory
+# project-identity note). Hannah mirrors the biblical Hannah (1 Samuel 1) —
+# barren wife who prayed for a son and was given Samuel.
+# In OGRS she's tending sheep NW of Lumbridge Castle, content. Her dialog
+# references Samuel-the-Scribe (NPC 838) without spelling out the connection.
+
+id: 837
+name: Hannah
+description: A weathered shepherdess. There is a quiet joy about her.
+command: ""
+command2: ""
+
+stats:
+  attack: 1
+  strength: 1
+  defense: 1
+  hits: 5
+  combat_level: 1
+  ranged: false
+
+flags:
+  members_only: false
+  attackable: false
+  aggressive: false
+
+respawn_time_ticks: 211
+
+# Female head, plain shirt + skirt. Head 3 = woman.
+sprites: [3, 4, 2, -1, -1, -1, -1, -1, -1, -1, -1, -1]
+
+colors:
+  hair:   0xA88858    # warm dark blonde
+  top:    0x3A6BA0    # quiet blue dress
+  bottom: 0x6B5230    # earth-brown skirt
+  skin:   0xCC9966    # tanned
+
+camera: { x: 160, y: 220 }
+models: { walk: 6, combat: 6, combat_sprite: 5 }

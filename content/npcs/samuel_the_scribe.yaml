@@ -1,0 +1,39 @@
+# OGRS NPC: Samuel the Scribe
+#
+# Mirrors the biblical Samuel (1 Samuel) — child of a prayer-answered birth,
+# became a wise scribe and seer. In OGRS he's a young scholar near the
+# Lumbridge church. He references his mother Hannah without making the
+# connection explicit; bible-literate players catch it.
+
+id: 838
+name: Samuel
+description: A young scholar with ink-stained fingers. He listens more than he speaks.
+command: ""
+command2: ""
+
+stats:
+  attack: 1
+  strength: 1
+  defense: 1
+  hits: 5
+  combat_level: 1
+  ranged: false
+
+flags:
+  members_only: false
+  attackable: false
+  aggressive: false
+
+respawn_time_ticks: 211
+
+# Young male head, scribe's robe (slot 6 = body overlay). Head 0 = default.
+sprites: [0, 1, 2, -1, -1, -1, -1, -1, -1, -1, -1, -1]
+
+colors:
+  hair:   0x4A2D1B    # dark brown
+  top:    0xE8E4D0    # off-white scribe's robe
+  bottom: 0x6B5230    # plain trousers
+  skin:   0xCC9966
+
+camera: { x: 160, y: 220 }
+models: { walk: 6, combat: 6, combat_sprite: 5 }
