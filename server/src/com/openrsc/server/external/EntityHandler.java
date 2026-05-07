@@ -179,6 +179,11 @@ public final class EntityHandler {
 		loadOgrsContentItems();
 		LOGGER.info("Loaded " + items.size() + " item definitions");
 
+		// OGRS quest YAML must load BEFORE plugin instantiation so that
+		// AbstractOgrsQuest constructors find their metadata. Plugins are
+		// registered later by PluginHandler, after EntityHandler.load().
+		OgrsContentQuestLoader.loadAll();
+
 		doors = (DoorDef[]) getPersistenceManager().load("defs/DoorDef.xml");
 		gameObjects = (GameObjectDef[]) getPersistenceManager().load("defs/GameObjectDef.xml");
 		loadOgrsContentScenery();

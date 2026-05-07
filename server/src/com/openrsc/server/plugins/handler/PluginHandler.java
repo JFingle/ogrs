@@ -68,6 +68,16 @@ public final class PluginHandler implements IPluginHandler {
     public void initPlugins() throws Exception {
         // Iterate over the classes picked up by the class path scan
         for (final Class<?> pluginType : loader.getLoadedClasses()) {
+            // OGRS — skip abstract base classes. Guice's getInstance can't
+            // construct an abstract type; the loader doesn't filter these
+            // (it filters interfaces only at line 116 of PluginJarLoader),
+            // so an abstract class implementing a registry interface (e.g.
+            // QuestInterface) would otherwise blow up plugin init. Concrete
+            // subclasses are still scanned and registered normally.
+            if (java.lang.reflect.Modifier.isAbstract(pluginType.getModifiers())) {
+                continue;
+            }
+
             if (DefaultHandler.class.isAssignableFrom(pluginType) && defaultHandler == null) {
                 defaultHandler = getPluginInstance(pluginType);
                 continue;

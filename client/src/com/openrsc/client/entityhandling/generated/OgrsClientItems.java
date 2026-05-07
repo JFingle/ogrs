@@ -37,6 +37,9 @@ public final class OgrsClientItems {
 		// id 1597 — from content/items/tomato_seed.yaml
 		items.add(new ItemDef("Tomato Seed", "A pinch of tomato seeds. Plant in raked soil and water often.", "", 6, 276, "items:276", true, false, 0, 0xCC3300, false, false, false, i++));
 
+		// id 1598 — from content/items/seed_pouch.yaml
+		items.add(new ItemDef("Seed Pouch", "Old Wat's missing leather pouch. Smells faintly of soil and seed.", "", 1, 25, "items:25", false, false, 0, 0x9C7A4A, false, true, false, i++));
+
 		return i;
 	}
 }

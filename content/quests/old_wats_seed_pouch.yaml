@@ -1,0 +1,34 @@
+# OGRS quest: Old Wat's Missing Seed Pouch.
+#
+# First OGRS quest — small fetch quest gating new content. Tests the
+# whole content/quests/*.yaml pipeline (loader → AbstractOgrsQuest base
+# → concrete OldWatsSeedPouch.java plugin → engine quest stage tracking).
+#
+# Quest id 52 keeps the contiguous-after-upstream constraint that the
+# QuestInfoStruct relies on (struct.questCompleted is sized to the quest
+# count and indexed by quest id; upstream tail is PEELING_THE_ONION = 51).
+
+id: 52
+name: "Old Wat's Missing Seed Pouch"
+quest_points: 1
+members: false
+
+# Stage notes used inside dialog branches (Old Wat re-tells the player
+# what's happening when they re-talk). Surfaced via NPC dialog rather
+# than a separate journal interface — RSC1-era doesn't have one.
+journal:
+  0: "Old Wat in Lumbridge mentioned he's lost his seed pouch — last seen near the goblin camp east of the city."
+  1: "Find Old Wat's seed pouch. The goblins east of Lumbridge have it."
+  2: "I have the pouch. Take it back to Old Wat."
+
+# Dispatched by AbstractOgrsQuest.handleReward. xp.amount is in display
+# units; the engine multiplies by 4 internally. skill names map to the
+# Skill enum (lowercase).
+rewards:
+  xp:
+    - { skill: farming, amount: 250 }
+  items:
+    - { id: 1594, amount: 10 }   # OGRS Potato Seed
+    - { id: 1596, amount: 5 }    # OGRS Onion Seed
+    - { id: 1597, amount: 3 }    # OGRS Tomato Seed
+    - { id: 10,   amount: 100 }  # Coins

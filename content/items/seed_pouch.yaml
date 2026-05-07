@@ -1,0 +1,21 @@
+# OGRS item: Seed Pouch.
+# Quest item for "Old Wat's Missing Seed Pouch" — the goblins east of
+# Lumbridge took it. Drops at 30% chance from a goblin kill while quest
+# stage is active. Old Wat takes it back on completion.
+#
+# Sprite reuses items:25 (a brown leather "key" pouch shape) tinted
+# burlap-tan via picture_mask so it reads as a small drawstring bag.
+
+id: 1598
+name: Seed Pouch
+description: Old Wat's missing leather pouch. Smells faintly of soil and seed.
+command: ""
+stackable: false
+untradeable: true
+members_only: false
+noteable: false
+base_price: 1
+picture_mask: 0x9C7A4A
+sprite:
+  id: 25
+  location: "items:25"
