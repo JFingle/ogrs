@@ -29,6 +29,12 @@ public final class OgrsClientScenery {
 		// id 1298 — from content/scenery/garden_fence.yaml
 		objects.add(new GameObjectDef("Fence", "A rustic wooden fence keeping rabbits out of the rows.", "WalkTo", "Examine", 1, 1, 1, 0, "gnomefence", ++i));
 
+		// id 1299 — from content/scenery/allotment_growing.yaml
+		objects.add(new GameObjectDef("Allotment", "A row of seedlings just breaking the soil. Patience, friend.", "Inspect", "Examine", 1, 1, 1, 0, "dugupsoil1", ++i));
+
+		// id 1300 — from content/scenery/allotment_ready.yaml
+		objects.add(new GameObjectDef("Allotment", "A row of mature potato plants, leaves wide and waxy. They want pulling.", "Harvest", "Examine", 1, 1, 1, 0, "potatoplant", ++i));
+
 		return i;
 	}
 }

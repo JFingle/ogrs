@@ -1,0 +1,13 @@
+# OGRS scenery: Allotment (ready to harvest).
+# Mature stage. Reuses upstream `potatoplant` — full leafy potato plant.
+
+id: 1300
+name: Allotment
+description: A row of mature potato plants, leaves wide and waxy. They want pulling.
+command1: "Harvest"
+command2: "Examine"
+type: 1
+width: 1
+height: 1
+ground_item_var: 0
+model: potatoplant

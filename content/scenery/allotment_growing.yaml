@@ -1,0 +1,15 @@
+# OGRS scenery: Allotment (growing).
+# Mid-stage of a planted patch. Reuses upstream `dugupsoil1` — a small
+# disturbed-earth model that reads as "something is sprouting" without
+# being the full plant yet.
+
+id: 1299
+name: Allotment
+description: A row of seedlings just breaking the soil. Patience, friend.
+command1: "Inspect"
+command2: "Examine"
+type: 1
+width: 1
+height: 1
+ground_item_var: 0
+model: dugupsoil1
