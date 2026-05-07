@@ -3,6 +3,7 @@ package com.openrsc.server.plugins.custom.quests;
 import com.openrsc.server.external.OgrsContentQuestLoader;
 import com.openrsc.server.external.OgrsContentQuestLoader.QuestMetadata;
 import com.openrsc.server.model.entity.player.Player;
+import com.openrsc.server.net.rsc.ActionSender;
 import com.openrsc.server.plugins.QuestInterface;
 
 import static com.openrsc.server.plugins.Functions.give;
@@ -61,8 +62,9 @@ public abstract class AbstractOgrsQuest implements QuestInterface {
 		for (final OgrsContentQuestLoader.ItemReward i : metadata.itemRewards) {
 			give(player, i.itemId, i.amount);
 		}
-		// Quest-points award + the standard "completed" toast.
+		// Quest-points award + the standard "completed" toast + audio fanfare.
 		incQP(player, metadata.questPoints, !player.isUsingClientBeforeQP());
+		ActionSender.sendSound(player, "victory");
 		player.message("@gre@" + metadata.name + " — quest complete!");
 	}
 }

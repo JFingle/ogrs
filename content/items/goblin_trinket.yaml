@@ -1,0 +1,22 @@
+# OGRS item: Goblin Trinket.
+# Junk drop from goblin crates around the camp. Sellable to Old Wat's
+# shop for a few gp (basePrice 5 × sellMod 100 = 5gp). Pure currency
+# sink for now; later: collection turn-in to a NPC, deck of trinkets
+# unlocks something cosmetic.
+#
+# Sprite reuses items:24 (Amulet of GhostSpeak — small pendant shape)
+# tinted dirty-bronze. Backlog: real custom trinket sprite.
+
+id: 1599
+name: Goblin Trinket
+description: A crude bone trinket on twine. Smells faintly of stew.
+command: ""
+stackable: false
+untradeable: false
+members_only: false
+noteable: true
+base_price: 5
+picture_mask: 0xA08060
+sprite:
+  id: 24
+  location: "items:24"

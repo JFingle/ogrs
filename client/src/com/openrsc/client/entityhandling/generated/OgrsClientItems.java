@@ -40,6 +40,12 @@ public final class OgrsClientItems {
 		// id 1598 — from content/items/seed_pouch.yaml
 		items.add(new ItemDef("Seed Pouch", "Old Wat's missing leather pouch. Smells faintly of soil and seed.", "", 1, 25, "items:25", false, false, 0, 0x9C7A4A, false, true, false, i++));
 
+		// id 1599 — from content/items/goblin_trinket.yaml
+		items.add(new ItemDef("Goblin Trinket", "A crude bone trinket on twine. Smells faintly of stew.", "", 5, 24, "items:24", false, false, 0, 0xA08060, false, false, true, i++));
+
+		// id 1600 — from content/items/cracked_shaman_staff.yaml
+		items.add(new ItemDef("Cracked Shaman Staff", "A goblin shaman's staff. The bone tip thrums when held — a small reservoir of channeled life.", "Channel", 1, 91, "items:91", false, false, 0, 0x6B8E5E, false, true, false, i++));
+
 		return i;
 	}
 }

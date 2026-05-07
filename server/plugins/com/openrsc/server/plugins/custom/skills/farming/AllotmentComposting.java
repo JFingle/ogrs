@@ -6,6 +6,7 @@ import com.openrsc.server.model.container.Item;
 import com.openrsc.server.model.entity.GameObject;
 import com.openrsc.server.model.entity.player.Player;
 import com.openrsc.server.model.world.World;
+import com.openrsc.server.net.rsc.ActionSender;
 import com.openrsc.server.plugins.triggers.UseLocTrigger;
 
 /**
@@ -58,6 +59,7 @@ public final class AllotmentComposting implements UseLocTrigger {
 		final int type = obj.getType();
 		final GameObject composted = new GameObject(world, loc, COMPOSTED_BED_ID, direction, type);
 		world.replaceGameObject(obj, composted);
+		ActionSender.sendSound(player, "filljug");
 
 		player.message("@gre@You work compost into the soil. The earth darkens.");
 		player.message("@gre@A seed in this bed will swell well.");

@@ -1,0 +1,23 @@
+# OGRS item: Cracked Shaman Staff.
+# Drops from the Goblin Shaman (NPC 842) at 50% on kill. The staff has
+# a right-click "Channel" verb that triggers a small healing pulse
+# (+5 HP, 30-tick cooldown) with a recharge sound. Cooldown is
+# tracked in player.getCache() under the key "ogrs_shaman_staff_cd".
+#
+# Sprite reuses items:91 (Staff of earth — proper wizard staff shape)
+# tinted bone-grey + green for an ash-and-runes look until the sprite
+# hunt provides a proper shaman-staff art.
+
+id: 1600
+name: Cracked Shaman Staff
+description: A goblin shaman's staff. The bone tip thrums when held — a small reservoir of channeled life.
+command: "Channel"
+stackable: false
+untradeable: true
+members_only: false
+noteable: false
+base_price: 1
+picture_mask: 0x6B8E5E
+sprite:
+  id: 91
+  location: "items:91"
