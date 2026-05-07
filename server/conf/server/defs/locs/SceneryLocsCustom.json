@@ -8,14 +8,28 @@
     { "id": 1296, "pos": { "X": 149, "Y": 651 }, "direction": 0 },
     { "id": 1296, "pos": { "X": 151, "Y": 651 }, "direction": 0 },
 
-    { "_n": "Compost heap — south-east corner, well clear of plot tiles. Compost model is 2x2 so it occupies (153..154, 653..654).",
+    { "_n": "Compost heap — south-east corner outside the fence (model is 2x2, occupies 153..154 / 653..654).",
       "id": 1297, "pos": { "X": 153, "Y": 653 }, "direction": 0 },
 
-    { "_n": "Garden fence — north perimeter only; keeps the hedged look without boxing the player out.",
+    { "_n": "Garden fence — NORTH wall, 5 tiles. Direction 0 = fence runs east-west. Caps the top of the field.",
       "id": 1298, "pos": { "X": 148, "Y": 648 }, "direction": 0 },
     { "id": 1298, "pos": { "X": 149, "Y": 648 }, "direction": 0 },
     { "id": 1298, "pos": { "X": 150, "Y": 648 }, "direction": 0 },
     { "id": 1298, "pos": { "X": 151, "Y": 648 }, "direction": 0 },
-    { "id": 1298, "pos": { "X": 152, "Y": 648 }, "direction": 0 }
+    { "id": 1298, "pos": { "X": 152, "Y": 648 }, "direction": 0 },
+
+    { "_n": "Garden fence — WEST wall, 3 tiles. Direction 1 = fence rotated to run north-south.",
+      "id": 1298, "pos": { "X": 148, "Y": 649 }, "direction": 1 },
+    { "id": 1298, "pos": { "X": 148, "Y": 650 }, "direction": 1 },
+    { "id": 1298, "pos": { "X": 148, "Y": 651 }, "direction": 1 },
+
+    { "_n": "Garden fence — EAST wall, 3 tiles. Direction 1.",
+      "id": 1298, "pos": { "X": 152, "Y": 649 }, "direction": 1 },
+    { "id": 1298, "pos": { "X": 152, "Y": 650 }, "direction": 1 },
+    { "id": 1298, "pos": { "X": 152, "Y": 651 }, "direction": 1 },
+
+    { "_n": "Garden fence — SOUTH stubs framing the entry. 2 tiles on each corner; the middle 3 tiles (149..151, 652) are the open gate the player walks through.",
+      "id": 1298, "pos": { "X": 148, "Y": 652 }, "direction": 0 },
+    { "id": 1298, "pos": { "X": 152, "Y": 652 }, "direction": 0 }
   ]
 }

@@ -48,12 +48,20 @@ public class AllotmentPatch implements OpLocTrigger {
 	static final int[] TOMATO_PAIR = {1304, 1305};
 
 	/** Real-time growth in ticks. 30 ticks at 640ms = ~19 seconds — short
-	 *  enough to test in one session; future Layer-3 soil-quality scaling
-	 *  multiplies this per-patch. */
+	 *  enough to test in one session. Backlog: tune to OSRS-ish (5–20 min
+	 *  per stage) once a per-patch persistence layer lands so the timer
+	 *  survives restarts. Sparky flagged: "seeds grow too fast." */
 	static final int GROWTH_TICKS = 30;
 
 	/** Display XP units per harvest. Engine stores ×4. */
 	private static final int HARVEST_XP_DISPLAY = 8;
+
+	/** Yield ranges per crop (inclusive). OSRS-style: a single Harvest
+	 *  action represents picking the whole row, so the bag fills with a
+	 *  randomised batch rather than one item per click. */
+	private static final int POTATO_MIN_YIELD = 3, POTATO_MAX_YIELD = 6;
+	private static final int ONION_MIN_YIELD  = 3, ONION_MAX_YIELD  = 5;
+	private static final int TOMATO_MIN_YIELD = 3, TOMATO_MAX_YIELD = 5;
 
 	@Override
 	public boolean blockOpLoc(final Player player, final GameObject obj, final String command) {
@@ -90,6 +98,14 @@ public class AllotmentPatch implements OpLocTrigger {
 		return ItemId.NOTHING.id();
 	}
 
+	/** Random yield count for the given ready-state id, inclusive on both ends. */
+	private int rollYield(final int readyId) {
+		if (readyId == POTATO_PAIR[1]) return DataConversions.random(POTATO_MIN_YIELD, POTATO_MAX_YIELD);
+		if (readyId == ONION_PAIR[1])  return DataConversions.random(ONION_MIN_YIELD,  ONION_MAX_YIELD);
+		if (readyId == TOMATO_PAIR[1]) return DataConversions.random(TOMATO_MIN_YIELD, TOMATO_MAX_YIELD);
+		return 1;
+	}
+
 	private void rake(final Player player, final GameObject obj) {
 		if (!ifheld(player, ItemId.OGRS_RAKE.id())) {
 			player.message("@yel@You need a rake to break this soil.");
@@ -117,8 +133,11 @@ public class AllotmentPatch implements OpLocTrigger {
 		world.replaceGameObject(obj, weedy);
 
 		final int cropId = harvestCropId(readyId);
-		if (cropId != ItemId.NOTHING.id()) {
-			give(player, cropId, 1);
+		final int yield = rollYield(readyId);
+		if (cropId != ItemId.NOTHING.id() && yield > 0) {
+			// give() handles non-stackable items by adding `yield` separate
+			// inventory entries, which is what we want for potato/onion/tomato.
+			give(player, cropId, yield);
 		}
 		// 4-in-10 chance: compost clump comes up with the roots.
 		// Layer-3: soil-quality scaling using compost as a planting input.
@@ -126,9 +145,10 @@ public class AllotmentPatch implements OpLocTrigger {
 			give(player, ItemId.OGRS_COMPOST.id(), 1);
 			player.message("@gre@A clump of dark compost comes up with the roots.");
 		}
-		player.getSkills().addExperience(Skill.FARMING.id(), HARVEST_XP_DISPLAY * 4);
-		player.message("@gre@You pull your harvest from the row.");
-		player.message("@gre@+" + HARVEST_XP_DISPLAY + " Farming XP. The bed is overgrown again.");
+		// XP scales with the size of the haul — harder to harvest more.
+		player.getSkills().addExperience(Skill.FARMING.id(), HARVEST_XP_DISPLAY * yield * 4);
+		player.message("@gre@You pull " + yield + " from the row.");
+		player.message("@gre@+" + (HARVEST_XP_DISPLAY * yield) + " Farming XP. The bed is overgrown again.");
 	}
 
 	/**
