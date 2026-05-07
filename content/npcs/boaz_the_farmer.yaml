@@ -1,0 +1,13 @@
+# Ambient NPC — farmer of the Lumbridge fields. cf. Boaz (Ruth).
+id: 850
+name: Boaz
+description: A farmer with strong forearms and a sun-creased face.
+command: ""
+command2: ""
+stats: { attack: 1, strength: 1, defense: 1, hits: 5, combat_level: 1, ranged: false }
+flags: { members_only: false, attackable: false, aggressive: false }
+respawn_time_ticks: 211
+sprites: [6, 1, 2, -1, -1, -1, -1, -1, -1, -1, -1, -1]
+colors: { hair: 0x6B4226, top: 0x886600, bottom: 0x4F2D1B, skin: 0xC68642 }
+camera: { x: 160, y: 220 }
+models: { walk: 6, combat: 6, combat_sprite: 5 }

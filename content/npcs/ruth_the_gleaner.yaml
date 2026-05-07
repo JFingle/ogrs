@@ -1,0 +1,13 @@
+# Ambient NPC — gleaning the field's edge. cf. Ruth (Ruth 2).
+id: 849
+name: Ruth
+description: A young woman gathering what the harvesters left behind.
+command: ""
+command2: ""
+stats: { attack: 1, strength: 1, defense: 1, hits: 5, combat_level: 1, ranged: false }
+flags: { members_only: false, attackable: false, aggressive: false }
+respawn_time_ticks: 211
+sprites: [3, 4, 2, -1, -1, -1, -1, -1, -1, -1, -1, -1]
+colors: { hair: 0x4A2D1B, top: 0x886600, bottom: 0x6B4226, skin: 0xCC9966 }
+camera: { x: 160, y: 220 }
+models: { walk: 6, combat: 6, combat_sprite: 5 }
