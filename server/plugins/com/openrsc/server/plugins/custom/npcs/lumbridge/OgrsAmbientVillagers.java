@@ -23,6 +23,11 @@ public class OgrsAmbientVillagers implements TalkNpcTrigger {
 	@Override
 	public boolean blockTalkNpc(final Player player, final Npc n) {
 		final int id = n.getID();
+		// Boaz (850) was promoted to a dedicated dialog plugin
+		// (BoazTheFarmer) — first Farming-skill gameplay master.
+		// Two trigger plugins firing on the same NPC would dispatch both
+		// onTalkNpc methods; explicitly carve him out here.
+		if (id == 850) return false;
 		return id >= MIN_ID && id <= MAX_ID;
 	}
 
