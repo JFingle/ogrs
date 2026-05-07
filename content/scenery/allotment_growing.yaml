@@ -8,7 +8,7 @@ name: Allotment
 description: A row of seedlings just breaking the soil. Patience, friend.
 command1: "Inspect"
 command2: "Examine"
-type: 1
+type: 0
 width: 1
 height: 1
 ground_item_var: 0

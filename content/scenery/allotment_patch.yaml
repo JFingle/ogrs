@@ -1,21 +1,21 @@
-# OGRS scenery: Allotment Patch
+# OGRS scenery: Allotment Patch (empty / weedy state).
 #
-# Reuses the upstream "wheat" model for MVP — no new 3D asset required.
-# Will be the first interactable plot for the real spatial farming system
-# (Layer 2 of memory item #14). Right-click "Rake" → triggers the rake
-# action in OpScenery handler (next session); "Examine" gives flavor.
+# Empty state shows the patch overgrown — a small fern stands in for
+# "weeds you have to rake out" until a custom 3D weed-on-dirt model
+# lands. type 0 keeps it laid flat-ground style instead of acting like
+# a wall (fix from the first pass — type 1 made the patch render as a
+# vertical fence-shaped sprite).
 #
-# Until backlog #9 lifts the id-as-index constraint, scenery ids must be
-# sequential after the upstream GameObjectDef.xml count (1296). Verified
-# upstream ends at 1295.
+# Lifecycle: this state → Rake → swap to allotment_growing (1299) →
+# allotment_ready (1300) → Harvest swaps back here (weeds regrow).
 
 id: 1296
-name: Allotment Patch
-description: A patch of cleared earth. It would take well to a row of seedlings.
+name: Weedy Allotment
+description: An overgrown row, choked with weeds and stray grass. Time to break it.
 command1: "Rake"
 command2: "Examine"
-type: 1                # 1 = traversal-blocking; player can stand adjacent
+type: 0                # 0 = flat ground decoration (lays on the tile)
 width: 1
 height: 1
 ground_item_var: 0
-model: mudpatch        # upstream dirt/mud patch — proper visual for a fresh allotment
+model: smallfern       # small leafy plant — reads as "weeds growing on bare earth"

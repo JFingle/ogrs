@@ -21,7 +21,7 @@ public final class OgrsClientScenery {
 	public static int register(final ArrayList<GameObjectDef> objects, int i) {
 
 		// id 1296 — from content/scenery/allotment_patch.yaml
-		objects.add(new GameObjectDef("Allotment Patch", "A patch of cleared earth. It would take well to a row of seedlings.", "Rake", "Examine", 1, 1, 1, 0, "mudpatch", ++i));
+		objects.add(new GameObjectDef("Weedy Allotment", "An overgrown row, choked with weeds and stray grass. Time to break it.", "Rake", "Examine", 0, 1, 1, 0, "smallfern", ++i));
 
 		// id 1297 — from content/scenery/compost_heap.yaml
 		objects.add(new GameObjectDef("Compost Heap", "A heap of well-rotted plant matter, ready to feed a garden.", "Take", "Examine", 1, 1, 1, 0, "compostbin", ++i));
@@ -30,10 +30,10 @@ public final class OgrsClientScenery {
 		objects.add(new GameObjectDef("Fence", "A rustic wooden fence keeping rabbits out of the rows.", "WalkTo", "Examine", 1, 1, 1, 0, "gnomefence", ++i));
 
 		// id 1299 — from content/scenery/allotment_growing.yaml
-		objects.add(new GameObjectDef("Allotment", "A row of seedlings just breaking the soil. Patience, friend.", "Inspect", "Examine", 1, 1, 1, 0, "dugupsoil1", ++i));
+		objects.add(new GameObjectDef("Allotment", "A row of seedlings just breaking the soil. Patience, friend.", "Inspect", "Examine", 0, 1, 1, 0, "dugupsoil1", ++i));
 
 		// id 1300 — from content/scenery/allotment_ready.yaml
-		objects.add(new GameObjectDef("Allotment", "A row of mature potato plants, leaves wide and waxy. They want pulling.", "Harvest", "Examine", 1, 1, 1, 0, "potatoplant", ++i));
+		objects.add(new GameObjectDef("Allotment", "A row of mature potato plants, leaves wide and waxy. They want pulling.", "Harvest", "Examine", 0, 1, 1, 0, "potatoplant", ++i));
 
 		return i;
 	}

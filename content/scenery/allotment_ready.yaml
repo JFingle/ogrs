@@ -6,7 +6,7 @@ name: Allotment
 description: A row of mature potato plants, leaves wide and waxy. They want pulling.
 command1: "Harvest"
 command2: "Examine"
-type: 1
+type: 0
 width: 1
 height: 1
 ground_item_var: 0
