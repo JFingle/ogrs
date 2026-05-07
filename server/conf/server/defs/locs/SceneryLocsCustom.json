@@ -47,6 +47,12 @@
     { "id": 1310, "pos": { "X": 213, "Y": 493 }, "direction": 0 },
 
     { "_n": "Secondary firepit on the south side of the camp.",
-      "id": 1307, "pos": { "X": 213, "Y": 503 }, "direction": 0 }
+      "id": 1307, "pos": { "X": 213, "Y": 503 }, "direction": 0 },
+
+    { "_n": "Goblin Iron Veins — half-worked iron deposits scattered on the camp's rocky edges. Mining lvl 15 + pickaxe; respawn ~10s. Custom OgrsGoblinVein plugin handles them.",
+      "id": 1311, "pos": { "X": 204, "Y": 491 }, "direction": 0 },
+    { "id": 1311, "pos": { "X": 217, "Y": 493 }, "direction": 0 },
+    { "id": 1311, "pos": { "X": 203, "Y": 506 }, "direction": 0 },
+    { "id": 1311, "pos": { "X": 216, "Y": 508 }, "direction": 0 }
   ]
 }

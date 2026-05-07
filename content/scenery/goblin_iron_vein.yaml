@@ -1,0 +1,19 @@
+# OGRS scenery: Goblin Iron Vein.
+# Mineable rock outcrop in the goblin camp. The goblins picked the easy
+# iron and left these veins half-worked — the player can finish the job.
+#
+# Mining handled by OgrsGoblinVein OpLoc plugin, NOT by upstream's
+# ObjectMining.xml lookup (we don't extend that map at runtime). Custom
+# logic: pickaxe required + Mining lvl 15 + roll, gives Iron Ore +
+# 35 Mining XP, swaps to Depleted Vein (1312) for ~10s respawn.
+
+id: 1311
+name: Goblin Iron Vein
+description: A vein of iron ore in dark rock, half-worked by clumsy goblin tools.
+command1: "Mine"
+command2: "Prospect"
+type: 1
+width: 1
+height: 1
+ground_item_var: 0
+model: rocks2

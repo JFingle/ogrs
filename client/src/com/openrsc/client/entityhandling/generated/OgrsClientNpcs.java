@@ -47,7 +47,7 @@ public final class OgrsClientNpcs {
 
 		// id 842 — from content/npcs/goblin_shaman.yaml
 		sprites = new int[]{142, 140, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
-		npcs.add(new NPCDef("Goblin Shaman", "A taller, dark-robed goblin with rune-scratched bones around its neck.", "", 30, 25, 35, 25, false, sprites, 0x000000, 0x000000, 0x000000, 0x000000, 245, 230, 9, 8, 5, i++));
+		npcs.add(new NPCDef("Goblin Shaman", "A taller, dark-robed goblin with rune-scratched bones around its neck.", "", "Pickpocket", 30, 25, 35, 25, false, sprites, 0x000000, 0x000000, 0x000000, 0x000000, 245, 230, 9, 8, 5, i++));
 
 		return i;
 	}

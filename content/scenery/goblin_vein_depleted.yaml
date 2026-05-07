@@ -1,0 +1,15 @@
+# OGRS scenery: Goblin Iron Vein (depleted).
+# Post-mine state. Same rock model as the active vein but with no Mine
+# verb — just a flavor message on Examine. Auto-swaps back to 1311
+# after the respawn delay scheduled by OgrsGoblinVein.
+
+id: 1312
+name: Depleted Vein
+description: A spent rock outcrop. Give it a few moments — the iron will catch up.
+command1: "WalkTo"
+command2: "Examine"
+type: 1
+width: 1
+height: 1
+ground_item_var: 0
+model: rocks1

@@ -16,8 +16,8 @@
 id: 842
 name: Goblin Shaman
 description: A taller, dark-robed goblin with rune-scratched bones around its neck.
-command: ""
-command2: ""
+command: ""           # left-click defaults to attack (aggressive)
+command2: "Pickpocket"  # right-click to nick a pocket — handled by upstream Thieving plugin via the Pickpocket enum
 stats: { attack: 30, strength: 25, defense: 25, hits: 35, combat_level: 25, ranged: false }
 flags: { members_only: false, attackable: true, aggressive: true }
 respawn_time_ticks: 211

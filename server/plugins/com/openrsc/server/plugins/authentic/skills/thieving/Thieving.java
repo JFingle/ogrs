@@ -797,7 +797,18 @@ public class Thieving implements OpLocTrigger, OpNpcTrigger, OpBoundTrigger {
 			new LootItem(ItemId.GOLD.id(), 1, 5),
 			new LootItem(ItemId.DEATH_RUNE.id(), 2, 10),
 			new LootItem(ItemId.BLOOD_RUNE.id(), 1, 5),
-			new LootItem(ItemId.DIAMOND.id(), 1, 1));
+			new LootItem(ItemId.DIAMOND.id(), 1, 1)),
+		// OGRS — Goblin Shaman is hostile; left-click attacks, right-click
+		// "Pickpocket" routes here. Loot keyed off the camp + quest content
+		// we already shipped (trinket, occasional staff scrap = compost as
+		// a stand-in junk item until a dedicated 'staff splinter' lands).
+		GOBLIN_SHAMAN(15, 80, "Hands off, fleshling!",
+			new LootItem(ItemId.COINS.id(), 8, 35),
+			new LootItem(ItemId.COINS.id(), 15, 20),
+			new LootItem(ItemId.OGRS_GOBLIN_TRINKET.id(), 1, 18),
+			new LootItem(ItemId.BONES.id(), 1, 14),
+			new LootItem(ItemId.OGRS_COMPOST.id(), 1, 10),       // 'a clump of stew-soaked compost from a robe pocket'
+			new LootItem(ItemId.OGRS_CRACKED_SHAMAN_STAFF.id(), 1, 3));
 
 		private final ArrayList<LootItem> lootTable;
 		private final int xp;

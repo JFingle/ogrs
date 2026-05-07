@@ -65,6 +65,12 @@ public final class OgrsClientScenery {
 		// id 1310 — from content/scenery/goblin_crate.yaml
 		objects.add(new GameObjectDef("Goblin Crate", "A battered wooden crate, smelling of damp grain and worse.", "WalkTo", "Search", 1, 1, 1, 0, "crate", ++i));
 
+		// id 1311 — from content/scenery/goblin_iron_vein.yaml
+		objects.add(new GameObjectDef("Goblin Iron Vein", "A vein of iron ore in dark rock, half-worked by clumsy goblin tools.", "Mine", "Prospect", 1, 1, 1, 0, "rocks2", ++i));
+
+		// id 1312 — from content/scenery/goblin_vein_depleted.yaml
+		objects.add(new GameObjectDef("Depleted Vein", "A spent rock outcrop. Give it a few moments — the iron will catch up.", "WalkTo", "Examine", 1, 1, 1, 0, "rocks1", ++i));
+
 		return i;
 	}
 }
