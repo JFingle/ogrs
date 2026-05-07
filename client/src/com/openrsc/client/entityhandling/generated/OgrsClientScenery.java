@@ -30,10 +30,25 @@ public final class OgrsClientScenery {
 		objects.add(new GameObjectDef("Fence", "A rustic wooden fence keeping rabbits out of the rows.", "WalkTo", "Examine", 1, 1, 1, 0, "gnomefence", ++i));
 
 		// id 1299 — from content/scenery/allotment_growing.yaml
-		objects.add(new GameObjectDef("Allotment", "A row of seedlings just breaking the soil. Patience, friend.", "Inspect", "Examine", 0, 1, 1, 0, "dugupsoil1", ++i));
+		objects.add(new GameObjectDef("Allotment", "Potato seedlings just breaking the soil. Patience, friend.", "Inspect", "Examine", 0, 1, 1, 0, "dugupsoil1", ++i));
 
 		// id 1300 — from content/scenery/allotment_ready.yaml
 		objects.add(new GameObjectDef("Allotment", "A row of mature potato plants, leaves wide and waxy. They want pulling.", "Harvest", "Examine", 0, 1, 1, 0, "potatoplant", ++i));
+
+		// id 1301 — from content/scenery/allotment_empty_bed.yaml
+		objects.add(new GameObjectDef("Allotment Bed", "Bare earth, freshly turned. It's ready for a seed.", "", "Inspect", 0, 1, 1, 0, "mudpatch", ++i));
+
+		// id 1302 — from content/scenery/allotment_growing_onion.yaml
+		objects.add(new GameObjectDef("Allotment", "Onion seedlings just breaking the soil. Small, pungent green tips.", "Inspect", "Examine", 0, 1, 1, 0, "dugupsoil2", ++i));
+
+		// id 1303 — from content/scenery/allotment_ready_onion.yaml
+		objects.add(new GameObjectDef("Allotment", "A row of mature onion plants, leaves drooping with weight. They want pulling.", "Harvest", "Examine", 0, 1, 1, 0, "onionplant", ++i));
+
+		// id 1304 — from content/scenery/allotment_growing_tomato.yaml
+		objects.add(new GameObjectDef("Allotment", "Tomato seedlings reaching for the sun. Tiny green nubs on slim stems.", "Inspect", "Examine", 0, 1, 1, 0, "dugupsoil3", ++i));
+
+		// id 1305 — from content/scenery/allotment_ready_tomato.yaml
+		objects.add(new GameObjectDef("Allotment", "Plump red tomatoes hanging heavy on the vines. Ready to pick.", "Harvest", "Examine", 0, 1, 1, 0, "tomatoplant", ++i));
 
 		return i;
 	}

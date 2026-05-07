@@ -1,0 +1,14 @@
+# OGRS scenery: Allotment (tomato ready).
+# Mature stage for tomatoes. Reuses upstream `tomatoplant`. Harvest
+# swaps back to weedy_allotment (1296) and grants 1× Tomato + Farming XP.
+
+id: 1305
+name: Allotment
+description: Plump red tomatoes hanging heavy on the vines. Ready to pick.
+command1: "Harvest"
+command2: "Examine"
+type: 0
+width: 1
+height: 1
+ground_item_var: 0
+model: tomatoplant

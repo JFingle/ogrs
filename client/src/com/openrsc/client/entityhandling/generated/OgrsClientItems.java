@@ -31,6 +31,12 @@ public final class OgrsClientItems {
 		// id 1595 — from content/items/compost.yaml
 		items.add(new ItemDef("Compost", "A handful of dark, well-rotted compost. Smells of the earth.", "", 8, 23, "items:23", false, false, 0, 0x4A2E18, false, false, true, i++));
 
+		// id 1596 — from content/items/onion_seed.yaml
+		items.add(new ItemDef("Onion Seed", "A handful of small, papery onion seeds. Sow into raked soil.", "", 4, 276, "items:276", true, false, 0, 0xE6BE8A, false, false, false, i++));
+
+		// id 1597 — from content/items/tomato_seed.yaml
+		items.add(new ItemDef("Tomato Seed", "A pinch of tomato seeds. Plant in raked soil and water often.", "", 6, 276, "items:276", true, false, 0, 0xCC3300, false, false, false, i++));
+
 		return i;
 	}
 }

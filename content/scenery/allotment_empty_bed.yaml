@@ -1,0 +1,20 @@
+# OGRS scenery: Allotment Bed (empty / raked).
+#
+# Post-rake, pre-planting state. The bed is a flat earth tile waiting
+# for a seed to land on it. No left-click verb on purpose — the player
+# uses an inventory seed ON this tile (UseLocTrigger) to plant. The
+# right-click "Inspect" gives a flavor line for clarity.
+#
+# Lifecycle: 1296 Weedy → Rake → 1301 (this) → Use Seed → 1299/1302/1304
+# (potato/onion/tomato growing) → ready → Harvest → 1296 Weedy.
+
+id: 1301
+name: Allotment Bed
+description: Bare earth, freshly turned. It's ready for a seed.
+command1: ""
+command2: "Inspect"
+type: 0
+width: 1
+height: 1
+ground_item_var: 0
+model: mudpatch

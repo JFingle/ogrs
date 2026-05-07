@@ -1,0 +1,18 @@
+# OGRS item: Tomato Seed.
+# Stackable. Use on an Empty Allotment Bed (1301) to plant tomatoes.
+# Sprite reuses items:276 with a tomato-red tint so it reads distinct
+# from Potato (ochre) and Onion (pale flesh).
+
+id: 1597
+name: Tomato Seed
+description: A pinch of tomato seeds. Plant in raked soil and water often.
+command: ""
+stackable: true
+untradeable: false
+members_only: false
+noteable: false
+base_price: 6
+picture_mask: 0xCC3300
+sprite:
+  id: 276
+  location: "items:276"

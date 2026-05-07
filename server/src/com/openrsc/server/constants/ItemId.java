@@ -1657,12 +1657,14 @@ public enum ItemId {
 	// OGRS — content pipeline items. Mirrors content/items/*.yaml.
 	OGRS_RAKE(1593),
 	OGRS_POTATO_SEED(1594),
-	OGRS_COMPOST(1595);
+	OGRS_COMPOST(1595),
+	OGRS_ONION_SEED(1596),
+	OGRS_TOMATO_SEED(1597);
 
 	private int itemId;
 
 	public static final int maxAuthentic = 1289;
-	public static final int maxCustom = 1595;
+	public static final int maxCustom = 1597;
 
 	private static final Map<Integer, ItemId> byId = new HashMap<Integer, ItemId>();
 	private static final Map<String, ItemId> byName = new HashMap<String, ItemId>();

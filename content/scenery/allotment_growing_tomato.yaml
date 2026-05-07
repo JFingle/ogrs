@@ -1,0 +1,15 @@
+# OGRS scenery: Allotment (tomato growing).
+# Reuses upstream `dugupsoil3` for the third visual variant of "growing
+# crop." Lifecycle: planted via UseLoc (Tomato Seed on Empty Bed) →
+# auto-promotes to allotment_ready_tomato (1305) after GROWTH_TICKS.
+
+id: 1304
+name: Allotment
+description: Tomato seedlings reaching for the sun. Tiny green nubs on slim stems.
+command1: "Inspect"
+command2: "Examine"
+type: 0
+width: 1
+height: 1
+ground_item_var: 0
+model: dugupsoil3

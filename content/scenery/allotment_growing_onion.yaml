@@ -1,0 +1,15 @@
+# OGRS scenery: Allotment (onion growing).
+# Reuses upstream `dugupsoil2` for visual differentiation from the
+# potato growing state (which uses `dugupsoil1`). Same lifecycle —
+# auto-promotes to allotment_ready_onion (1303) after GROWTH_TICKS.
+
+id: 1302
+name: Allotment
+description: Onion seedlings just breaking the soil. Small, pungent green tips.
+command1: "Inspect"
+command2: "Examine"
+type: 0
+width: 1
+height: 1
+ground_item_var: 0
+model: dugupsoil2

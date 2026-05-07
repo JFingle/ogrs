@@ -1,0 +1,14 @@
+# OGRS scenery: Allotment (onion ready).
+# Mature stage for onions. Reuses upstream `onionplant`. Harvest swaps
+# back to weedy_allotment (1296) and grants 1× Onion + Farming XP.
+
+id: 1303
+name: Allotment
+description: A row of mature onion plants, leaves drooping with weight. They want pulling.
+command1: "Harvest"
+command2: "Examine"
+type: 0
+width: 1
+height: 1
+ground_item_var: 0
+model: onionplant

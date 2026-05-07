@@ -4,122 +4,106 @@ import com.openrsc.server.constants.ItemId;
 import com.openrsc.server.constants.Skill;
 import com.openrsc.server.event.SingleEvent;
 import com.openrsc.server.model.Point;
-import com.openrsc.server.model.container.Item;
 import com.openrsc.server.model.entity.GameObject;
 import com.openrsc.server.model.entity.player.Player;
 import com.openrsc.server.model.world.World;
 import com.openrsc.server.plugins.triggers.OpLocTrigger;
+import com.openrsc.server.util.rsc.DataConversions;
 
 import static com.openrsc.server.plugins.Functions.give;
 import static com.openrsc.server.plugins.Functions.ifheld;
 
 /**
- * OGRS Farming — spatial allotment patch state machine. First piece of
- * Layer 2 of memory item #14 (real spatial farming).
+ * OGRS Farming — allotment plot state machine.
  *
- * Three OGRS scenery defs the server swaps between for one tile:
- *   1296 Allotment Patch  (mudpatch)     → command "Rake"     (empty)
- *   1299 Allotment        (dugupsoil1)   → command "Inspect"  (growing)
- *   1300 Allotment        (potatoplant)  → command "Harvest"  (ready)
+ * Layer 2 of memory item #14: real spatial farming. The state of a plot is
+ * intrinsic to the world (the GameObject id at the tile IS the state) — no
+ * per-player or per-tile map; replaceGameObject is atomic. Multiplayer
+ * concern: plots are shared world-state, so two players racing on one tile
+ * is a known limitation until per-player patch claims land.
  *
- * Lifecycle:
- *   EMPTY  + Rake     → swap to GROWING, schedule maturity tick.
- *   GROWING + Inspect → flavor message; growth event already running.
- *   READY  + Harvest  → swap back to EMPTY, give 1 potato + Farming XP.
+ * Lifecycle (OSRS-style — this rewrite splits rake from plant):
+ *   1296 Weedy Allotment  + Rake     →  1301 Empty Allotment Bed
+ *   1301 Empty Allotment  + UseInv   →  1299/1302/1304 (per-seed growing)
+ *      (UseInv handled by AllotmentSeedPlanting — a separate UseLocTrigger)
+ *   1299/1302/1304 Growing + Inspect →  flavor only; growth event runs.
+ *   1300/1303/1305 Ready  + Harvest  →  crop + Farming XP, swap → 1296.
  *
- * State is intrinsic to the world (the GameObject id at the tile IS the
- * state). No separate per-player or per-tile state map needed for MVP —
- * the visible scenery is the source of truth, and replaceGameObject is
- * atomic. Single-player dev concern only; multiplayer needs per-player
- * patches but that depends on the spatial-patch-claim system (memory #14
- * Layer 2 follow-on).
+ * The Rake step now consumes only the rake's PRESENCE (rake stays — tools
+ * are reusable). The seed is consumed at plant-time, not rake-time.
  *
- * The items pipeline now exists (content/items/*.yaml), so Rake gates
- * on a Rake + Potato Seed in inventory and consumes one seed per plant.
- * Compost is a small bonus drop on harvest (4-in-10 odds) — soil-quality
- * scaling using compost as an input is a Layer-3 follow-on.
+ * Compost: small chance per harvest a clump comes up with the roots
+ * (4-in-10). Layer 3 will gate yield on whether compost was applied to
+ * the empty bed before planting.
  */
 public class AllotmentPatch implements OpLocTrigger {
 
-	private static final int EMPTY_PATCH_ID = 1296;
-	private static final int GROWING_PATCH_ID = 1299;
-	private static final int READY_PATCH_ID = 1300;
+	private static final int WEEDY_PATCH_ID = 1296;
+	private static final int EMPTY_BED_ID = 1301;
+
+	// Per-crop growing/ready ids. The growing → ready promotion needs to
+	// know which ready id to swap to, hence the 2-element pairs.
+	static final int[] POTATO_PAIR = {1299, 1300};
+	static final int[] ONION_PAIR  = {1302, 1303};
+	static final int[] TOMATO_PAIR = {1304, 1305};
 
 	/** Real-time growth in ticks. 30 ticks at 640ms = ~19 seconds — short
 	 *  enough to test in one session; future Layer-3 soil-quality scaling
 	 *  multiplies this per-patch. */
-	private static final int GROWTH_TICKS = 30;
+	static final int GROWTH_TICKS = 30;
 
-	/** Display XP units per harvested potato. Engine stores ×4. */
+	/** Display XP units per harvest. Engine stores ×4. */
 	private static final int HARVEST_XP_DISPLAY = 8;
 
 	@Override
 	public boolean blockOpLoc(final Player player, final GameObject obj, final String command) {
 		final int id = obj.getID();
-		return id == EMPTY_PATCH_ID || id == GROWING_PATCH_ID || id == READY_PATCH_ID;
+		return id == WEEDY_PATCH_ID || id == EMPTY_BED_ID || isGrowing(id) || isReady(id);
 	}
 
 	@Override
 	public void onOpLoc(final Player player, final GameObject obj, final String command) {
-		switch (obj.getID()) {
-			case EMPTY_PATCH_ID:
-				if (command.equalsIgnoreCase("rake")) {
-					plant(player, obj);
-				}
-				break;
-			case GROWING_PATCH_ID:
-				if (command.equalsIgnoreCase("inspect")) {
-					player.message("@gre@The seedlings are still settling in. Give them a few minutes.");
-				}
-				break;
-			case READY_PATCH_ID:
-				if (command.equalsIgnoreCase("harvest")) {
-					harvest(player, obj);
-				}
-				break;
+		final int id = obj.getID();
+		if (id == WEEDY_PATCH_ID && command.equalsIgnoreCase("rake")) {
+			rake(player, obj);
+		} else if (id == EMPTY_BED_ID && command.equalsIgnoreCase("inspect")) {
+			player.message("@gre@The bed is bare and turned. Use a seed on it to plant.");
+		} else if (isGrowing(id) && command.equalsIgnoreCase("inspect")) {
+			player.message("@gre@The seedlings are still settling in. Give them a few minutes.");
+		} else if (isReady(id) && command.equalsIgnoreCase("harvest")) {
+			harvest(player, obj);
 		}
 	}
 
-	private void plant(final Player player, final GameObject obj) {
-		// Tool + seed gating. The Rake stays in the inventory (it's a tool —
-		// reusable). The seed is consumed.
+	static boolean isGrowing(final int id) {
+		return id == POTATO_PAIR[0] || id == ONION_PAIR[0] || id == TOMATO_PAIR[0];
+	}
+
+	static boolean isReady(final int id) {
+		return id == POTATO_PAIR[1] || id == ONION_PAIR[1] || id == TOMATO_PAIR[1];
+	}
+
+	private int harvestCropId(final int readyId) {
+		if (readyId == POTATO_PAIR[1]) return ItemId.POTATO.id();
+		if (readyId == ONION_PAIR[1])  return ItemId.ONION.id();
+		if (readyId == TOMATO_PAIR[1]) return ItemId.TOMATO.id();
+		return ItemId.NOTHING.id();
+	}
+
+	private void rake(final Player player, final GameObject obj) {
 		if (!ifheld(player, ItemId.OGRS_RAKE.id())) {
 			player.message("@yel@You need a rake to break this soil.");
 			return;
 		}
-		if (!ifheld(player, ItemId.OGRS_POTATO_SEED.id())) {
-			player.message("@yel@You'll need some potato seeds before you rake — no point breaking soil with nothing to plant.");
-			return;
-		}
-		player.getCarriedItems().remove(new Item(ItemId.OGRS_POTATO_SEED.id(), 1));
-
 		final World world = player.getWorld();
 		final Point loc = obj.getLocation();
 		final int direction = obj.getDirection();
 		final int type = obj.getType();
 
-		// Swap mudpatch → growing visually.
-		final GameObject growing = new GameObject(world, loc, GROWING_PATCH_ID, direction, type);
-		world.replaceGameObject(obj, growing);
-		player.message("@gre@You rake the soil and press a seedling into the row.");
-		player.message("@gre@Give it a few minutes to take root.");
-
-		// Schedule maturity. The tick handler looks up whatever is currently
-		// at the tile — if someone harvested then re-planted in the meantime,
-		// or if the server-restart cleared the growing object, we no-op.
-		world.getServer().getGameEventHandler().add(
-			new SingleEvent(world, null, GROWTH_TICKS, "OGRS Farming - patch maturity") {
-				@Override
-				public void action() {
-					final GameObject current = world.getRegionManager()
-						.getRegion(loc).getGameObject(loc, null);
-					if (current != null && current.getID() == GROWING_PATCH_ID) {
-						final GameObject ready = new GameObject(world, loc, READY_PATCH_ID, direction, type);
-						world.replaceGameObject(current, ready);
-					}
-				}
-			}
-		);
+		final GameObject empty = new GameObject(world, loc, EMPTY_BED_ID, direction, type);
+		world.replaceGameObject(obj, empty);
+		player.message("@gre@You clear the weeds and turn the soil.");
+		player.message("@gre@The bed is ready for a seed.");
 	}
 
 	private void harvest(final Player player, final GameObject obj) {
@@ -127,21 +111,51 @@ public class AllotmentPatch implements OpLocTrigger {
 		final Point loc = obj.getLocation();
 		final int direction = obj.getDirection();
 		final int type = obj.getType();
+		final int readyId = obj.getID();
 
-		final GameObject mudpatch = new GameObject(world, loc, EMPTY_PATCH_ID, direction, type);
-		world.replaceGameObject(obj, mudpatch);
+		final GameObject weedy = new GameObject(world, loc, WEEDY_PATCH_ID, direction, type);
+		world.replaceGameObject(obj, weedy);
 
-		give(player, ItemId.POTATO.id(), 1);
-		// 4-in-10 chance to find a clump of compost in the turned soil.
-		// Soil-quality scaling using compost as an input is Layer-3.
-		if (com.openrsc.server.util.rsc.DataConversions.random(1, 10) <= 4) {
+		final int cropId = harvestCropId(readyId);
+		if (cropId != ItemId.NOTHING.id()) {
+			give(player, cropId, 1);
+		}
+		// 4-in-10 chance: compost clump comes up with the roots.
+		// Layer-3: soil-quality scaling using compost as a planting input.
+		if (DataConversions.random(1, 10) <= 4) {
 			give(player, ItemId.OGRS_COMPOST.id(), 1);
 			player.message("@gre@A clump of dark compost comes up with the roots.");
 		}
-		// Engine stores XP ×4 (RSC display convention).
 		player.getSkills().addExperience(Skill.FARMING.id(), HARVEST_XP_DISPLAY * 4);
+		player.message("@gre@You pull your harvest from the row.");
+		player.message("@gre@+" + HARVEST_XP_DISPLAY + " Farming XP. The bed is overgrown again.");
+	}
 
-		player.message("@gre@You pull a potato from the row.");
-		player.message("@gre@+" + HARVEST_XP_DISPLAY + " Farming XP. The bare soil is ready for another seedling.");
+	/**
+	 * Used by AllotmentSeedPlanting after consuming a seed: swap the empty
+	 * bed visually to the matching growing-state and schedule maturity.
+	 */
+	static void startGrowing(final Player player, final GameObject empty, final int[] cropPair) {
+		final World world = player.getWorld();
+		final Point loc = empty.getLocation();
+		final int direction = empty.getDirection();
+		final int type = empty.getType();
+
+		final GameObject growing = new GameObject(world, loc, cropPair[0], direction, type);
+		world.replaceGameObject(empty, growing);
+
+		world.getServer().getGameEventHandler().add(
+			new SingleEvent(world, null, GROWTH_TICKS, "OGRS Farming - allotment maturity") {
+				@Override
+				public void action() {
+					final GameObject current = world.getRegionManager()
+						.getRegion(loc).getGameObject(loc, null);
+					if (current != null && current.getID() == cropPair[0]) {
+						final GameObject ready = new GameObject(world, loc, cropPair[1], direction, type);
+						world.replaceGameObject(current, ready);
+					}
+				}
+			}
+		);
 	}
 }

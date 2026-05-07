@@ -2,8 +2,8 @@
   "npclocs": [
     { "id": 836, "start": { "X": 122, "Y": 650 }, "min": { "X": 120, "Y": 648 }, "max": { "X": 124, "Y": 652 } },
 
-    { "_n": "Old Wat the Farmer — east of Lumbridge, by the allotment at (149, 649)",
-      "id": 837, "start": { "X": 148, "Y": 649 }, "min": { "X": 147, "Y": 648 }, "max": { "X": 149, "Y": 651 } },
+    { "_n": "Old Wat the Farmer — west side of the allotment so he doesn't trample plots; roams the lane between the field and the castle wall",
+      "id": 837, "start": { "X": 147, "Y": 650 }, "min": { "X": 147, "Y": 649 }, "max": { "X": 148, "Y": 652 } },
     { "_n": "Edith the Baker — village square",
       "id": 838, "start": { "X": 128, "Y": 656 }, "min": { "X": 127, "Y": 655 }, "max": { "X": 130, "Y": 658 } },
     { "_n": "Garth the Smith — by the smithy",

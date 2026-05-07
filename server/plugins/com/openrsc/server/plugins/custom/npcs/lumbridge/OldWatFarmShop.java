@@ -30,6 +30,8 @@ public final class OldWatFarmShop extends AbstractShop {
 		// OGRS farming kit (content/items/*.yaml).
 		new Item(ItemId.OGRS_RAKE.id(), 5),
 		new Item(ItemId.OGRS_POTATO_SEED.id(), 25),
+		new Item(ItemId.OGRS_ONION_SEED.id(), 20),
+		new Item(ItemId.OGRS_TOMATO_SEED.id(), 15),
 		new Item(ItemId.OGRS_COMPOST.id(), 15),
 		// Upstream gardening tools + water sources.
 		new Item(ItemId.SPADE.id(), 3),

@@ -1,11 +1,10 @@
-# OGRS scenery: Allotment (growing).
-# Mid-stage of a planted patch. Reuses upstream `dugupsoil1` — a small
-# disturbed-earth model that reads as "something is sprouting" without
-# being the full plant yet.
+# OGRS scenery: Allotment (potato growing).
+# Mid-stage of a planted PATCH for potatoes. Reuses upstream `dugupsoil1`.
+# Auto-promotes to allotment_ready (1300) after GROWTH_TICKS.
 
 id: 1299
 name: Allotment
-description: A row of seedlings just breaking the soil. Patience, friend.
+description: Potato seedlings just breaking the soil. Patience, friend.
 command1: "Inspect"
 command2: "Examine"
 type: 0
