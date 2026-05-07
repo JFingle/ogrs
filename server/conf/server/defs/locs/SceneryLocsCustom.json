@@ -1,17 +1,22 @@
 {
   "sceneries": [
-    { "id": 1296, "pos": { "X": 109, "Y": 654 }, "direction": 0 },
-    { "id": 1296, "pos": { "X": 110, "Y": 654 }, "direction": 0 },
-    { "id": 1296, "pos": { "X": 109, "Y": 655 }, "direction": 0 },
-    { "id": 1296, "pos": { "X": 110, "Y": 655 }, "direction": 0 },
+    {
+      "_n": "OGRS Allotment — 2x2 mudpatch tiles, north of Lumbridge castle",
+      "id": 1296, "pos": { "X": 122, "Y": 641 }, "direction": 0
+    },
+    { "id": 1296, "pos": { "X": 123, "Y": 641 }, "direction": 0 },
+    { "id": 1296, "pos": { "X": 122, "Y": 642 }, "direction": 0 },
+    { "id": 1296, "pos": { "X": 123, "Y": 642 }, "direction": 0 },
 
-    { "id": 1297, "pos": { "X": 107, "Y": 656 }, "direction": 0 },
+    { "_n": "Compost heap — east edge",
+      "id": 1297, "pos": { "X": 125, "Y": 642 }, "direction": 0 },
 
-    { "id": 1298, "pos": { "X": 108, "Y": 653 }, "direction": 0 },
-    { "id": 1298, "pos": { "X": 109, "Y": 653 }, "direction": 0 },
-    { "id": 1298, "pos": { "X": 110, "Y": 653 }, "direction": 0 },
-    { "id": 1298, "pos": { "X": 111, "Y": 653 }, "direction": 0 },
-    { "id": 1298, "pos": { "X": 111, "Y": 654 }, "direction": 0 },
-    { "id": 1298, "pos": { "X": 111, "Y": 655 }, "direction": 0 }
+    { "_n": "Garden fence — bordering the plot's north edge + east side",
+      "id": 1298, "pos": { "X": 121, "Y": 640 }, "direction": 0 },
+    { "id": 1298, "pos": { "X": 122, "Y": 640 }, "direction": 0 },
+    { "id": 1298, "pos": { "X": 123, "Y": 640 }, "direction": 0 },
+    { "id": 1298, "pos": { "X": 124, "Y": 640 }, "direction": 0 },
+    { "id": 1298, "pos": { "X": 124, "Y": 641 }, "direction": 0 },
+    { "id": 1298, "pos": { "X": 124, "Y": 642 }, "direction": 0 }
   ]
 }
