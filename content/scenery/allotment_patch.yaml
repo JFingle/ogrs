@@ -1,0 +1,21 @@
+# OGRS scenery: Allotment Patch
+#
+# Reuses the upstream "wheat" model for MVP — no new 3D asset required.
+# Will be the first interactable plot for the real spatial farming system
+# (Layer 2 of memory item #14). Right-click "Rake" → triggers the rake
+# action in OpScenery handler (next session); "Examine" gives flavor.
+#
+# Until backlog #9 lifts the id-as-index constraint, scenery ids must be
+# sequential after the upstream GameObjectDef.xml count (1296). Verified
+# upstream ends at 1295.
+
+id: 1296
+name: Allotment Patch
+description: A patch of cleared earth, weeds creeping at the edges. It wants seeds.
+command1: "Rake"
+command2: "Examine"
+type: 1                # 1 = traversal-blocking; player can stand adjacent
+width: 1
+height: 1
+ground_item_var: 0
+model: wheat           # upstream wheat-stalks model — closest visual to a planted row

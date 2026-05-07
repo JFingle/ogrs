@@ -6947,6 +6947,12 @@ public class EntityHandler {
 		objects.add(new GameObjectDef("Exhausted Tree", "Someone has taken the last of the produce!", "WalkTo", "Examine", 1, 1, 1, 0, "depleteddragonfruit", ++i)); //1294
 
 		objects.add(new GameObjectDef("Stepping Stone", "It looks like I could jump on this", "jump to", "Examine", 1, 1, 1, 0, "stonedisc", ++i)); //1295
+
+		// OGRS additive scenery (id 1296+) — registered from content/scenery/*.yaml via build-time codegen.
+		// To add a new scenery: write content/scenery/<name>.yaml then run `python3 tools/codegen-client-scenery.py`
+		// from the repo root. The generated class below mirrors what the server's OgrsContentSceneryLoader
+		// loads on its side, so id == array-index alignment holds end-to-end.
+		i = com.openrsc.client.entityhandling.generated.OgrsClientScenery.register(objects, i);
 	}
 
 	public static void load(boolean loadMembers) {

@@ -180,6 +180,7 @@ public final class EntityHandler {
 
 		doors = (DoorDef[]) getPersistenceManager().load("defs/DoorDef.xml");
 		gameObjects = (GameObjectDef[]) getPersistenceManager().load("defs/GameObjectDef.xml");
+		loadOgrsContentScenery();
 		prayers = (PrayerDef[]) getPersistenceManager().load("defs/PrayerDef.xml");
 		if (!getServer().getConfig().LACKS_PRAYERS) {
 			// On May 24 2001 original magic/prayer rework, new spells featured
@@ -285,6 +286,30 @@ public final class EntityHandler {
 		}
 		catch (Exception e) {
 			LOGGER.error(e);
+		}
+	}
+
+	/**
+	 * OGRS content pipeline: read content/scenery/*.yaml after the upstream
+	 * GameObjectDef.xml load and grow the gameObjects array with the YAML
+	 * defs. Validates declared ids are sequential after the XML count so
+	 * `gameObjects[id]` lookup keeps working.
+	 */
+	private void loadOgrsContentScenery() {
+		try {
+			final OgrsContentSceneryLoader loader = new OgrsContentSceneryLoader();
+			final java.util.List<OgrsContentSceneryLoader.Entry> entries = loader.loadAll();
+			if (entries.isEmpty()) return;
+			OgrsContentSceneryLoader.requireSequentialAfter(entries, gameObjects.length);
+			final GameObjectDef[] grown = new GameObjectDef[gameObjects.length + entries.size()];
+			System.arraycopy(gameObjects, 0, grown, 0, gameObjects.length);
+			for (int i = 0; i < entries.size(); i++) {
+				grown[gameObjects.length + i] = entries.get(i).def;
+			}
+			gameObjects = grown;
+			LOGGER.info("OGRS: appended " + entries.size() + " YAML scenery def(s) to the registry");
+		} catch (Exception e) {
+			LOGGER.error("OGRS YAML scenery loader failed", e);
 		}
 	}
 

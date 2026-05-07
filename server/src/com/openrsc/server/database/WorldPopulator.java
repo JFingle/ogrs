@@ -206,6 +206,11 @@ public final class WorldPopulator {
 						loadGameObjLocs(getWorld().getServer().getConfig().CONFIG_DIR + "/defs/locs/SceneryLocsOpenPk.json", type);
 					}
 				}
+				// OGRS additive scenery spawns — always loaded. Mirrors the
+				// NpcLocsCustom.json pattern. New OGRS scenery (id 1296+) is
+				// spawned via this file, separate from upstream's authentic
+				// SceneryLocs.json so upstream syncs don't conflict.
+				loadGameObjLocs(getWorld().getServer().getConfig().CONFIG_DIR + "/defs/locs/SceneryLocsCustom.json", type);
 				if ((getWorld().getServer().getConfig().LOCATION_DATA == 1 || getWorld().getServer().getConfig().LOCATION_DATA == 2)
 					&& getWorld().getServer().getConfig().WANT_FIXED_BROKEN_MECHANICS) {
 					loadGameObjLocs(getWorld().getServer().getConfig().CONFIG_DIR + "/defs/locs/SceneryLocsDiscontinued.json", type);
