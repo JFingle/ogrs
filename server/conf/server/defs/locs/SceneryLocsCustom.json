@@ -1,9 +1,17 @@
 {
   "sceneries": [
-    {
-      "id": 1296,
-      "pos": { "X": 109, "Y": 654 },
-      "direction": 0
-    }
+    { "id": 1296, "pos": { "X": 109, "Y": 654 }, "direction": 0 },
+    { "id": 1296, "pos": { "X": 110, "Y": 654 }, "direction": 0 },
+    { "id": 1296, "pos": { "X": 109, "Y": 655 }, "direction": 0 },
+    { "id": 1296, "pos": { "X": 110, "Y": 655 }, "direction": 0 },
+
+    { "id": 1297, "pos": { "X": 107, "Y": 656 }, "direction": 0 },
+
+    { "id": 1298, "pos": { "X": 108, "Y": 653 }, "direction": 0 },
+    { "id": 1298, "pos": { "X": 109, "Y": 653 }, "direction": 0 },
+    { "id": 1298, "pos": { "X": 110, "Y": 653 }, "direction": 0 },
+    { "id": 1298, "pos": { "X": 111, "Y": 653 }, "direction": 0 },
+    { "id": 1298, "pos": { "X": 111, "Y": 654 }, "direction": 0 },
+    { "id": 1298, "pos": { "X": 111, "Y": 655 }, "direction": 0 }
   ]
 }

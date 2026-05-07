@@ -1,0 +1,14 @@
+# OGRS scenery: Compost Heap. Reuses upstream `compostbin` model.
+# Will be the source of compost item once items pipeline + interaction
+# triggers land. For now it's visual ambience next to the allotment.
+
+id: 1297
+name: Compost Heap
+description: A heap of well-rotted plant matter, ready to feed a garden.
+command1: "Take"
+command2: "Examine"
+type: 1
+width: 1
+height: 1
+ground_item_var: 0
+model: compostbin

@@ -21,7 +21,13 @@ public final class OgrsClientScenery {
 	public static int register(final ArrayList<GameObjectDef> objects, int i) {
 
 		// id 1296 — from content/scenery/allotment_patch.yaml
-		objects.add(new GameObjectDef("Allotment Patch", "A patch of cleared earth, weeds creeping at the edges. It wants seeds.", "Rake", "Examine", 1, 1, 1, 0, "wheat", ++i));
+		objects.add(new GameObjectDef("Allotment Patch", "A patch of cleared earth. It would take well to a row of seedlings.", "Rake", "Examine", 1, 1, 1, 0, "mudpatch", ++i));
+
+		// id 1297 — from content/scenery/compost_heap.yaml
+		objects.add(new GameObjectDef("Compost Heap", "A heap of well-rotted plant matter, ready to feed a garden.", "Take", "Examine", 1, 1, 1, 0, "compostbin", ++i));
+
+		// id 1298 — from content/scenery/garden_fence.yaml
+		objects.add(new GameObjectDef("Fence", "A rustic wooden fence keeping rabbits out of the rows.", "WalkTo", "Examine", 1, 1, 1, 0, "gnomefence", ++i));
 
 		return i;
 	}

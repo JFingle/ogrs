@@ -1,0 +1,14 @@
+# OGRS scenery: Garden Fence. Reuses upstream `gnomefence` model — a
+# rustic wooden fence that fits a farm plot. Multiple spawn entries
+# in SceneryLocsCustom.json border Old Wat's allotment.
+
+id: 1298
+name: Fence
+description: A rustic wooden fence keeping rabbits out of the rows.
+command1: "WalkTo"
+command2: "Examine"
+type: 1
+width: 1
+height: 1
+ground_item_var: 0
+model: gnomefence

@@ -11,11 +11,11 @@
 
 id: 1296
 name: Allotment Patch
-description: A patch of cleared earth, weeds creeping at the edges. It wants seeds.
+description: A patch of cleared earth. It would take well to a row of seedlings.
 command1: "Rake"
 command2: "Examine"
 type: 1                # 1 = traversal-blocking; player can stand adjacent
 width: 1
 height: 1
 ground_item_var: 0
-model: wheat           # upstream wheat-stalks model — closest visual to a planted row
+model: mudpatch        # upstream dirt/mud patch — proper visual for a fresh allotment
