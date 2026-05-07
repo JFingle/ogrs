@@ -3,7 +3,7 @@ id: 845
 name: Miriam
 description: A baker with flour in her hair and a quick smile.
 command: ""
-command2: ""
+command2: "Trade"
 stats: { attack: 1, strength: 1, defense: 1, hits: 5, combat_level: 1, ranged: false }
 flags: { members_only: false, attackable: false, aggressive: false }
 respawn_time_ticks: 211

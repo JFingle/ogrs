@@ -59,7 +59,7 @@ public final class OgrsClientNpcs {
 
 		// id 845 — from content/npcs/miriam_the_baker.yaml
 		sprites = new int[]{3, 4, 2, -1, -1, -1, -1, -1, -1, -1, -1, -1};
-		npcs.add(new NPCDef("Miriam", "A baker with flour in her hair and a quick smile.", "", 1, 1, 5, 1, false, sprites, 0xA88858, 0xE8E4D0, 0x6B5230, 0xCC9966, 160, 220, 6, 6, 5, i++));
+		npcs.add(new NPCDef("Miriam", "A baker with flour in her hair and a quick smile.", "", "Trade", 1, 1, 5, 1, false, sprites, 0xA88858, 0xE8E4D0, 0x6B5230, 0xCC9966, 160, 220, 6, 6, 5, i++));
 
 		// id 846 — from content/npcs/elias_the_fisherman.yaml
 		sprites = new int[]{6, 1, 2, -1, -1, -1, -1, -1, -1, -1, -1, -1};
@@ -71,7 +71,7 @@ public final class OgrsClientNpcs {
 
 		// id 848 — from content/npcs/caleb_the_smith.yaml
 		sprites = new int[]{0, 1, 2, -1, -1, -1, -1, -1, -1, -1, -1, -1};
-		npcs.add(new NPCDef("Caleb", "A young smith, soot on his arms, an anvil's voice nearby.", "", 1, 1, 5, 1, false, sprites, 0x303030, 0x4A2D1B, 0x303030, 0xCC9966, 160, 220, 6, 6, 5, i++));
+		npcs.add(new NPCDef("Caleb", "A young smith, soot on his arms, an anvil's voice nearby.", "", "Trade", 1, 1, 5, 1, false, sprites, 0x303030, 0x4A2D1B, 0x303030, 0xCC9966, 160, 220, 6, 6, 5, i++));
 
 		// id 849 — from content/npcs/ruth_the_gleaner.yaml
 		sprites = new int[]{3, 4, 2, -1, -1, -1, -1, -1, -1, -1, -1, -1};
@@ -83,7 +83,7 @@ public final class OgrsClientNpcs {
 
 		// id 851 — from content/npcs/lydia_the_seller.yaml
 		sprites = new int[]{3, 4, 2, -1, -1, -1, -1, -1, -1, -1, -1, -1};
-		npcs.add(new NPCDef("Lydia", "A merchant of fine cloth, a basket on her arm.", "", 1, 1, 5, 1, false, sprites, 0x4A2D1B, 0x6020A0, 0x4A4A4A, 0xCC9966, 160, 220, 6, 6, 5, i++));
+		npcs.add(new NPCDef("Lydia", "A merchant of fine cloth, a basket on her arm.", "", "Trade", 1, 1, 5, 1, false, sprites, 0x4A2D1B, 0x6020A0, 0x4A4A4A, 0xCC9966, 160, 220, 6, 6, 5, i++));
 
 		// id 852 — from content/npcs/esther_the_maiden.yaml
 		sprites = new int[]{3, 4, 2, -1, -1, -1, -1, -1, -1, -1, -1, -1};
