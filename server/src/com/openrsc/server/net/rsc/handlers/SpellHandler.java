@@ -1480,7 +1480,8 @@ public class SpellHandler implements PayloadProcessor<SpellStruct, OpcodeIn> {
 							return;
 						}
 
-						if (affectedMob.inCombat() && affectedMob.getOpponent().getHitsMade() < 3) {
+						if (affectedMob.inCombat() && affectedMob.getOpponent().getHitsMade() < 3
+							&& !getPlayer().getConfig().COMBAT_RETREAT_UNLOCKED) {
 							getPlayer().message("Your opponent can't retreat during the first 3 rounds of combat");
 							return;
 						}

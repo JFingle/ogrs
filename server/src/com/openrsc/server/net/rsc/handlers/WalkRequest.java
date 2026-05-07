@@ -35,7 +35,10 @@ public class WalkRequest implements PayloadProcessor<WalkStruct, OpcodeIn> {
 					player.setSuspiciousPlayer(true, "walk request null opponent");
 					return;
 				}
-				if (opponent.getHitsMade() >= 3) {
+				// OGRS — config flag lifts the legacy 3-round retreat lock.
+				// When unlocked, the player can walk out of melee on tick 1
+				// instead of being snapped into the combat slot.
+				if (opponent.getHitsMade() >= 3 || player.getConfig().COMBAT_RETREAT_UNLOCKED) {
 					if (player.getDuel().isDuelActive() && player.getDuel().getDuelSetting(0)) {
 						player.message("You cannot retreat from this duel!");
 						return;

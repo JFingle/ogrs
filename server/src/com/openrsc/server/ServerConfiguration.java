@@ -160,6 +160,11 @@ public class ServerConfiguration {
 	public boolean WANT_CUSTOM_RANK_DISPLAY;
 	public boolean RIGHT_CLICK_BANK;
 	public boolean RIGHT_CLICK_TRADE;
+	/** OGRS — when true, the legacy "first 3 rounds of combat" retreat lock
+	 *  is lifted (in WalkRequest + SpellHandler retreat-from-mage gates). The
+	 *  player can walk out of melee at any tick. Magic and ranged were never
+	 *  locked, so this only affects the click-to-melee snap. */
+	public boolean COMBAT_RETREAT_UNLOCKED;
 	public boolean FIX_OVERHEAD_CHAT;
 	public boolean WANT_FATIGUE;
 	public boolean WARN_EXCESSIVE_CAPTCHA_FAILURE;
@@ -736,6 +741,7 @@ public class ServerConfiguration {
 
 		//Shop
 		RIGHT_CLICK_TRADE = tryReadBool("right_click_trade").orElse(false);
+		COMBAT_RETREAT_UNLOCKED = tryReadBool("combat_retreat_unlocked").orElse(false);
 
 		// NPC kills
 		NPC_KILL_LIST = tryReadBool("npc_kill_list").orElse(false);
