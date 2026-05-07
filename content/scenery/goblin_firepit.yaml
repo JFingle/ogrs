@@ -1,0 +1,15 @@
+# OGRS scenery: Goblin Firepit.
+# Centerpiece of the goblin camp east of Lumbridge. Reuses upstream
+# `firea1` (a strongly-burning camp fire). type 0 keeps it laid flat
+# on the tile.
+
+id: 1307
+name: Firepit
+description: A roaring goblin firepit. Greasy bones half-buried in the ash.
+command1: "WalkTo"
+command2: "Examine"
+type: 0
+width: 1
+height: 1
+ground_item_var: 0
+model: firea1

@@ -30,6 +30,10 @@
     { "id": 62, "start": { "X": 213, "Y": 495 }, "min": { "X": 200, "Y": 488 }, "max": { "X": 218, "Y": 510 } },
     { "id": 62, "start": { "X": 207, "Y": 506 }, "min": { "X": 200, "Y": 488 }, "max": { "X": 218, "Y": 510 } },
     { "id": 62, "start": { "X": 215, "Y": 501 }, "min": { "X": 200, "Y": 488 }, "max": { "X": 218, "Y": 510 } },
-    { "id": 62, "start": { "X": 211, "Y": 489 }, "min": { "X": 200, "Y": 488 }, "max": { "X": 218, "Y": 510 } }
+    { "id": 62, "start": { "X": 211, "Y": 489 }, "min": { "X": 200, "Y": 488 }, "max": { "X": 218, "Y": 510 } },
+
+    { "_n": "Goblin Shaman (id 842) — mid-tier camp lieutenant near the firepit. 100% pouch drop on quest stage 1 (see OldWatsSeedPouch).",
+      "id": 842, "start": { "X": 208, "Y": 497 }, "min": { "X": 205, "Y": 494 }, "max": { "X": 211, "Y": 500 } },
+    { "id": 842, "start": { "X": 213, "Y": 503 }, "min": { "X": 210, "Y": 500 }, "max": { "X": 216, "Y": 506 } }
   ]
 }

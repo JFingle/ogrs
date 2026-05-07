@@ -45,6 +45,10 @@ public final class OgrsClientNpcs {
 		sprites = new int[]{6, 1, 2, -1, -1, -1, -1, -1, -1, -1, -1, -1};
 		npcs.add(new NPCDef("Wendel", "A weathered fisherman, net coiled at his feet.", "", 1, 1, 5, 1, false, sprites, 0x808080, 0x3A6BA0, 0x4F2D1B, 0xC68642, 160, 220, 6, 6, 5, i++));
 
+		// id 842 — from content/npcs/goblin_shaman.yaml
+		sprites = new int[]{142, 140, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
+		npcs.add(new NPCDef("Goblin Shaman", "A taller, dark-robed goblin with rune-scratched bones around its neck.", "", 30, 25, 35, 25, false, sprites, 0x000000, 0x000000, 0x000000, 0x000000, 245, 230, 9, 8, 5, i++));
+
 		return i;
 	}
 }

@@ -1,0 +1,15 @@
+# OGRS scenery: Goblin Totem.
+# Reuses upstream `totemtreeevil` — a carved/decorated wooden totem
+# with a sinister vibe (used for evil-aligned tribal sites in upstream
+# content). Marks the goblin camp boundary in OGRS.
+
+id: 1309
+name: Goblin Totem
+description: A crooked wooden totem, hung with goblin trinkets and old bones.
+command1: "WalkTo"
+command2: "Examine"
+type: 1
+width: 1
+height: 1
+ground_item_var: 0
+model: totemtreeevil

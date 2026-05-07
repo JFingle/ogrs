@@ -1,0 +1,15 @@
+# OGRS scenery: Goblin Crate.
+# Plundered storage. Reuses upstream `crate` model. Search verb is
+# upstream-default (no left-click loot in OGRS yet — backlog item
+# 'searchable scenery loot tables').
+
+id: 1310
+name: Goblin Crate
+description: A battered wooden crate, smelling of damp grain and worse.
+command1: "WalkTo"
+command2: "Search"
+type: 1
+width: 1
+height: 1
+ground_item_var: 0
+model: crate

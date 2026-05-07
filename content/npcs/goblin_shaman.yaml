@@ -1,0 +1,27 @@
+# OGRS NPC: Goblin Shaman.
+#
+# Mid-tier goblin lieutenant in the camp east of Lumbridge. Combat
+# level ~25 — between regular goblins (~13) and hobgoblins (~32).
+# Aggressive: walks up and attacks the player on sight.
+#
+# Quest hook: drops Old Wat's Seed Pouch at 100% on kill while
+# OldWatsSeedPouch is at stage 1. Players who can handle the shaman get
+# a guaranteed pouch instead of grinding the 30% drop on rank-and-file
+# goblins. See OldWatsSeedPouch.blockKillNpc.
+#
+# Sprites: head 142 (goblin head) + body 140 (General Bentnoze body —
+# darker robe-shade than the standard goblin body 139). Native green
+# skin via hair/top/bottom/skin all 0.
+
+id: 842
+name: Goblin Shaman
+description: A taller, dark-robed goblin with rune-scratched bones around its neck.
+command: ""
+command2: ""
+stats: { attack: 30, strength: 25, defense: 25, hits: 35, combat_level: 25, ranged: false }
+flags: { members_only: false, attackable: true, aggressive: true }
+respawn_time_ticks: 211
+sprites: [142, 140, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1]
+colors: { hair: 0, top: 0, bottom: 0, skin: 0 }
+camera: { x: 245, y: 230 }
+models: { walk: 9, combat: 8, combat_sprite: 5 }

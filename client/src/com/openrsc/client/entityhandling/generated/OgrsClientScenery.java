@@ -53,6 +53,18 @@ public final class OgrsClientScenery {
 		// id 1306 — from content/scenery/allotment_composted_bed.yaml
 		objects.add(new GameObjectDef("Composted Bed", "A bed dressed with dark compost. Crops will swell on this earth.", "", "Inspect", 0, 1, 1, 0, "dugupsoil2", ++i));
 
+		// id 1307 — from content/scenery/goblin_firepit.yaml
+		objects.add(new GameObjectDef("Firepit", "A roaring goblin firepit. Greasy bones half-buried in the ash.", "WalkTo", "Examine", 0, 1, 1, 0, "firea1", ++i));
+
+		// id 1308 — from content/scenery/goblin_cauldron.yaml
+		objects.add(new GameObjectDef("Goblin Cauldron", "A rusted iron cauldron, contents bubbling. Smells of bone broth.", "WalkTo", "Examine", 1, 1, 1, 0, "cauldron", ++i));
+
+		// id 1309 — from content/scenery/goblin_totem.yaml
+		objects.add(new GameObjectDef("Goblin Totem", "A crooked wooden totem, hung with goblin trinkets and old bones.", "WalkTo", "Examine", 1, 1, 1, 0, "totemtreeevil", ++i));
+
+		// id 1310 — from content/scenery/goblin_crate.yaml
+		objects.add(new GameObjectDef("Goblin Crate", "A battered wooden crate, smelling of damp grain and worse.", "WalkTo", "Search", 1, 1, 1, 0, "crate", ++i));
+
 		return i;
 	}
 }

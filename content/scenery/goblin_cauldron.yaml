@@ -1,0 +1,14 @@
+# OGRS scenery: Goblin Cauldron.
+# Reuses upstream `cauldron` model — a large bubbling pot. Used by witch
+# huts in upstream content; works just as well as goblin stew gear.
+
+id: 1308
+name: Goblin Cauldron
+description: A rusted iron cauldron, contents bubbling. Smells of bone broth.
+command1: "WalkTo"
+command2: "Examine"
+type: 1
+width: 1
+height: 1
+ground_item_var: 0
+model: cauldron

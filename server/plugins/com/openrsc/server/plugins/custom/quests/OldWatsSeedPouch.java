@@ -51,8 +51,9 @@ public final class OldWatsSeedPouch extends AbstractOgrsQuest implements TalkNpc
 
 	private static final int OLD_WAT_NPC_ID = 837;
 	private static final int GOBLIN_NPC_ID = 62;
+	private static final int GOBLIN_SHAMAN_NPC_ID = 842;
 
-	/** 30% drop on goblin kill while in stage 1. */
+	/** 30% drop on rank-and-file goblin kill while in stage 1. */
 	private static final int POUCH_DROP_PERCENT = 30;
 
 	public OldWatsSeedPouch() {
@@ -161,7 +162,8 @@ public final class OldWatsSeedPouch extends AbstractOgrsQuest implements TalkNpc
 	 *  death sequence regardless. */
 	@Override
 	public boolean blockKillNpc(final Player player, final Npc npc) {
-		if (npc.getID() != GOBLIN_NPC_ID) return false;
+		final int id = npc.getID();
+		if (id != GOBLIN_NPC_ID && id != GOBLIN_SHAMAN_NPC_ID) return false;
 		if (player.getQuestStage(this) != 1) return false;
 		// Don't roll if the player already has one in inventory.
 		return !player.getCarriedItems().hasCatalogID(ItemId.OGRS_SEED_POUCH.id());
@@ -169,10 +171,17 @@ public final class OldWatsSeedPouch extends AbstractOgrsQuest implements TalkNpc
 
 	@Override
 	public void onKillNpc(final Player player, final Npc npc) {
-		if (DataConversions.random(1, 100) <= POUCH_DROP_PERCENT) {
-			give(player, ItemId.OGRS_SEED_POUCH.id(), 1);
+		final boolean shaman = npc.getID() == GOBLIN_SHAMAN_NPC_ID;
+		// Shaman = guaranteed drop; rank-and-file = 30% roll.
+		final boolean dropped = shaman || DataConversions.random(1, 100) <= POUCH_DROP_PERCENT;
+		if (!dropped) return;
+
+		give(player, ItemId.OGRS_SEED_POUCH.id(), 1);
+		if (shaman) {
+			player.message("@gre@The shaman crumples. A leather pouch tumbles from a fold of its robe — Old Wat's.");
+		} else {
 			player.message("@gre@A small leather pouch falls from the goblin's belt. This must be Old Wat's.");
-			player.updateQuestStage(this, 2);
 		}
+		player.updateQuestStage(this, 2);
 	}
 }

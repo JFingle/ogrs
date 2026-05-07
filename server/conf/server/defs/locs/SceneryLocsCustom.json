@@ -30,6 +30,23 @@
 
     { "_n": "Garden fence — SOUTH stubs framing the entry. 2 tiles on each corner; the middle 3 tiles (149..151, 652) are the open gate the player walks through.",
       "id": 1298, "pos": { "X": 148, "Y": 652 }, "direction": 0 },
-    { "id": 1298, "pos": { "X": 152, "Y": 652 }, "direction": 0 }
+    { "id": 1298, "pos": { "X": 152, "Y": 652 }, "direction": 0 },
+
+    { "_n": "GOBLIN CAMP — east of Lumbridge, around (208, 497). Centerpiece firepit, cauldron, framing totems, scattered crates. Sets the stage for the Old-Wat's-Pouch quest hunt.",
+      "id": 1307, "pos": { "X": 208, "Y": 497 }, "direction": 0 },
+    { "_n": "Goblin Cauldron — beside the firepit (cooking).",
+      "id": 1308, "pos": { "X": 209, "Y": 498 }, "direction": 0 },
+    { "_n": "Goblin Totems — N, S, W, E of the camp marking the territory.",
+      "id": 1309, "pos": { "X": 208, "Y": 491 }, "direction": 0 },
+    { "id": 1309, "pos": { "X": 208, "Y": 504 }, "direction": 0 },
+    { "id": 1309, "pos": { "X": 202, "Y": 497 }, "direction": 0 },
+    { "id": 1309, "pos": { "X": 215, "Y": 497 }, "direction": 0 },
+    { "_n": "Goblin Crates — scattered loot/junk piles.",
+      "id": 1310, "pos": { "X": 206, "Y": 495 }, "direction": 0 },
+    { "id": 1310, "pos": { "X": 211, "Y": 502 }, "direction": 0 },
+    { "id": 1310, "pos": { "X": 213, "Y": 493 }, "direction": 0 },
+
+    { "_n": "Secondary firepit on the south side of the camp.",
+      "id": 1307, "pos": { "X": 213, "Y": 503 }, "direction": 0 }
   ]
 }
