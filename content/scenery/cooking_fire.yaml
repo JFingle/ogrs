@@ -1,0 +1,20 @@
+# OGRS scenery: Cooking Fire.
+# Small persistent campfire near the allotment so the farming → cooking
+# loop is geographically tight (rake/plant/harvest 5 tiles north, cook
+# right here, eat to top up before fighting goblins). Reuses upstream
+# `firea1` for visuals.
+#
+# Use a raw OGRS crop (Potato, Onion, Tomato) on this fire to cook it
+# via OgrsCropCooking. Same plugin also accepts the Goblin Firepit
+# (1307) so post-camp cooks work in-place.
+
+id: 1313
+name: Cooking Fire
+description: A small steady cookfire. Good for crisping a potato or charring a tomato.
+command1: "WalkTo"
+command2: "Examine"
+type: 0
+width: 1
+height: 1
+ground_item_var: 0
+model: firea1

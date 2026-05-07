@@ -1,0 +1,21 @@
+# OGRS item: Burnt Crop.
+# Catch-all "you ruined it" output for failed cooking attempts on any
+# OGRS crop. Not edible (eat_heals: 0). Untradeable junk; player can
+# drop it.
+#
+# Sprite items:64 (burntbread) + dark-char tint.
+
+id: 1604
+name: Burnt Crop
+description: An unrecognisable lump of charcoal that used to be food.
+command: ""
+stackable: false
+untradeable: true
+members_only: false
+noteable: false
+base_price: 1
+picture_mask: 0x2A1A0E
+sprite:
+  id: 64
+  location: "items:64"
+eat_heals: 0

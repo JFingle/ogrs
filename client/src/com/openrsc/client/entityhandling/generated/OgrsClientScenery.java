@@ -71,6 +71,9 @@ public final class OgrsClientScenery {
 		// id 1312 — from content/scenery/goblin_vein_depleted.yaml
 		objects.add(new GameObjectDef("Depleted Vein", "A spent rock outcrop. Give it a few moments — the iron will catch up.", "WalkTo", "Examine", 1, 1, 1, 0, "rocks1", ++i));
 
+		// id 1313 — from content/scenery/cooking_fire.yaml
+		objects.add(new GameObjectDef("Cooking Fire", "A small steady cookfire. Good for crisping a potato or charring a tomato.", "WalkTo", "Examine", 0, 1, 1, 0, "firea1", ++i));
+
 		return i;
 	}
 }

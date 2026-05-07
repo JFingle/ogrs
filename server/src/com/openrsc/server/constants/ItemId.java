@@ -1662,12 +1662,16 @@ public enum ItemId {
 	OGRS_TOMATO_SEED(1597),
 	OGRS_SEED_POUCH(1598),
 	OGRS_GOBLIN_TRINKET(1599),
-	OGRS_CRACKED_SHAMAN_STAFF(1600);
+	OGRS_CRACKED_SHAMAN_STAFF(1600),
+	OGRS_BAKED_POTATO(1601),
+	OGRS_ROASTED_ONION(1602),
+	OGRS_CHARRED_TOMATO(1603),
+	OGRS_BURNT_CROP(1604);
 
 	private int itemId;
 
 	public static final int maxAuthentic = 1289;
-	public static final int maxCustom = 1600;
+	public static final int maxCustom = 1604;
 
 	private static final Map<Integer, ItemId> byId = new HashMap<Integer, ItemId>();
 	private static final Map<String, ItemId> byName = new HashMap<String, ItemId>();

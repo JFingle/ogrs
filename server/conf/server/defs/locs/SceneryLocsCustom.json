@@ -53,6 +53,9 @@
       "id": 1311, "pos": { "X": 204, "Y": 491 }, "direction": 0 },
     { "id": 1311, "pos": { "X": 217, "Y": 493 }, "direction": 0 },
     { "id": 1311, "pos": { "X": 203, "Y": 506 }, "direction": 0 },
-    { "id": 1311, "pos": { "X": 216, "Y": 508 }, "direction": 0 }
+    { "id": 1311, "pos": { "X": 216, "Y": 508 }, "direction": 0 },
+
+    { "_n": "Cooking Fire — south of the allotment, just outside the south fence stub. Walk through the south gap (149..151,652) and the fire is right there. Closes the farm/cook/eat loop.",
+      "id": 1313, "pos": { "X": 150, "Y": 654 }, "direction": 0 }
   ]
 }

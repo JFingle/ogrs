@@ -1,0 +1,23 @@
+# OGRS item: Baked Potato.
+# Cook a raw Potato on a Cooking Fire (1313) or Goblin Firepit (1307).
+# Eats for +4 HP. eat_heals goes through the OGRS edible-injection hook
+# in EntityHandler.loadOgrsContentItems(), so the standard upstream
+# Eating plugin handles the right-click "Eat" verb without OGRS-specific
+# eat code.
+#
+# Sprite reuses items:60 (cookedmeat blob shape) tinted golden brown.
+
+id: 1601
+name: Baked Potato
+description: A potato baked golden in the embers. Smells of earth and salt.
+command: "Eat"
+stackable: false
+untradeable: false
+members_only: false
+noteable: true
+base_price: 8
+picture_mask: 0xC68642
+sprite:
+  id: 60
+  location: "items:60"
+eat_heals: 4

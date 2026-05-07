@@ -1,0 +1,18 @@
+# OGRS item: Charred Tomato.
+# Cooked from a raw Tomato. +5 HP on eat — best of the three.
+# Sprite items:60 + dark-red tint.
+
+id: 1603
+name: Charred Tomato
+description: A blistered, smoky tomato fresh off the embers. Hot, sweet, and tart.
+command: "Eat"
+stackable: false
+untradeable: false
+members_only: false
+noteable: true
+base_price: 12
+picture_mask: 0x8B0000
+sprite:
+  id: 60
+  location: "items:60"
+eat_heals: 5

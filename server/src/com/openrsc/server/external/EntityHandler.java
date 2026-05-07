@@ -207,6 +207,8 @@ public final class EntityHandler {
 		itemUnIdentHerb = (HashMap<Integer, ItemUnIdentHerbDef>) getPersistenceManager().load(getPath("defs/extras/ItemUnIdentHerbDef.xml"));
 		itemHerb = (HashMap<Integer, ItemHerbDef>) getPersistenceManager().load(getPath("defs/extras/ItemHerbDef.xml"));
 		itemEdibleHeals = (HashMap<Integer, Integer>) getPersistenceManager().load(getPath("defs/extras/ItemEdibleHeals.xml"));
+		// OGRS — merge in eat_heals from content/items/*.yaml.
+		hookOgrsContentEdibles();
 		itemCooking = (HashMap<Integer, ItemCookingDef>) getPersistenceManager().load(getPath("defs/extras/ItemCookingDef.xml"));
 		itemPerfectCooking = (HashMap<Integer, ItemPerfectCookingDef>) getPersistenceManager().load(getPath("defs/extras/ItemPerfectCookingDef.xml"));
 		itemSmelting = (HashMap<Integer, ItemSmeltingDef>) getPersistenceManager().load(getPath("defs/extras/ItemSmeltingDef.xml"));
@@ -308,6 +310,10 @@ public final class EntityHandler {
 	 * tail so the client {@code getItemDef(id)} bounds-check passes for OGRS
 	 * items without falling through to the Unobtanium default.
 	 */
+	/** OGRS item entries loaded in phase 1; reused by the edible-heals
+	 *  injection after itemEdibleHeals XML is loaded. */
+	private java.util.List<OgrsContentItemLoader.Entry> ogrsItemEntries = java.util.Collections.emptyList();
+
 	private void loadOgrsContentItems() {
 		try {
 			final OgrsContentItemLoader loader = new OgrsContentItemLoader();
@@ -317,10 +323,30 @@ public final class EntityHandler {
 			for (final OgrsContentItemLoader.Entry e : entries) {
 				items.add(e.def);
 			}
+			ogrsItemEntries = entries;
 			LOGGER.info("OGRS: appended " + entries.size() + " YAML item def(s) to the registry");
 		} catch (Exception e) {
 			LOGGER.error("OGRS YAML item loader failed", e);
 		}
+	}
+
+	/**
+	 * Inject any OGRS items declaring {@code eat_heals: N} into the upstream
+	 * {@code itemEdibleHeals} map. Runs AFTER the XML map is loaded so we don't
+	 * get clobbered. The standard upstream Eating plugin reads through this
+	 * map via Item.isEdible() / Item.eatingHeals() — adding entries here is
+	 * all we need for the Eat verb to land HP without OGRS-specific eat code.
+	 */
+	private void hookOgrsContentEdibles() {
+		if (ogrsItemEntries.isEmpty()) return;
+		int n = 0;
+		for (final OgrsContentItemLoader.Entry e : ogrsItemEntries) {
+			if (e.eatHeals > 0) {
+				itemEdibleHeals.put(e.id, e.eatHeals);
+				n++;
+			}
+		}
+		if (n > 0) LOGGER.info("OGRS: registered " + n + " edible item(s) with the engine eat-heal table");
 	}
 
 	private void loadOgrsContentScenery() {

@@ -1,0 +1,18 @@
+# OGRS item: Roasted Onion.
+# Cooked from a raw Onion. +3 HP on eat.
+# Sprite items:18 (cabbage round) tinted amber.
+
+id: 1602
+name: Roasted Onion
+description: A whole onion roasted soft and sweet. Skin papery, heart yielding.
+command: "Eat"
+stackable: false
+untradeable: false
+members_only: false
+noteable: true
+base_price: 6
+picture_mask: 0xC07028
+sprite:
+  id: 18
+  location: "items:18"
+eat_heals: 3

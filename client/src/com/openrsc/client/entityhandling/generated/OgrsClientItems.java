@@ -46,6 +46,18 @@ public final class OgrsClientItems {
 		// id 1600 — from content/items/cracked_shaman_staff.yaml
 		items.add(new ItemDef("Cracked Shaman Staff", "A goblin shaman's staff. The bone tip thrums when held — a small reservoir of channeled life.", "Channel", 1, 91, "items:91", false, false, 0, 0x6B8E5E, false, true, false, i++));
 
+		// id 1601 — from content/items/baked_potato.yaml
+		items.add(new ItemDef("Baked Potato", "A potato baked golden in the embers. Smells of earth and salt.", "Eat", 8, 60, "items:60", false, false, 0, 0xC68642, false, false, true, i++));
+
+		// id 1602 — from content/items/roasted_onion.yaml
+		items.add(new ItemDef("Roasted Onion", "A whole onion roasted soft and sweet. Skin papery, heart yielding.", "Eat", 6, 18, "items:18", false, false, 0, 0xC07028, false, false, true, i++));
+
+		// id 1603 — from content/items/charred_tomato.yaml
+		items.add(new ItemDef("Charred Tomato", "A blistered, smoky tomato fresh off the embers. Hot, sweet, and tart.", "Eat", 12, 60, "items:60", false, false, 0, 0x8B0000, false, false, true, i++));
+
+		// id 1604 — from content/items/burnt_crop.yaml
+		items.add(new ItemDef("Burnt Crop", "An unrecognisable lump of charcoal that used to be food.", "", 1, 64, "items:64", false, false, 0, 0x2A1A0E, false, true, false, i++));
+
 		return i;
 	}
 }

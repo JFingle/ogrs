@@ -53,20 +53,26 @@ public class OgrsContentItemLoader {
 
 	private static final Logger LOGGER = LogManager.getLogger(OgrsContentItemLoader.class);
 
-	/** A loaded item: declared id + parsed def + sprite hints for client codegen. */
+	/** A loaded item: declared id + parsed def + sprite hints for client
+	 *  codegen + optional metadata (eat heals, etc) for engine-side hooks. */
 	public static final class Entry {
 		public final int id;
 		public final ItemDefinition def;
 		public final int spriteId;
 		public final String spriteLocation;
 		public final int pictureMask;
+		/** HP restored when eaten. 0 = not edible. Wired into upstream's
+		 *  itemEdibleHeals map by EntityHandler so the standard Eating
+		 *  plugin handles the eat verb without OGRS-specific code. */
+		public final int eatHeals;
 		public final String sourceFile;
-		Entry(int id, ItemDefinition def, int spriteId, String spriteLocation, int pictureMask, String sourceFile) {
+		Entry(int id, ItemDefinition def, int spriteId, String spriteLocation, int pictureMask, int eatHeals, String sourceFile) {
 			this.id = id;
 			this.def = def;
 			this.spriteId = spriteId;
 			this.spriteLocation = spriteLocation;
 			this.pictureMask = pictureMask;
+			this.eatHeals = eatHeals;
 			this.sourceFile = sourceFile;
 		}
 	}
@@ -163,8 +169,9 @@ public class OgrsContentItemLoader {
 		final String spriteLocation = (String) sprite.getOrDefault("location", "items:" + spriteId);
 
 		final int pictureMask = asHexInt(data, "picture_mask", 0);
+		final int eatHeals = asInt(data, "eat_heals", 0);
 
-		return new Entry(id, def, spriteId, spriteLocation, pictureMask, filename);
+		return new Entry(id, def, spriteId, spriteLocation, pictureMask, eatHeals, filename);
 	}
 
 	private static String req(final Map<String, Object> m, final String key, final String filename) {
