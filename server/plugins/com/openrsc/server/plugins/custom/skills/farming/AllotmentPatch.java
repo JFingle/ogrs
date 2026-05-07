@@ -10,6 +10,9 @@ import com.openrsc.server.model.world.World;
 import com.openrsc.server.plugins.triggers.OpLocTrigger;
 import com.openrsc.server.util.rsc.DataConversions;
 
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+
 import static com.openrsc.server.plugins.Functions.give;
 import static com.openrsc.server.plugins.Functions.ifheld;
 
@@ -39,7 +42,17 @@ import static com.openrsc.server.plugins.Functions.ifheld;
 public class AllotmentPatch implements OpLocTrigger {
 
 	private static final int WEEDY_PATCH_ID = 1296;
-	private static final int EMPTY_BED_ID = 1301;
+	static final int EMPTY_BED_ID = 1301;
+	static final int COMPOSTED_BED_ID = 1306;
+
+	/** Tiles that were planted from a Composted Bed. Used at harvest-time
+	 *  to roll bonus yield. In-memory only — when persistence lands this
+	 *  becomes a column on the per-patch row. */
+	static final Set<String> boostedTiles = ConcurrentHashMap.newKeySet();
+
+	private static String tileKey(final Point p) { return p.getX() + "," + p.getY(); }
+	static void markBoosted(final Point p) { boostedTiles.add(tileKey(p)); }
+	static boolean takeBoosted(final Point p) { return boostedTiles.remove(tileKey(p)); }
 
 	// Per-crop growing/ready ids. The growing → ready promotion needs to
 	// know which ready id to swap to, hence the 2-element pairs.
@@ -66,7 +79,8 @@ public class AllotmentPatch implements OpLocTrigger {
 	@Override
 	public boolean blockOpLoc(final Player player, final GameObject obj, final String command) {
 		final int id = obj.getID();
-		return id == WEEDY_PATCH_ID || id == EMPTY_BED_ID || isGrowing(id) || isReady(id);
+		return id == WEEDY_PATCH_ID || id == EMPTY_BED_ID || id == COMPOSTED_BED_ID
+			|| isGrowing(id) || isReady(id);
 	}
 
 	@Override
@@ -76,6 +90,8 @@ public class AllotmentPatch implements OpLocTrigger {
 			rake(player, obj);
 		} else if (id == EMPTY_BED_ID && command.equalsIgnoreCase("inspect")) {
 			player.message("@gre@The bed is bare and turned. Use a seed on it to plant.");
+		} else if (id == COMPOSTED_BED_ID && command.equalsIgnoreCase("inspect")) {
+			player.message("@gre@The bed is dressed with dark compost. Use a seed on it to plant.");
 		} else if (isGrowing(id) && command.equalsIgnoreCase("inspect")) {
 			player.message("@gre@The seedlings are still settling in. Give them a few minutes.");
 		} else if (isReady(id) && command.equalsIgnoreCase("harvest")) {
@@ -133,7 +149,12 @@ public class AllotmentPatch implements OpLocTrigger {
 		world.replaceGameObject(obj, weedy);
 
 		final int cropId = harvestCropId(readyId);
-		final int yield = rollYield(readyId);
+		int yield = rollYield(readyId);
+		final boolean boosted = takeBoosted(loc);
+		if (boosted) {
+			// Composted boost: add a 2-4 bonus on top of the base roll.
+			yield += DataConversions.random(2, 4);
+		}
 		if (cropId != ItemId.NOTHING.id() && yield > 0) {
 			// give() handles non-stackable items by adding `yield` separate
 			// inventory entries, which is what we want for potato/onion/tomato.
@@ -147,7 +168,7 @@ public class AllotmentPatch implements OpLocTrigger {
 		}
 		// XP scales with the size of the haul — harder to harvest more.
 		player.getSkills().addExperience(Skill.FARMING.id(), HARVEST_XP_DISPLAY * yield * 4);
-		player.message("@gre@You pull " + yield + " from the row.");
+		player.message("@gre@You pull " + yield + " from the row" + (boosted ? " — the compost did its work." : "."));
 		player.message("@gre@+" + (HARVEST_XP_DISPLAY * yield) + " Farming XP. The bed is overgrown again.");
 	}
 

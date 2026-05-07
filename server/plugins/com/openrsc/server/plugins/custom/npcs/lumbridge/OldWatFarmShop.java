@@ -43,7 +43,12 @@ public final class OldWatFarmShop extends AbstractShop {
 		new Item(ItemId.POTATO.id(), 5),
 	};
 
-	private final Shop baseShop = new Shop(false, 30000, 130, 40, 3, stock);
+	// (general, respawnRate, buyMod, sellMod, priceMod, items)
+	// sellMod=100: shop pays 100% of basePrice when player sells. With Potato
+	// basePrice=1 the player gets exactly 1gp/potato — gives a sink for
+	// surplus harvest so the testing/economy loop closes. Onion (basePrice=3)
+	// → 3gp; Tomato (basePrice=4) → 4gp. Buy prices unchanged at 130%.
+	private final Shop baseShop = new Shop(false, 30000, 130, 100, 3, stock);
 	private final Shop shop = new Shop(baseShop, NAME, OWNER_NPC_ID);
 
 	@Override public Shop[] getShops(World w) { return new Shop[]{shop}; }

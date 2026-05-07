@@ -17,4 +17,8 @@ type: 0
 width: 1
 height: 1
 ground_item_var: 0
-model: mudpatch
+# upstream uses dugupsoil1 with type 0 for "Damaged Ground / post-harvest"
+# (entityhandler.java line 6922) — flatter than mudpatch's mound shape.
+# Backlog: a true flat ground sprite; sparky noted RSC clones often have
+# proper farm patch art that could be ported in.
+model: dugupsoil1

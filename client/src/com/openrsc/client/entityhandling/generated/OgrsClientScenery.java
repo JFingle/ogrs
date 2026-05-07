@@ -36,7 +36,7 @@ public final class OgrsClientScenery {
 		objects.add(new GameObjectDef("Allotment", "A row of mature potato plants, leaves wide and waxy. They want pulling.", "Harvest", "Examine", 0, 1, 1, 0, "potatoplant", ++i));
 
 		// id 1301 — from content/scenery/allotment_empty_bed.yaml
-		objects.add(new GameObjectDef("Allotment Bed", "Bare earth, freshly turned. It's ready for a seed.", "", "Inspect", 0, 1, 1, 0, "mudpatch", ++i));
+		objects.add(new GameObjectDef("Allotment Bed", "Bare earth, freshly turned. It's ready for a seed.", "", "Inspect", 0, 1, 1, 0, "dugupsoil1", ++i));
 
 		// id 1302 — from content/scenery/allotment_growing_onion.yaml
 		objects.add(new GameObjectDef("Allotment", "Onion seedlings just breaking the soil. Small, pungent green tips.", "Inspect", "Examine", 0, 1, 1, 0, "dugupsoil2", ++i));
@@ -49,6 +49,9 @@ public final class OgrsClientScenery {
 
 		// id 1305 — from content/scenery/allotment_ready_tomato.yaml
 		objects.add(new GameObjectDef("Allotment", "Plump red tomatoes hanging heavy on the vines. Ready to pick.", "Harvest", "Examine", 0, 1, 1, 0, "tomatoplant", ++i));
+
+		// id 1306 — from content/scenery/allotment_composted_bed.yaml
+		objects.add(new GameObjectDef("Composted Bed", "A bed dressed with dark compost. Crops will swell on this earth.", "", "Inspect", 0, 1, 1, 0, "dugupsoil2", ++i));
 
 		return i;
 	}

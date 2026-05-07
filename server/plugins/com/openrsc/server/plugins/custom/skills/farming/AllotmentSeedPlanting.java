@@ -25,11 +25,11 @@ import com.openrsc.server.plugins.triggers.UseLocTrigger;
  */
 public final class AllotmentSeedPlanting implements UseLocTrigger {
 
-	private static final int EMPTY_BED_ID = 1301;
-
 	@Override
 	public boolean blockUseLoc(final Player player, final GameObject obj, final Item item) {
-		return obj.getID() == EMPTY_BED_ID && pairFor(item.getCatalogId()) != null;
+		final int id = obj.getID();
+		final boolean isPlantableBed = id == AllotmentPatch.EMPTY_BED_ID || id == AllotmentPatch.COMPOSTED_BED_ID;
+		return isPlantableBed && pairFor(item.getCatalogId()) != null;
 	}
 
 	@Override
@@ -37,11 +37,19 @@ public final class AllotmentSeedPlanting implements UseLocTrigger {
 		final int[] pair = pairFor(item.getCatalogId());
 		if (pair == null) return; // belt-and-suspenders; blockUseLoc already filtered
 
-		// Double-check the bed is still empty before consuming the seed —
+		// Double-check the bed is still plantable before consuming the seed —
 		// avoids losing a seed if another player planted in the same tick.
-		if (obj.getID() != EMPTY_BED_ID) {
+		final int id = obj.getID();
+		if (id != AllotmentPatch.EMPTY_BED_ID && id != AllotmentPatch.COMPOSTED_BED_ID) {
 			player.message("@yel@That bed isn't ready for planting.");
 			return;
+		}
+
+		// If planting on a composted bed, mark the tile so the harvest path
+		// rolls a yield bonus. Marker is on the tile, not the obj — both bed
+		// states get swapped to a growing state immediately.
+		if (id == AllotmentPatch.COMPOSTED_BED_ID) {
+			AllotmentPatch.markBoosted(obj.getLocation());
 		}
 
 		player.getCarriedItems().remove(new Item(item.getCatalogId(), 1));

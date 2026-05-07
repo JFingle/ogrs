@@ -1,0 +1,21 @@
+# OGRS scenery: Allotment Bed (composted).
+#
+# Set when the player uses Compost on an Empty Allotment Bed (1301).
+# Visually distinct from the empty bed (uses dugupsoil2 instead of
+# dugupsoil1 — different mound shading) so the player has a feedback
+# signal that "yes, the compost landed."
+#
+# Behaviour: behaves like an empty bed for planting (UseSeed accepts).
+# Planting on a composted bed marks the tile as boosted in
+# AllotmentPatch.boostedTiles; harvest then doubles the base yield roll.
+
+id: 1306
+name: Composted Bed
+description: A bed dressed with dark compost. Crops will swell on this earth.
+command1: ""
+command2: "Inspect"
+type: 0
+width: 1
+height: 1
+ground_item_var: 0
+model: dugupsoil2
