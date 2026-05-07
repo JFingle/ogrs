@@ -1623,7 +1623,9 @@ public class SpellHandler implements PayloadProcessor<SpellStruct, OpcodeIn> {
 						if (!checkAndRemoveRunes(getPlayer(), spell, capeActivated)) {
 							return;
 						}
-						getPlayer().getWorld().getServer().getGameEventHandler().add(new ProjectileEvent(getPlayer().getWorld(), getPlayer(), affectedMob, damaga, 1, setChasing));
+						// OGRS — Crumble Undead is themed for skeletons/zombies/ghosts;
+						// SKULL projectile reads on-theme vs. the generic MAGIC orb.
+						getPlayer().getWorld().getServer().getGameEventHandler().add(new ProjectileEvent(getPlayer().getWorld(), getPlayer(), affectedMob, damaga, com.openrsc.server.util.OgrsProjectileTypes.SKULL, setChasing));
 						finalizeSpell(getPlayer(), spell, DEFAULT);
 						return;
 
@@ -1715,7 +1717,10 @@ public class SpellHandler implements PayloadProcessor<SpellStruct, OpcodeIn> {
 
 							godSpellObject(getPlayer(), affectedMob, spellEnum);
 						}
-						getPlayer().getWorld().getServer().getGameEventHandler().add(new ProjectileEvent(getPlayer().getWorld(), getPlayer(), affectedMob, CombatFormula.calculateGodSpellDamage(getPlayer()), 1, setChasing));
+						// OGRS — per-god projectile flavour (Saradomin holy ORB,
+						// Guthix nature GNOMEBALL, Zamorak chaos SKULL).
+						final int ogrsGodType = com.openrsc.server.util.OgrsProjectileTypes.forGodSpell(spellEnum);
+						getPlayer().getWorld().getServer().getGameEventHandler().add(new ProjectileEvent(getPlayer().getWorld(), getPlayer(), affectedMob, CombatFormula.calculateGodSpellDamage(getPlayer()), ogrsGodType, setChasing));
 						finalizeSpell(getPlayer(), spell, DEFAULT, giveExp);
 						break;
 
@@ -1802,7 +1807,12 @@ public class SpellHandler implements PayloadProcessor<SpellStruct, OpcodeIn> {
 
 						int damage = CombatFormula.calculateMagicDamage(max);
 
-						getPlayer().getWorld().getServer().getGameEventHandler().add(new ProjectileEvent(getPlayer().getWorld(), getPlayer(), affectedMob, damage, 1, setChasing));
+						// OGRS — pick a projectile sprite by spell name. Wind/Air
+						// spells become ORB, Earth becomes SPIKEBALL, bolts get
+						// the arrow shape, Crumble/Curse get SKULL, alchs/heals
+						// get GNOMEBALL — defaults fall through to MAGIC (1).
+						final int ogrsCombatType = com.openrsc.server.util.OgrsProjectileTypes.forSpellName(spell.getName());
+						getPlayer().getWorld().getServer().getGameEventHandler().add(new ProjectileEvent(getPlayer().getWorld(), getPlayer(), affectedMob, damage, ogrsCombatType, setChasing));
 						getPlayer().setKillType(KillType.MAGIC);
 						finalizeSpell(getPlayer(), spell, DEFAULT);
 						break;

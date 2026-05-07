@@ -217,7 +217,11 @@ public class ThrowingEvent extends GameTickEvent {
 
 		player.setAttribute("can_range_again", getWorld().getServer().getCurrentTick() + delay);
 		getOwner().setKillType(KillType.RANGED);
-		getWorld().getServer().getGameEventHandler().add(new ProjectileEvent(getWorld(), player, target, damage, 2));
+		// OGRS — variety per throwable: darts go BLANK so they're a flicker
+		// rather than an arrow shape, knives stay as RANGED, poison variants
+		// pick up SKULL via the resolver (see OgrsProjectileTypes.forArrow).
+		final int ogrsType = com.openrsc.server.util.OgrsProjectileTypes.forArrow(throwingID);
+		getWorld().getServer().getGameEventHandler().add(new ProjectileEvent(getWorld(), player, target, damage, ogrsType));
 		deliveredFirstProjectile = true;
 	}
 }

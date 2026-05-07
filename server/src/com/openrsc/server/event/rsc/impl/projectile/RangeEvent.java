@@ -167,7 +167,12 @@ public class RangeEvent extends GameTickEvent {
 
 		player.setAttribute("can_range_again", getWorld().getServer().getCurrentTick() + delay);
 		ActionSender.sendSound(player, "shoot");
-		getWorld().getServer().getGameEventHandler().add(new ProjectileEvent(getWorld(), player, target, damage, 2));
+		// OGRS — pick a projectile sprite by ammo tier so the player sees their
+		// gear progression in flight (mithril shimmers, adamantite is a heavy
+		// spikeball, rune is a skull, poison variants are skulls regardless of
+		// tier). Default falls through to RANGED (2) — same as upstream.
+		final int ogrsType = com.openrsc.server.util.OgrsProjectileTypes.forArrow(ammoId);
+		getWorld().getServer().getGameEventHandler().add(new ProjectileEvent(getWorld(), player, target, damage, ogrsType));
 	}
 
 	private int takeAmmoFromInventory(final int weaponId, final boolean isCrossbow) {
