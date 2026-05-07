@@ -293,7 +293,11 @@ public final class mudclient implements Runnable {
 	public int showUiTab = 0;
 	public boolean topMouseMenuVisible = false;
 	public static ScalingAlgorithm scalingType = ScalingAlgorithm.INTEGER_SCALING;
-	public static float renderingScalar = 1.0f;
+	// OGRS: default the client to 2× scale at startup. Authentic RSC 1× is
+	// 512×334 — barely usable on modern monitors. The in-client scale dropdown
+	// (Options → Display) still lets the player pick 1× / 1.5× / 3× / etc.
+	// Change here to 3.0f or 4.0f for a larger default.
+	public static float renderingScalar = 2.0f;
 	public static float newRenderingScalar = 1.0f;
 	public static boolean scalarChangedSinceLogin = false;
 	public static List<Float> integerScalars = null;
