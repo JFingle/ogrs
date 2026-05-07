@@ -13,8 +13,8 @@ import com.openrsc.server.plugins.AbstractShop;
  * starter leather armour for new adventurers.
  */
 public final class LydiaCloth extends AbstractShop {
-	public static final String NAME = "Lydia's Cloth & Leather";
-	public static final int OWNER_NPC_ID = 851;
+	public static final String NAME = "Marigold's Cloth & Leather";
+	public static final int OWNER_NPC_ID = 840;
 
 	private final Item[] stock = new Item[]{
 		new Item(ItemId.NEEDLE.id(), 10),

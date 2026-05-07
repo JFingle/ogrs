@@ -13,8 +13,8 @@ import com.openrsc.server.plugins.AbstractShop;
  * OgrsAmbientVillagers; right-click "Trade" opens the shop.
  */
 public final class MiriamBakery extends AbstractShop {
-	public static final String NAME = "Miriam's Bakery";
-	public static final int OWNER_NPC_ID = 845;
+	public static final String NAME = "Edith's Bakery";
+	public static final int OWNER_NPC_ID = 838;
 
 	private final Item[] stock = new Item[]{
 		new Item(ItemId.BREAD.id(), 10),

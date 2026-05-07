@@ -36,7 +36,10 @@ import static com.openrsc.server.plugins.Functions.*;
  */
 public class BoazTheFarmer implements TalkNpcTrigger {
 
-	private static final int NPC_ID = 850;
+	// NPC: Old Wat the Farmer (renamed from "Boaz" for the project-identity
+	// pivot — themes over biblical names). Class file kept its original
+	// name; only the in-game NPC display name + id changed.
+	private static final int NPC_ID = 837;
 
 	private static final String CACHE_PLANT_AT = "ogrs_farm_plant_at";
 	/** Real-time growth duration. 30 seconds for testing; later layers
@@ -84,7 +87,6 @@ public class BoazTheFarmer implements TalkNpcTrigger {
 		final int option = multi(player, n,
 			"I'll plant a row for you.",
 			"What do you grow here?",
-			"Tell Ruth I said there's a pitcher of water by the gate.",
 			"Goodbye.");
 
 		if (option == 0) {
@@ -99,9 +101,6 @@ public class BoazTheFarmer implements TalkNpcTrigger {
 				"In good soil with steady hands you'll get a fine yield.",
 				"There's other crops about the wider lands — herbs, fruit, the sacred trees up north.",
 				"All in good time.");
-		} else if (option == 2) {
-			npcsay(player, n,
-				"Bless you, traveller. She'll be glad of it on a day like this.");
 		} else {
 			npcsay(player, n, "Walk well.");
 		}

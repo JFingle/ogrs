@@ -14,8 +14,8 @@ import com.openrsc.server.plugins.AbstractShop;
  * default Lumbridge general store doesn't always carry in stock.
  */
 public final class CalebSmithSupplies extends AbstractShop {
-	public static final String NAME = "Caleb's Smithing Supplies";
-	public static final int OWNER_NPC_ID = 848;
+	public static final String NAME = "Garth's Smithing Supplies";
+	public static final int OWNER_NPC_ID = 839;
 
 	private final Item[] stock = new Item[]{
 		new Item(ItemId.HAMMER.id(), 5),
