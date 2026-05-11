@@ -78,3 +78,4 @@ content/zones/_generated/
 **/*.pem
 **/*.key
 !**/public.key
+scripts/duckdns/duckdns.conf

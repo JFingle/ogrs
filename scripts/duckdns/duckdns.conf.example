@@ -1,0 +1,14 @@
+# OGRS — DuckDNS updater configuration template.
+#
+# Copy this file to duckdns.conf and fill in real values. duckdns.conf
+# is gitignored — your token never gets committed.
+#
+# To get the values:
+#   1. Sign in at https://www.duckdns.org (Google / GitHub / Twitter / Reddit)
+#   2. Pick a subdomain (e.g. "bh-ogrs") — that's DUCKDNS_DOMAINS
+#   3. The page shows your token at the top — copy that as DUCKDNS_TOKEN
+#
+# Multiple subdomains? Comma-separate (no spaces): "bh-ogrs,alt-name"
+
+DUCKDNS_DOMAINS="REPLACE_WITH_SUBDOMAIN_WITHOUT_DUCKDNS_ORG"
+DUCKDNS_TOKEN="REPLACE_WITH_DUCKDNS_TOKEN_UUID"
