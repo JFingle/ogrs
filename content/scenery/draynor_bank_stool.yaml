@@ -1,0 +1,15 @@
+# OGRS scenery: Draynor Bank Stool.
+# Decorative banker's stool behind the counter. type: 0 = no collision
+# so it can sit on a banker spawn tile without breaking pathing.
+# Reuses upstream `stool` model (sprite hunt deferred).
+
+id: 1314
+name: Banker's Stool
+description: A simple wooden stool, well-worn from long shifts behind the counter.
+command1: "WalkTo"
+command2: "Examine"
+type: 0
+width: 1
+height: 1
+ground_item_var: 0
+model: stool

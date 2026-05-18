@@ -1,61 +1,326 @@
 {
   "sceneries": [
     {
-      "_n": "OGRS Allotment — 4 plots in a 2x2 grid with 1-tile walking lanes between them. East of Lumbridge castle.",
-      "id": 1296, "pos": { "X": 149, "Y": 649 }, "direction": 0
+      "_n": "OGRS Allotment \u2014 4 plots in a 2x2 grid with 1-tile walking lanes between them. East of Lumbridge castle.",
+      "id": 1296,
+      "pos": {
+        "X": 149,
+        "Y": 649
+      },
+      "direction": 0
     },
-    { "id": 1296, "pos": { "X": 151, "Y": 649 }, "direction": 0 },
-    { "id": 1296, "pos": { "X": 149, "Y": 651 }, "direction": 0 },
-    { "id": 1296, "pos": { "X": 151, "Y": 651 }, "direction": 0 },
-
-    { "_n": "Compost heap — south-east corner outside the fence (model is 2x2, occupies 153..154 / 653..654).",
-      "id": 1297, "pos": { "X": 153, "Y": 653 }, "direction": 0 },
-
-    { "_n": "Garden fence — NORTH wall, 5 tiles. Direction 0 = fence runs east-west. Caps the top of the field.",
-      "id": 1298, "pos": { "X": 148, "Y": 648 }, "direction": 0 },
-    { "id": 1298, "pos": { "X": 149, "Y": 648 }, "direction": 0 },
-    { "id": 1298, "pos": { "X": 150, "Y": 648 }, "direction": 0 },
-    { "id": 1298, "pos": { "X": 151, "Y": 648 }, "direction": 0 },
-    { "id": 1298, "pos": { "X": 152, "Y": 648 }, "direction": 0 },
-
-    { "_n": "Garden fence — WEST wall, 3 tiles. Direction 1 = fence rotated to run north-south.",
-      "id": 1298, "pos": { "X": 148, "Y": 649 }, "direction": 1 },
-    { "id": 1298, "pos": { "X": 148, "Y": 650 }, "direction": 1 },
-    { "id": 1298, "pos": { "X": 148, "Y": 651 }, "direction": 1 },
-
-    { "_n": "Garden fence — EAST wall, 3 tiles. Direction 1.",
-      "id": 1298, "pos": { "X": 152, "Y": 649 }, "direction": 1 },
-    { "id": 1298, "pos": { "X": 152, "Y": 650 }, "direction": 1 },
-    { "id": 1298, "pos": { "X": 152, "Y": 651 }, "direction": 1 },
-
-    { "_n": "Garden fence — SOUTH stubs framing the entry. 2 tiles on each corner; the middle 3 tiles (149..151, 652) are the open gate the player walks through.",
-      "id": 1298, "pos": { "X": 148, "Y": 652 }, "direction": 0 },
-    { "id": 1298, "pos": { "X": 152, "Y": 652 }, "direction": 0 },
-
-    { "_n": "GOBLIN CAMP — east of Lumbridge, around (208, 497). Centerpiece firepit, cauldron, framing totems, scattered crates. Sets the stage for the Old-Wat's-Pouch quest hunt.",
-      "id": 1307, "pos": { "X": 208, "Y": 497 }, "direction": 0 },
-    { "_n": "Goblin Cauldron — beside the firepit (cooking).",
-      "id": 1308, "pos": { "X": 209, "Y": 498 }, "direction": 0 },
-    { "_n": "Goblin Totems — N, S, W, E of the camp marking the territory.",
-      "id": 1309, "pos": { "X": 208, "Y": 491 }, "direction": 0 },
-    { "id": 1309, "pos": { "X": 208, "Y": 504 }, "direction": 0 },
-    { "id": 1309, "pos": { "X": 202, "Y": 497 }, "direction": 0 },
-    { "id": 1309, "pos": { "X": 215, "Y": 497 }, "direction": 0 },
-    { "_n": "Goblin Crates — scattered loot/junk piles.",
-      "id": 1310, "pos": { "X": 206, "Y": 495 }, "direction": 0 },
-    { "id": 1310, "pos": { "X": 211, "Y": 502 }, "direction": 0 },
-    { "id": 1310, "pos": { "X": 213, "Y": 493 }, "direction": 0 },
-
-    { "_n": "Secondary firepit on the south side of the camp.",
-      "id": 1307, "pos": { "X": 213, "Y": 503 }, "direction": 0 },
-
-    { "_n": "Goblin Iron Veins — half-worked iron deposits scattered on the camp's rocky edges. Mining lvl 15 + pickaxe; respawn ~10s. Custom OgrsGoblinVein plugin handles them.",
-      "id": 1311, "pos": { "X": 204, "Y": 491 }, "direction": 0 },
-    { "id": 1311, "pos": { "X": 217, "Y": 493 }, "direction": 0 },
-    { "id": 1311, "pos": { "X": 203, "Y": 506 }, "direction": 0 },
-    { "id": 1311, "pos": { "X": 216, "Y": 508 }, "direction": 0 },
-
-    { "_n": "Cooking Fire — south of the allotment, just outside the south fence stub. Walk through the south gap (149..151,652) and the fire is right there. Closes the farm/cook/eat loop.",
-      "id": 1313, "pos": { "X": 150, "Y": 654 }, "direction": 0 }
+    {
+      "id": 1296,
+      "pos": {
+        "X": 151,
+        "Y": 649
+      },
+      "direction": 0
+    },
+    {
+      "id": 1296,
+      "pos": {
+        "X": 149,
+        "Y": 651
+      },
+      "direction": 0
+    },
+    {
+      "id": 1296,
+      "pos": {
+        "X": 151,
+        "Y": 651
+      },
+      "direction": 0
+    },
+    {
+      "_n": "Compost heap \u2014 south-east corner outside the fence (model is 2x2, occupies 153..154 / 653..654).",
+      "id": 1297,
+      "pos": {
+        "X": 153,
+        "Y": 653
+      },
+      "direction": 0
+    },
+    {
+      "_n": "Garden fence \u2014 NORTH wall, 5 tiles. Direction 0 = fence runs east-west. Caps the top of the field.",
+      "id": 1298,
+      "pos": {
+        "X": 148,
+        "Y": 648
+      },
+      "direction": 0
+    },
+    {
+      "id": 1298,
+      "pos": {
+        "X": 149,
+        "Y": 648
+      },
+      "direction": 0
+    },
+    {
+      "id": 1298,
+      "pos": {
+        "X": 150,
+        "Y": 648
+      },
+      "direction": 0
+    },
+    {
+      "id": 1298,
+      "pos": {
+        "X": 151,
+        "Y": 648
+      },
+      "direction": 0
+    },
+    {
+      "id": 1298,
+      "pos": {
+        "X": 152,
+        "Y": 648
+      },
+      "direction": 0
+    },
+    {
+      "_n": "Garden fence \u2014 WEST wall, 3 tiles. Direction 1 = fence rotated to run north-south.",
+      "id": 1298,
+      "pos": {
+        "X": 148,
+        "Y": 649
+      },
+      "direction": 1
+    },
+    {
+      "id": 1298,
+      "pos": {
+        "X": 148,
+        "Y": 650
+      },
+      "direction": 1
+    },
+    {
+      "id": 1298,
+      "pos": {
+        "X": 148,
+        "Y": 651
+      },
+      "direction": 1
+    },
+    {
+      "_n": "Garden fence \u2014 EAST wall, 3 tiles. Direction 1.",
+      "id": 1298,
+      "pos": {
+        "X": 152,
+        "Y": 649
+      },
+      "direction": 1
+    },
+    {
+      "id": 1298,
+      "pos": {
+        "X": 152,
+        "Y": 650
+      },
+      "direction": 1
+    },
+    {
+      "id": 1298,
+      "pos": {
+        "X": 152,
+        "Y": 651
+      },
+      "direction": 1
+    },
+    {
+      "_n": "Garden fence \u2014 SOUTH stubs framing the entry. 2 tiles on each corner; the middle 3 tiles (149..151, 652) are the open gate the player walks through.",
+      "id": 1298,
+      "pos": {
+        "X": 148,
+        "Y": 652
+      },
+      "direction": 0
+    },
+    {
+      "id": 1298,
+      "pos": {
+        "X": 152,
+        "Y": 652
+      },
+      "direction": 0
+    },
+    {
+      "_n": "GOBLIN CAMP \u2014 east of Lumbridge, around (208, 497). Centerpiece firepit, cauldron, framing totems, scattered crates. Sets the stage for the Old-Wat's-Pouch quest hunt.",
+      "id": 1307,
+      "pos": {
+        "X": 208,
+        "Y": 497
+      },
+      "direction": 0
+    },
+    {
+      "_n": "Goblin Cauldron \u2014 beside the firepit (cooking).",
+      "id": 1308,
+      "pos": {
+        "X": 209,
+        "Y": 498
+      },
+      "direction": 0
+    },
+    {
+      "_n": "Goblin Totems \u2014 N, S, W, E of the camp marking the territory.",
+      "id": 1309,
+      "pos": {
+        "X": 208,
+        "Y": 491
+      },
+      "direction": 0
+    },
+    {
+      "id": 1309,
+      "pos": {
+        "X": 208,
+        "Y": 504
+      },
+      "direction": 0
+    },
+    {
+      "id": 1309,
+      "pos": {
+        "X": 202,
+        "Y": 497
+      },
+      "direction": 0
+    },
+    {
+      "id": 1309,
+      "pos": {
+        "X": 215,
+        "Y": 497
+      },
+      "direction": 0
+    },
+    {
+      "_n": "Goblin Crates \u2014 scattered loot/junk piles.",
+      "id": 1310,
+      "pos": {
+        "X": 206,
+        "Y": 495
+      },
+      "direction": 0
+    },
+    {
+      "id": 1310,
+      "pos": {
+        "X": 211,
+        "Y": 502
+      },
+      "direction": 0
+    },
+    {
+      "id": 1310,
+      "pos": {
+        "X": 213,
+        "Y": 493
+      },
+      "direction": 0
+    },
+    {
+      "_n": "Secondary firepit on the south side of the camp.",
+      "id": 1307,
+      "pos": {
+        "X": 213,
+        "Y": 503
+      },
+      "direction": 0
+    },
+    {
+      "_n": "Goblin Iron Veins \u2014 half-worked iron deposits scattered on the camp's rocky edges. Mining lvl 15 + pickaxe; respawn ~10s. Custom OgrsGoblinVein plugin handles them.",
+      "id": 1311,
+      "pos": {
+        "X": 204,
+        "Y": 491
+      },
+      "direction": 0
+    },
+    {
+      "id": 1311,
+      "pos": {
+        "X": 217,
+        "Y": 493
+      },
+      "direction": 0
+    },
+    {
+      "id": 1311,
+      "pos": {
+        "X": 203,
+        "Y": 506
+      },
+      "direction": 0
+    },
+    {
+      "id": 1311,
+      "pos": {
+        "X": 216,
+        "Y": 508
+      },
+      "direction": 0
+    },
+    {
+      "_n": "Cooking Fire \u2014 south of the allotment, just outside the south fence stub. Walk through the south gap (149..151,652) and the fire is right there. Closes the farm/cook/eat loop.",
+      "id": 1313,
+      "pos": {
+        "X": 150,
+        "Y": 654
+      },
+      "direction": 0
+    },
+    {
+      "_n": "Draynor bank \u2014 banker's stool tucked behind the counter between the two westmost bankers.",
+      "id": 1314,
+      "pos": {
+        "X": 219,
+        "Y": 636
+      },
+      "direction": 0
+    },
+    {
+      "_n": "Draynor bank \u2014 coin sacks stacked in the SW corner behind the counter.",
+      "id": 1315,
+      "pos": {
+        "X": 217,
+        "Y": 637
+      },
+      "direction": 0
+    },
+    {
+      "_n": "Draynor bank \u2014 ledger shelf along the east wall behind the easternmost banker.",
+      "id": 1316,
+      "pos": {
+        "X": 220,
+        "Y": 638
+      },
+      "direction": 0
+    },
+    {
+      "_n": "Draynor bank \u2014 wall torch on the north wall, behind the counter.",
+      "id": 1317,
+      "pos": {
+        "X": 218,
+        "Y": 634
+      },
+      "direction": 0
+    },
+    {
+      "_n": "Draynor bank \u2014 \"Bank of Gielinor \u2014 Draynor Branch\" notice posted just outside the south entrance.",
+      "id": 1318,
+      "pos": {
+        "X": 218,
+        "Y": 640
+      },
+      "direction": 0
+    }
   ]
 }

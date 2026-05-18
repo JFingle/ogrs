@@ -1,0 +1,14 @@
+# OGRS scenery: Draynor Bank Coin Sacks.
+# Sacks of coins stacked behind the counter. type: 0 — ambient detail.
+# Reuses upstream `sacks` model (sprite hunt deferred).
+
+id: 1315
+name: Coin Sacks
+description: Heavy linen sacks, drawstrings cinched tight. Customer deposits, waiting to be filed.
+command1: "WalkTo"
+command2: "Examine"
+type: 0
+width: 1
+height: 1
+ground_item_var: 0
+model: sacks

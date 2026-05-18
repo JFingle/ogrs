@@ -74,6 +74,21 @@ public final class OgrsClientScenery {
 		// id 1313 — from content/scenery/cooking_fire.yaml
 		objects.add(new GameObjectDef("Cooking Fire", "A small steady cookfire. Good for crisping a potato or charring a tomato.", "WalkTo", "Examine", 0, 1, 1, 0, "firea1", ++i));
 
+		// id 1314 — from content/scenery/draynor_bank_stool.yaml
+		objects.add(new GameObjectDef("Banker's Stool", "A simple wooden stool, well-worn from long shifts behind the counter.", "WalkTo", "Examine", 0, 1, 1, 0, "stool", ++i));
+
+		// id 1315 — from content/scenery/draynor_bank_coin_sacks.yaml
+		objects.add(new GameObjectDef("Coin Sacks", "Heavy linen sacks, drawstrings cinched tight. Customer deposits, waiting to be filed.", "WalkTo", "Examine", 0, 1, 1, 0, "sacks", ++i));
+
+		// id 1316 — from content/scenery/draynor_bank_ledger_shelf.yaml
+		objects.add(new GameObjectDef("Ledger Shelf", "Row after row of leather-bound ledgers, each one a record of someone's small fortune.", "WalkTo", "Examine", 0, 1, 1, 0, "bookcase", ++i));
+
+		// id 1317 — from content/scenery/draynor_bank_wall_torch.yaml
+		objects.add(new GameObjectDef("Wall Torch", "A pitch-soaked torch in an iron sconce, guttering low. Smells faintly of resin.", "WalkTo", "Examine", 0, 1, 1, 0, "torcha1", ++i));
+
+		// id 1318 — from content/scenery/draynor_bank_notice.yaml
+		objects.add(new GameObjectDef("Bank Notice", "Painted in neat script: \"Bank of Gielinor — Draynor Branch. Open dawn to dusk. No fish on the counter.\"", "Read", "Examine", 0, 1, 1, 0, "signpost", ++i));
+
 		return i;
 	}
 }

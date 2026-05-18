@@ -1,0 +1,15 @@
+# OGRS scenery: Draynor Bank Wall Torch.
+# Wall-mounted lit torch. Reuses upstream `torcha1` model (the animated
+# variant — same one used in dungeon walls). type: 0 so we can place
+# it on a wall-adjacent floor tile without blocking pathing.
+
+id: 1317
+name: Wall Torch
+description: A pitch-soaked torch in an iron sconce, guttering low. Smells faintly of resin.
+command1: "WalkTo"
+command2: "Examine"
+type: 0
+width: 1
+height: 1
+ground_item_var: 0
+model: torcha1

@@ -1,0 +1,15 @@
+# OGRS scenery: Draynor Bank Ledger Shelf.
+# Tall bookcase holding the bank's ledgers. Reuses upstream `bookcase`
+# model. type: 0 keeps the tile walkable so we don't accidentally trap
+# bankers against a wall when the placement is off by a tile.
+
+id: 1316
+name: Ledger Shelf
+description: Row after row of leather-bound ledgers, each one a record of someone's small fortune.
+command1: "WalkTo"
+command2: "Examine"
+type: 0
+width: 1
+height: 1
+ground_item_var: 0
+model: bookcase

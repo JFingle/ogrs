@@ -1,0 +1,14 @@
+# OGRS scenery: Draynor Bank Notice.
+# Posted sign outside the entrance. Reuses upstream `signpost` model.
+# First place a player encounters when they approach the building.
+
+id: 1318
+name: Bank Notice
+description: "Painted in neat script: \"Bank of Gielinor — Draynor Branch. Open dawn to dusk. No fish on the counter.\""
+command1: "Read"
+command2: "Examine"
+type: 0
+width: 1
+height: 1
+ground_item_var: 0
+model: signpost
