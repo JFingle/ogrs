@@ -5759,16 +5759,21 @@ public final class mudclient implements Runnable {
 					}
 				} else if (this.inputX_Action == InputXAction.BANK_WITHDRAW) {
 					try {
+						// OGRS — save lastXAmount unconditionally so the new
+						// quantity-mode X button can prime the value without
+						// having a bank slot pre-selected. Auto-fire the
+						// withdraw only when a slot IS already selected (the
+						// pre-existing right-click flow's invariant).
+						if (str.length() > 10) {
+							str = str.substring(str.length() - 10);
+						}
+						int var4 = Integer.MAX_VALUE;
+						long intOverflowCheck = Long.parseLong(str);
+						if (intOverflowCheck < Integer.MAX_VALUE) {
+							var4 = Integer.parseInt(str);
+						}
+						this.bank.lastXAmount = var4;
 						if (this.bank.selectedBankSlot >= 0) {
-							if (str.length() > 10) {
-								str = str.substring(str.length() - 10);
-							}
-							int var4 = Integer.MAX_VALUE;
-							long intOverflowCheck = Long.parseLong(str);
-							if (intOverflowCheck < Integer.MAX_VALUE) {
-								var4 = Integer.parseInt(str);
-							}
-							this.bank.lastXAmount = var4;
 							bank.sendWithdraw(var4);
 						}
 					} catch (NumberFormatException var9) {

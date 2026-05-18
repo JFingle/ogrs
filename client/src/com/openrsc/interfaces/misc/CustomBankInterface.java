@@ -34,6 +34,11 @@ public final class CustomBankInterface extends BankInterface {
 	private boolean saveXAmount = false;
 	private boolean rightClickMenu;
 	private int organizeMode = 0;
+	// OGRS — OSRS-style quantity selector. Left-click on a bank item withdraws
+	// this many; right-click still exposes the full 1/5/10/50/X/All menu.
+	// quantityMode: 0=1, 1=5, 2=10, 3=X, 4=All. Mode 3 reads lastXAmount.
+	private int quantityMode = 0;
+	private int defaultWithdrawAmount = 1;
 	private boolean equipmentMode = false;
 	private boolean presetMode = false;
 	private int rightClickMenuX;
@@ -221,6 +226,10 @@ public final class CustomBankInterface extends BankInterface {
 		int modeWidth = Config.S_WANT_EQUIPMENT_TAB ? 55 : 75;
 		int modeOffset = x + (Config.S_WANT_EQUIPMENT_TAB ? 162 : 112);
 		int textStart = modeOffset + modeWidth / 2 - 14;
+		// OGRS — quantity selector geometry. Five buttons in roughly the same
+		// horizontal span the old rearrange-mode strip used (3 * modeWidth).
+		int qtyButtonWidth = (modeWidth * 3 - 4) / 5;
+		int qtyStripWidth = qtyButtonWidth * 5 - 4;
 
 		if (mc.getMouseClick() != 0 || mc.getMouseButtonDownTime() >= 0) {
 			if (mc.getMouseX() > x + width || mc.getMouseX() < x
@@ -263,15 +272,32 @@ public final class CustomBankInterface extends BankInterface {
 				} else if (!equipmentMode && mc.getMouseX() >= x + 423 && mc.getMouseX() <= x + 498 && mc.getMouseY() >= y + 206
 					&& mc.getMouseY() <= y + 220) {
 					swapNoteMode = true;
-				} else if (mc.getMouseX() >= modeOffset && mc.getMouseX() <= modeOffset + modeWidth && mc.getMouseY() >= y + 206
-					&& mc.getMouseY() <= y + 220) {
-					organizeMode = 1;
-				} else if (mc.getMouseX() >= modeOffset + modeWidth && mc.getMouseX() <= modeOffset + 2 * modeWidth && mc.getMouseY() >= y + 206
-					&& mc.getMouseY() <= y + 220) {
-					organizeMode = 2;
-				} else if (mc.getMouseX() >= modeOffset + 2 * modeWidth && mc.getMouseX() <= modeOffset + 3 * modeWidth && mc.getMouseY() >= y + 206
-					&& mc.getMouseY() <= y + 220) {
-					organizeMode = 0;
+				} else if (mc.getMouseY() >= y + 206 && mc.getMouseY() <= y + 220
+					&& mc.getMouseX() >= modeOffset && mc.getMouseX() <= modeOffset + qtyStripWidth) {
+					// OGRS — quantity selector buttons (replaces upstream's
+					// Rearrange-mode Swap/Insert/None strip). qtyStripWidth /
+					// qtyButtonWidth are mirrored exactly in the render block.
+					int hitIndex = (mc.getMouseX() - modeOffset) / qtyButtonWidth;
+					if (hitIndex < 0) hitIndex = 0;
+					if (hitIndex > 4) hitIndex = 4;
+					quantityMode = hitIndex;
+					switch (hitIndex) {
+						case 0: defaultWithdrawAmount = 1; break;
+						case 1: defaultWithdrawAmount = 5; break;
+						case 2: defaultWithdrawAmount = 10; break;
+						case 3:
+							// Prompt for a custom amount; saveXAmount=true means
+							// the entered value lands in lastXAmount but does
+							// NOT auto-withdraw — the next item click uses it.
+							// mc.setMouseClick(0) is load-bearing — without it,
+							// the same click that opens the prompt re-registers
+							// on the prompt's first widget and instantly closes it.
+							saveXAmount = true;
+							mc.showItemModX(InputXPrompt.bankWithdrawX, InputXAction.BANK_WITHDRAW, true);
+							mc.setMouseClick(0);
+							break;
+						case 4: defaultWithdrawAmount = Integer.MAX_VALUE; break;
+					}
 				}
 			}
 		}
@@ -423,7 +449,12 @@ public final class CustomBankInterface extends BankInterface {
 								selectedBankSlot = -1;
 								rightClickMenu = false;
 							} else if (!equipmentMode){
-								sendWithdraw(1);
+								// OGRS — honour the quantity selector. quantityMode 3 (X)
+								// reads lastXAmount, set by the X-prompt callback path.
+								int amount = (quantityMode == 3)
+									? (lastXAmount > 0 ? lastXAmount : 1)
+									: defaultWithdrawAmount;
+								sendWithdraw(amount);
 							}
 						}
 					}
@@ -488,22 +519,20 @@ public final class CustomBankInterface extends BankInterface {
 				modeOffset - 39, settingsY - 10,
 				26,26,0x0,0x0,0,false,0,0);
 		}
-		drawString("Rearrange mode:", x + 190, settingsY - 3, 1, 0xF89922);
-
-		mc.getSurface().drawBoxAlpha(modeOffset, settingsY - 1, modeWidth, 16, (organizeMode == 1 ? 0x7E1F1C : 0x5A5A55), 192);
-		mc.getSurface().drawBoxBorder(modeOffset, modeWidth, settingsY - 1, 16, 0x2D2C24);
-		mc.getSurface().drawBoxBorder(modeOffset + 1, modeWidth - 2, settingsY, 14, 0x706452);
-		drawString("Swap", textStart, settingsY + 11, 1, 0xffffff);
-
-		mc.getSurface().drawBoxAlpha(modeOffset + modeWidth - 1, settingsY - 1, modeWidth, 16, (organizeMode == 2 ? 0x7E1F1C : 0x5A5A55), 192);
-		mc.getSurface().drawBoxBorder(modeOffset + modeWidth - 1, modeWidth, settingsY - 1, 16, 0x2D2C24);
-		mc.getSurface().drawBoxBorder(modeOffset + modeWidth, modeWidth - 2, settingsY, 14, 0x706452);
-		drawString("Insert", textStart + modeWidth - 3, settingsY + 11, 1, 0xffffff);
-
-		mc.getSurface().drawBoxAlpha(modeOffset + 2 * (modeWidth - 1), settingsY - 1, modeWidth, 16, (organizeMode == 0 ? 0x7E1F1C : 0x5A5A55), 192);
-		mc.getSurface().drawBoxBorder(modeOffset + 2 * (modeWidth - 1), modeWidth, settingsY - 1, 16, 0x2D2C24);
-		mc.getSurface().drawBoxBorder(modeOffset + 2 * modeWidth - 1, modeWidth - 2, settingsY, 14, 0x706452);
-		drawString("None", textStart + 2 * modeWidth, settingsY + 11, 1, 0xffffff);
+		// OGRS — OSRS-style quantity selector. Replaces upstream's Swap/Insert/None
+		// rearrange strip. The right-click menu still has Withdraw-1/5/10/50/X/All
+		// for power-users; this row is the always-visible default-quantity toggle.
+		drawString("Quantity:", modeOffset, settingsY - 3, 1, 0xF89922);
+		String[] qtyLabels = {"1", "5", "10", "X", "All"};
+		for (int qi = 0; qi < 5; qi++) {
+			int btnX = modeOffset + qi * (qtyButtonWidth - 1);
+			int boxColour2 = (quantityMode == qi) ? 0x7E1F1C : 0x5A5A55;
+			mc.getSurface().drawBoxAlpha(btnX, settingsY - 1, qtyButtonWidth, 16, boxColour2, 192);
+			mc.getSurface().drawBoxBorder(btnX, qtyButtonWidth, settingsY - 1, 16, 0x2D2C24);
+			mc.getSurface().drawBoxBorder(btnX + 1, qtyButtonWidth - 2, settingsY, 14, 0x706452);
+			int labelWidth = mc.getSurface().stringWidth(1, qtyLabels[qi]);
+			drawString(qtyLabels[qi], btnX + (qtyButtonWidth - labelWidth) / 2, settingsY + 11, 1, 0xffffff);
+		}
 
 		drawString("Withdraw as:", x + 378 + 14, settingsY - 3, 1, 0xF89922);
 
