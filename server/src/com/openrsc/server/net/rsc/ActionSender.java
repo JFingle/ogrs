@@ -465,6 +465,21 @@ public class ActionSender {
 		tryFinalizeAndSendPacket(OpcodeOut.SEND_FATIGUE, struct, player);
 	}
 
+	/**
+	 * OGRS — push run-energy state to the client (#37 Commit C).
+	 * Two-byte packet (running flag + percent 0-100). Cheap to send;
+	 * fired on every toggle and on every tile-stride while running.
+	 */
+	public static void sendRunEnergy(Player player) {
+		if (!player.getConfig().WANT_RUN_ENERGY) return;
+		com.openrsc.server.net.rsc.struct.outgoing.RunEnergyStruct s =
+			new com.openrsc.server.net.rsc.struct.outgoing.RunEnergyStruct();
+		s.running = player.isRunning();
+		s.energyPercent = Math.max(0, Math.min(100,
+			player.getRunEnergy() / (com.openrsc.server.model.entity.player.Player.MAX_RUN_ENERGY / 100)));
+		tryFinalizeAndSendPacket(OpcodeOut.SEND_RUN_ENERGY, s, player);
+	}
+
 	public static void showPointsToGp(Player player) {
 		NoPayloadStruct struct = new NoPayloadStruct();
 		tryFinalizeAndSendPacket(OpcodeOut.SEND_OPENPK_POINTS_TO_GP_RATIO, struct, player);

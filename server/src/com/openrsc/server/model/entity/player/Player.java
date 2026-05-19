@@ -1313,8 +1313,19 @@ public final class Player extends Mob {
 
 	public void setRunEnergy(final int value) {
 		if (!getWorld().getServer().getConfig().WANT_RUN_ENERGY) return;
+		final int oldPercent = this.runEnergy / (MAX_RUN_ENERGY / 100);
+		final boolean wasRunning = this.running;
 		this.runEnergy = Math.max(0, Math.min(MAX_RUN_ENERGY, value));
 		if (this.runEnergy == 0) this.running = false;
+		// OGRS — #37 Commit C: push the new state to the client whenever the
+		// displayed percent changes OR when running flips off due to drain.
+		// Skipping when only sub-percent values change keeps the wire chatter
+		// down (we drain in 100-unit hops anyway = 1% per tile, so this just
+		// fires once per tile).
+		final int newPercent = this.runEnergy / (MAX_RUN_ENERGY / 100);
+		if (newPercent != oldPercent || wasRunning != this.running) {
+			com.openrsc.server.net.rsc.ActionSender.sendRunEnergy(this);
+		}
 	}
 
 	public boolean isRunning() {
@@ -1326,7 +1337,11 @@ public final class Player extends Mob {
 			this.running = false;
 			return;
 		}
+		final boolean old = this.running;
 		this.running = running && runEnergy > 0;
+		if (old != this.running) {
+			com.openrsc.server.net.rsc.ActionSender.sendRunEnergy(this);
+		}
 	}
 
 	public int getIncorrectSleepTimes() {

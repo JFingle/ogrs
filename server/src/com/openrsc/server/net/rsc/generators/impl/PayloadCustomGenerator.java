@@ -61,6 +61,8 @@ public class PayloadCustomGenerator implements PayloadGenerator<OpcodeOut> {
 		put(OpcodeOut.SEND_CLAN_SETTINGS, 112); // custom
 		put(OpcodeOut.SEND_IRONMAN, 113); // custom
 		put(OpcodeOut.SEND_FATIGUE, 114);
+		put(OpcodeOut.SEND_RUN_ENERGY, 251); // OGRS — #37 Commit C
+
 		put(OpcodeOut.SEND_ON_BLACK_HOLE, 115); // custom
 		put(OpcodeOut.SEND_PARTY, 116); // custom
 		put(OpcodeOut.SEND_PARTY_LIST, 116); // custom - shares opcode currently should be changed in future
@@ -387,6 +389,15 @@ public class PayloadCustomGenerator implements PayloadGenerator<OpcodeOut> {
 					builder.writeShort(fs.serverFatigue / (player.MAX_FATIGUE / 100)); // backwards compatible with old custom clients
 					builder.writeShort(fs.serverFatigue / (player.MAX_FATIGUE / 750)); // authentic higher precision, if client wants to read it
 					break;
+
+				case SEND_RUN_ENERGY: {
+					// OGRS — #37 Commit C: two bytes, running flag + percent.
+					com.openrsc.server.net.rsc.struct.outgoing.RunEnergyStruct res =
+						(com.openrsc.server.net.rsc.struct.outgoing.RunEnergyStruct) payload;
+					builder.writeByte((byte) (res.running ? 1 : 0));
+					builder.writeByte((byte) (res.energyPercent & 0xFF));
+					break;
+				}
 
 				case SEND_PLAY_SOUND:
 					PlaySoundStruct pls = (PlaySoundStruct) payload;

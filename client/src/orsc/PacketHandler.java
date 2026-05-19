@@ -428,6 +428,14 @@ public class PacketHandler {
 				mc.setStatFatigueAuthentic(packetsIncoming.getShort());
 			}
 
+				// OGRS — Run-energy state push (#37 Commit C).
+				// Server fires this on toggle + every tile while running.
+			else if (opcode == 251) {
+				int runByte = packetsIncoming.getUnsignedByte();
+				int energyByte = packetsIncoming.getUnsignedByte();
+				mc.setOgrsRunState(runByte == 1, energyByte);
+			}
+
 				// Kills2
 			else if (opcode == 147) {
 				mc.setStatKills2(packetsIncoming.get32());
