@@ -654,29 +654,66 @@ public final class Formulae {
 
 	public static int getRepeatTimes(Player player, int skill) {
 		int maxStat = player.getSkills().getMaxStat(skill); // Number of time repeats is based on your highest level using this method
-		if (maxStat <= 10)
-			return 10;
-		if (maxStat <= 19)
-			return 12;
-		if (maxStat <= 29)
-			return 14;
-		if (maxStat <= 39)
-			return 16;
-		if (maxStat <= 49)
-			return 20;
-		if (maxStat <= 59)
-			return 24;
-		if (maxStat <= 69)
-			return 32;
-		if (maxStat <= 79)
-			return 40;
-		if (maxStat <= 89)
-			return 48;
-		if (maxStat <= 95)
-			return 56;
-		if (maxStat <= 99)
-			return 64;
-		return 1000;
+		int base;
+		if (maxStat <= 10) base = 10;
+		else if (maxStat <= 19) base = 12;
+		else if (maxStat <= 29) base = 14;
+		else if (maxStat <= 39) base = 16;
+		else if (maxStat <= 49) base = 20;
+		else if (maxStat <= 59) base = 24;
+		else if (maxStat <= 69) base = 32;
+		else if (maxStat <= 79) base = 40;
+		else if (maxStat <= 89) base = 48;
+		else if (maxStat <= 95) base = 56;
+		else if (maxStat <= 99) base = 64;
+		else return 1000;
+		// OGRS — gear-modified batching (sparky 2026-05-19: 'chef's hat ... can
+		// cook x amount, an apron ... cook x amount more'). Existing skill
+		// items get a real reason to wear them. Extend by adding per-skill
+		// branches in ogrsGearBatchBonus.
+		return base + ogrsGearBatchBonus(player, skill);
+	}
+
+	/**
+	 * OGRS — additive batch-count bonus from wielded/equipped skill gear.
+	 * Returns the extra repeats granted by what the player is wearing for
+	 * this particular skill. Returns 0 when no relevant gear is equipped.
+	 *
+	 * Cooking (skill 7):
+	 *   Chef's hat       +5 batch
+	 *   Cooking cape     +5 batch
+	 *   (both worn       +10 batch)
+	 *
+	 * Future per-skill branches go in this method: lumberjack outfit for
+	 * Woodcutting, fisher's gloves for Fishing, etc. Pairs with the larger
+	 * #16 / #20 design — when items extend gameplay loops without inventing
+	 * new items.
+	 */
+	private static int ogrsGearBatchBonus(final Player player, final int skill) {
+		if (skill == com.openrsc.server.constants.Skill.COOKING.id()) {
+			int bonus = 0;
+			if (hasEquippedAnywhere(player, com.openrsc.server.constants.ItemId.CHEFS_HAT.id())) {
+				bonus += 5;
+			}
+			if (hasEquippedAnywhere(player, com.openrsc.server.constants.ItemId.COOKING_CAPE.id())) {
+				bonus += 5;
+			}
+			return bonus;
+		}
+		return 0;
+	}
+
+	private static boolean hasEquippedAnywhere(final Player player, final int itemId) {
+		if (player.getWorld().getServer().getConfig().WANT_EQUIPMENT_TAB) {
+			return player.getCarriedItems().getEquipment().hasEquipped(itemId);
+		}
+		synchronized (player.getCarriedItems().getInventory().getItems()) {
+			for (final com.openrsc.server.model.container.Item i :
+					player.getCarriedItems().getInventory().getItems()) {
+				if (i.isWielded() && i.getCatalogId() == itemId) return true;
+			}
+		}
+		return false;
 	}
 
 	/**
