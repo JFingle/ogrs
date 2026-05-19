@@ -690,6 +690,8 @@ public final class Formulae {
 	 * new items.
 	 */
 	private static int ogrsGearBatchBonus(final Player player, final int skill) {
+		final com.openrsc.server.constants.Skill[] s = null; // alias-tidiness
+		// Cooking — chef's hat AND cooking cape stack additively.
 		if (skill == com.openrsc.server.constants.Skill.COOKING.id()) {
 			int bonus = 0;
 			if (hasEquippedAnywhere(player, com.openrsc.server.constants.ItemId.CHEFS_HAT.id())) {
@@ -699,6 +701,25 @@ public final class Formulae {
 				bonus += 5;
 			}
 			return bonus;
+		}
+		// Per-skill cape branches — wearing your own skill's cape extends
+		// the batch by +5. Future "skill outfit" sets (lumberjack hat etc)
+		// stack on top in these branches when those items get authored.
+		if (skill == com.openrsc.server.constants.Skill.WOODCUTTING.id()
+			&& hasEquippedAnywhere(player, com.openrsc.server.constants.ItemId.WOODCUTTING_CAPE.id())) {
+			return 5;
+		}
+		if (skill == com.openrsc.server.constants.Skill.FISHING.id()
+			&& hasEquippedAnywhere(player, com.openrsc.server.constants.ItemId.FISHING_CAPE.id())) {
+			return 5;
+		}
+		if (skill == com.openrsc.server.constants.Skill.MINING.id()
+			&& hasEquippedAnywhere(player, com.openrsc.server.constants.ItemId.MINING_CAPE.id())) {
+			return 5;
+		}
+		if (skill == com.openrsc.server.constants.Skill.FIREMAKING.id()
+			&& hasEquippedAnywhere(player, com.openrsc.server.constants.ItemId.FIREMAKING_CAPE.id())) {
+			return 5;
 		}
 		return 0;
 	}
