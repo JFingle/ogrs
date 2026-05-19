@@ -97,13 +97,20 @@ def emit_java(items: list[dict]) -> str:
         noteable = bool(item.get("noteable", True))
         base_price = parse_int(item.get("base_price", 1))
         picture_mask = parse_int(item.get("picture_mask", 0))
+        # OGRS — wieldable items also need a wearable_id (the appearance
+        # ID that controls the in-world model when equipped). Server-side
+        # weapon stats (aim/power/required-skill) still live in the
+        # parallel ItemDefsCustom.json entry; this codegen only handles
+        # client-side display.
+        wieldable = bool(item.get("wieldable", False))
+        wearable_id = parse_int(item.get("wearable_id", 0))
 
         out.append(f"\t\t// id {item['id']} — from content/items/{item['_source']}")
         out.append(
             "\t\titems.add(new ItemDef("
             f"\"{jstr(name)}\", \"{jstr(desc)}\", \"{jstr(cmd)}\", "
             f"{base_price}, {sprite_id}, \"{jstr(sprite_loc)}\", "
-            f"{str(stackable).lower()}, false, 0, "
+            f"{str(stackable).lower()}, {str(wieldable).lower()}, {wearable_id}, "
             f"0x{picture_mask & 0xFFFFFF:06X}, "
             f"{str(members).lower()}, {str(untradeable).lower()}, {str(noteable).lower()}, "
             "i++));"
