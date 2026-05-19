@@ -89,6 +89,12 @@ public final class OgrsClientScenery {
 		// id 1318 — from content/scenery/draynor_bank_notice.yaml
 		objects.add(new GameObjectDef("Bank Notice", "Painted in neat script: \"Bank of Gielinor — Draynor Branch. Open dawn to dusk. No fish on the counter.\"", "Read", "Examine", 0, 1, 1, 0, "signpost", ++i));
 
+		// id 1319 — from content/scenery/crypt_hatch.yaml
+		objects.add(new GameObjectDef("Crypt Hatch", "A heavy wooden hatch set into the floor. Cold air rises through the seams.", "Climb-down", "Examine", 0, 1, 1, 0, "ladderdown", ++i));
+
+		// id 1320 — from content/scenery/crypt_ladder_up.yaml
+		objects.add(new GameObjectDef("Crypt Ladder", "A rough wooden ladder lashed to the wall. It leads up to a hatch.", "Climb-up", "Examine", 0, 1, 1, 0, "ladder", ++i));
+
 		return i;
 	}
 }

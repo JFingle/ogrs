@@ -321,6 +321,24 @@
         "Y": 640
       },
       "direction": 0
+    },
+    {
+      "_n": "OGRS Crypt Hatch \u2014 Lumbridge castle interior, north side. Climb-down enters the crypt.",
+      "id": 1319,
+      "pos": {
+        "X": 120,
+        "Y": 645
+      },
+      "direction": 0
+    },
+    {
+      "_n": "OGRS Crypt Ladder \u2014 back to the surface hatch.",
+      "id": 1320,
+      "pos": {
+        "X": 120,
+        "Y": 3800
+      },
+      "direction": 0
     }
   ]
 }

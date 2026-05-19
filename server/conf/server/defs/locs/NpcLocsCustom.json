@@ -392,6 +392,86 @@
         "X": 128,
         "Y": 653
       }
+    },
+    {
+      "_n": "OGRS Crypt \u2014 basic Spider",
+      "id": 34,
+      "start": {
+        "X": 118,
+        "Y": 3802
+      },
+      "min": {
+        "X": 116,
+        "Y": 3800
+      },
+      "max": {
+        "X": 120,
+        "Y": 3804
+      }
+    },
+    {
+      "_n": "OGRS Crypt \u2014 basic Spider",
+      "id": 34,
+      "start": {
+        "X": 122,
+        "Y": 3803
+      },
+      "min": {
+        "X": 120,
+        "Y": 3801
+      },
+      "max": {
+        "X": 124,
+        "Y": 3805
+      }
+    },
+    {
+      "_n": "OGRS Crypt \u2014 Giant Spider lvl8",
+      "id": 23,
+      "start": {
+        "X": 121,
+        "Y": 3805
+      },
+      "min": {
+        "X": 119,
+        "Y": 3803
+      },
+      "max": {
+        "X": 123,
+        "Y": 3807
+      }
+    },
+    {
+      "_n": "OGRS Crypt \u2014 Giant Spider lvl31 (deeper)",
+      "id": 74,
+      "start": {
+        "X": 124,
+        "Y": 3808
+      },
+      "min": {
+        "X": 122,
+        "Y": 3806
+      },
+      "max": {
+        "X": 126,
+        "Y": 3810
+      }
+    },
+    {
+      "_n": "OGRS Crypt \u2014 Deadly Red spider (the prize, careful)",
+      "id": 99,
+      "start": {
+        "X": 127,
+        "Y": 3811
+      },
+      "min": {
+        "X": 125,
+        "Y": 3809
+      },
+      "max": {
+        "X": 129,
+        "Y": 3813
+      }
     }
   ]
 }

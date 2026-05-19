@@ -1,0 +1,16 @@
+# OGRS scenery: Crypt Hatch.
+# Surface entrance to the OGRS Lumbridge Crypt — first OGRS dungeon
+# (sparky 2026-05-19 #11). Click "Climb-down" → teleports player to
+# the crypt at (120, 3800). Handled by OgrsLumbridgeCrypt plugin.
+# Reuses upstream `ladderdown` model (looks like a wooden trap door).
+
+id: 1319
+name: Crypt Hatch
+description: A heavy wooden hatch set into the floor. Cold air rises through the seams.
+command1: "Climb-down"
+command2: "Examine"
+type: 0
+width: 1
+height: 1
+ground_item_var: 0
+model: ladderdown

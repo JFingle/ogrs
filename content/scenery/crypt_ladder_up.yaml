@@ -1,0 +1,16 @@
+# OGRS scenery: Crypt Ladder.
+# Exit from the OGRS Lumbridge Crypt back to the surface (sparky
+# 2026-05-19 #11). Click "Climb-up" → teleports to the hatch tile
+# at (120, 645). Handled by OgrsLumbridgeCrypt plugin.
+# Reuses upstream `ladder` model.
+
+id: 1320
+name: Crypt Ladder
+description: A rough wooden ladder lashed to the wall. It leads up to a hatch.
+command1: "Climb-up"
+command2: "Examine"
+type: 0
+width: 1
+height: 1
+ground_item_var: 0
+model: ladder
