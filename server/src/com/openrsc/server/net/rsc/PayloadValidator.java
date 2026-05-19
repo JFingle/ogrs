@@ -52,6 +52,8 @@ public class PayloadValidator {
 		put(OpcodeOut.SEND_CLAN_SETTINGS, ClanSettingsStruct.class); // custom
 		put(OpcodeOut.SEND_IRONMAN, IronManStruct.class); // custom
 		put(OpcodeOut.SEND_FATIGUE, FatigueStruct.class);
+		put(OpcodeOut.SEND_RUN_ENERGY, RunEnergyStruct.class); // OGRS — #37 Commit C
+
 		put(OpcodeOut.SEND_ON_BLACK_HOLE, PlayerOnBlackHoleStruct.class); // custom
 		put(OpcodeOut.SEND_PARTY, PartyStruct.class); // custom
 		put(OpcodeOut.SEND_PARTY_LIST, PartyListStruct.class); // custom
