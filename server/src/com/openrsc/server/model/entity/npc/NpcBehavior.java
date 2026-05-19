@@ -103,7 +103,14 @@ public class NpcBehavior {
 
 		// Check if NPC will aggro
 		if (checkCombatTimer(npc.getCombatTimer(), 5 * tickFactor)) {
-			if ((npc.getDef().isAggressive() && !draynorManorSkeleton) || npc.getLocation().inWilderness() || (blackKnightsFortress)) {
+			// OGRS — aggro persistence (sparky 2026-05-19): a non-aggressive
+			// NPC still pursues whoever recently attacked it. We treat
+			// "recently" as their lastOpponent's combat timer being within
+			// 10 ticks. The existing 15-tick clear at line ~119 still kicks
+			// in to forget the attacker after disengage.
+			boolean recentlyAttacked = npc.getLastOpponent() != null
+				&& !checkCombatTimer(npc.getLastOpponent().getCombatTimer(), 10 * tickFactor);
+			if ((npc.getDef().isAggressive() && !draynorManorSkeleton) || npc.getLocation().inWilderness() || (blackKnightsFortress) || recentlyAttacked) {
 
 				// We loop through all players in view.
 				for (Player player : npc.getViewArea().getPlayersInView()) {
