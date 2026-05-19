@@ -199,6 +199,14 @@ public final class Player extends Mob {
 	 */
 	private int combatStyle = 0;
 	/**
+	 * OGRS — Magic autocast spell ID. -1 = autocast disabled. When set
+	 * and a valid staff is equipped, CombatEvent replaces the player's
+	 * melee swing each round with a cast of this spell. In-memory only
+	 * for now; persistence (and a Combat tab UI to pick the spell) lands
+	 * in a follow-up. Sparky 2026-05-19: staff autocast feature request.
+	 */
+	private int autocastSpellId = -1;
+	/**
 	 * Unix time when the player logged in
 	 */
 	private long currentLogin = 0;
@@ -1241,6 +1249,11 @@ public final class Player extends Mob {
 	public int getCombatStyle() {
 		return combatStyle;
 	}
+
+	// OGRS — autocast accessors. -1 disables.
+	public int getAutocastSpellId() { return autocastSpellId; }
+	public void setAutocastSpellId(final int id) { this.autocastSpellId = id; }
+	public boolean isAutocastEnabled() { return this.autocastSpellId >= 0; }
 
 	public void setCombatStyle(final int style) {
 		combatStyle = style;

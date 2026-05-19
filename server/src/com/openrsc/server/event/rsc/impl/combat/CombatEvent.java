@@ -179,6 +179,18 @@ public class CombatEvent extends GameTickEvent {
 				return;
 			}
 
+			// OGRS — staff autocast: when the player is the hitter and has
+			// an autocast spell + valid staff + runes + magic level, the
+			// melee swing is replaced with a magic cast for this round.
+			// Quiet fall-through to melee otherwise. See OgrsAutocast for
+			// the eligibility & damage flow. ProjectileEvent applies the
+			// magic hit itself, so we skip the inflictDamage call below.
+			if (hitter.isPlayer()
+				&& com.openrsc.server.content.OgrsAutocast.tryAutocast(
+						(com.openrsc.server.model.entity.player.Player) hitter, target)) {
+				return;
+			}
+
 			//if(hitter.isNpc() && target.isPlayer() || target.isNpc() && hitter.isPlayer()) {
 			int damage;
 			if (getWorld().getServer().getConfig().OSRS_COMBAT_MELEE) {
