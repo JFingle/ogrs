@@ -306,9 +306,11 @@ public class Firemaking implements UseObjTrigger, UseInvTrigger {
 			return;
 		}
 
-		// Drop one log to the ground under the player.
-		if (!player.getCarriedItems().getInventory().remove(log, true,
-				log.getDef(player.getWorld()).isStackable() || log.getNoted())) {
+		// Drop one log to the ground under the player. remove() returns the
+		// slot index removed from (long) or -1 on failure; we bail on -1.
+		long removedSlot = player.getCarriedItems().getInventory().remove(log, true,
+				log.getDef(player.getWorld()).isStackable() || log.getNoted());
+		if (removedSlot < 0) {
 			return;
 		}
 		final GroundItem dropped = new GroundItem(player.getWorld(),
