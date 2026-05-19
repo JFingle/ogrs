@@ -384,6 +384,13 @@ public final class mudclient implements Runnable {
 	//private final int[] duelOpponentItemId = new int[8];
 	//private final int[] duelOpponentConfirmItem = new int[8];
 	private boolean stakeOfferEquipMode = false;
+	// OGRS — purely-local visual state for the run-toggle button rendered in
+	// the minimap tab. Server-side state is real; this is just so the button
+	// shows red/green at click-time. Out-of-sync if server forcibly turns
+	// running off (e.g. energy 0); player sees the actual state in chat from
+	// the existing ::run echo message. A proper SEND_RUN_ENERGY packet that
+	// pushes server state to client would fix that — deferred to Commit C.
+	private boolean ogrsRunButtonVisual = false;
 	private int[] playerStatBase;
 	private int[] playerExperience;
 	private boolean experienceOff = false;
@@ -9184,6 +9191,33 @@ public final class mudclient implements Runnable {
 				}
 
 			}
+
+			// OGRS — Run toggle button (task #37). Lives in the minimap tab
+			// because that's the "navigation" UI surface; players who want to
+			// run are already there. Click sends sendCommandString("run")
+			// which routes through the existing :: command pipeline server-side
+			// (RunEnergyCommand plugin). Local visual flips immediately — see
+			// ogrsRunButtonVisual caveat at the field declaration.
+			final int runBtnX = posX + 4;
+			final int runBtnY = posY + 156;
+			final int runBtnW = 70;
+			final int runBtnH = 18;
+			final int runBtnColour = ogrsRunButtonVisual ? 0x7E1F1C : 0x5A5A55;
+			this.getSurface().drawBoxAlpha(runBtnX, runBtnY, runBtnW, runBtnH, runBtnColour, 192);
+			this.getSurface().drawBoxBorder(runBtnX, runBtnW, runBtnY, runBtnH, 0x2D2C24);
+			this.getSurface().drawBoxBorder(runBtnX + 1, runBtnW - 2, runBtnY + 1, runBtnH - 2, 0x706452);
+			final String runLabel = ogrsRunButtonVisual ? "RUN: ON" : "RUN: OFF";
+			final int runLabelW = this.getSurface().stringWidth(1, runLabel);
+			this.getSurface().drawString(runLabel,
+				runBtnX + (runBtnW - runLabelW) / 2, runBtnY + 12, 0xFFFFFF, 1);
+			if (this.mouseButtonClick != 0
+				&& this.mouseX >= runBtnX && this.mouseX < runBtnX + runBtnW
+				&& this.mouseY >= runBtnY && this.mouseY < runBtnY + runBtnH) {
+				this.sendCommandString("run");
+				this.ogrsRunButtonVisual = !this.ogrsRunButtonVisual;
+				this.mouseButtonClick = 0;
+			}
+
 		} catch (RuntimeException var18) {
 			throw GenUtil.makeThrowable(var18, "client.HD(" + var1 + ',' + var2 + ')');
 		}
