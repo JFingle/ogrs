@@ -158,6 +158,17 @@ public class ShieldOfArrav implements QuestInterface, UseBoundTrigger,
 						mes("You find half a shield which you take");
 						delay(3);
 						give(player, ItemId.BROKEN_SHIELD_ARRAV_1.id(), 1);
+						// OGRS — solo quest path (sparky 2026-05-19): the
+						// dual-gang trade requirement is dead weight on a
+						// single-player-leaning server. After looting the
+						// Phoenix half, drop the matching Black Arm half
+						// in the same chest so the quest is completable
+						// without needing another player. Bank-or-inventory
+						// check at the top of this branch still guards
+						// against re-looting.
+						mes("...and tucked beneath it, the matching second half.");
+						delay(3);
+						give(player, ItemId.BROKEN_SHIELD_ARRAV_2.id(), 1);
 					} else {
 						mes("You search the chest");
 						delay(3);
@@ -186,6 +197,13 @@ public class ShieldOfArrav implements QuestInterface, UseBoundTrigger,
 						mes("You find half a shield which you take");
 						delay(3);
 						give(player, ItemId.BROKEN_SHIELD_ARRAV_2.id(), 1);
+						// OGRS — solo quest path (sparky 2026-05-19):
+						// mirror of the Phoenix chest. Black Arm members
+						// also get the Phoenix half so the quest is
+						// completable solo. See chest comment above.
+						mes("...and tucked beneath it, the matching first half.");
+						delay(3);
+						give(player, ItemId.BROKEN_SHIELD_ARRAV_1.id(), 1);
 					} else {
 						mes("You search the cupboard");
 						delay(3);
