@@ -45,6 +45,25 @@ public final class OgrsAutocast {
 	private OgrsAutocast() {}
 
 	/**
+	 * Lightweight precondition check used by AttackHandler to decide
+	 * whether a click-attack should go through the autocast path (spell
+	 * range + cast loop) instead of the melee/ranged path. No state
+	 * change — purely a yes/no.
+	 */
+	public static boolean canStartAutocast(final Player player) {
+		if (!player.isAutocastEnabled()) return false;
+		final Spells spellEnum = spellFromId(player.getAutocastSpellId());
+		if (spellEnum == null) return false;
+		final SpellDef spell = player.getWorld().getServer().getEntityHandler().getSpellDef(spellEnum);
+		if (spell == null) return false;
+		if (player.getSkills().getMaxStat(Skill.MAGIC.id()) < spell.getReqLevel()) return false;
+		if (!hasEligibleStaff(player, spellEnum)) return false;
+		final int sType = spell.getSpellType();
+		if (sType != 1 && sType != 2 && sType != 3) return false;
+		return true;
+	}
+
+	/**
 	 * Attempt to fire the player's autocast spell at the target.
 	 *
 	 * @return true if a spell was actually cast (CombatEvent should skip

@@ -1255,6 +1255,17 @@ public final class Player extends Mob {
 	public void setAutocastSpellId(final int id) { this.autocastSpellId = id; }
 	public boolean isAutocastEnabled() { return this.autocastSpellId >= 0; }
 
+	// OGRS — autocast attack-loop event, mirrors rangeEvent / throwingEvent.
+	private com.openrsc.server.event.rsc.impl.projectile.OgrsAutocastEvent autocastEvent;
+	public com.openrsc.server.event.rsc.impl.projectile.OgrsAutocastEvent getAutocastEvent() { return autocastEvent; }
+	public void setAutocastEvent(final com.openrsc.server.event.rsc.impl.projectile.OgrsAutocastEvent event) { this.autocastEvent = event; }
+	public void resetAutocastEvent() {
+		if (autocastEvent != null) {
+			autocastEvent.stop();
+			autocastEvent = null;
+		}
+	}
+
 	public void setCombatStyle(final int style) {
 		combatStyle = style;
 		ActionSender.sendCombatStyle(this);
@@ -2721,6 +2732,12 @@ public final class Player extends Mob {
 		}
 		if (isRanging()) {
 			resetRange();
+		}
+		// OGRS — autocast event also needs to stop on resetAll (logout,
+		// new attack target, drink potion, etc.) so we don't keep casting
+		// from a stale event.
+		if (autocastEvent != null) {
+			resetAutocastEvent();
 		}
 	}
 

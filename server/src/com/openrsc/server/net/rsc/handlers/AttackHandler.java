@@ -89,6 +89,55 @@ public class AttackHandler implements PayloadProcessor<TargetMobStruct, OpcodeIn
 			}
 		}
 
+		// OGRS — magic autocast: if the player has a valid autocast spell
+		// and an eligible staff equipped, click-to-attack walks to spell
+		// range (5 tiles) and starts a per-tick cast loop (OgrsAutocastEvent),
+		// instead of stomping all the way to melee adjacency. Mirrors the
+		// bow/crossbow pattern below for ranged.
+		if (com.openrsc.server.content.OgrsAutocast.canStartAutocast(player)) {
+			final Mob magicTarget = affectedMob;
+			player.resetPath();
+			player.setFollowing(magicTarget, com.openrsc.server.event.rsc.impl.projectile.OgrsAutocastEvent.SPELL_RANGE, false);
+			player.setWalkToAction(new WalkToMobAction(player, magicTarget,
+				com.openrsc.server.event.rsc.impl.projectile.OgrsAutocastEvent.SPELL_RANGE,
+				false, ActionType.ATTACKMAGIC) {
+				public void executeInternal() {
+					if (getPlayer().isBusy() || getPlayer().inCombat()) return;
+					getPlayer().resetFollowing();
+					if (getMob().isPlayer()) {
+						Player affectedPlayer = (Player) getMob();
+						getPlayer().setSkulledOn(affectedPlayer);
+					}
+
+					final GameEventHandler gameEventHandler = getPlayer().getWorld()
+						.getServer()
+						.getGameEventHandler();
+
+					com.openrsc.server.event.rsc.impl.projectile.OgrsAutocastEvent existing = null;
+					for (final GameTickEvent ev : gameEventHandler.getPlayerEvents(getPlayer())) {
+						if (ev instanceof com.openrsc.server.event.rsc.impl.projectile.OgrsAutocastEvent) {
+							existing = (com.openrsc.server.event.rsc.impl.projectile.OgrsAutocastEvent) ev;
+							break;
+						}
+					}
+					if (existing != null) {
+						if (!existing.getTarget().equals(getMob())) {
+							existing.reTarget(getMob());
+						}
+						existing.restart();
+						getPlayer().setAutocastEvent(existing);
+						return;
+					}
+					com.openrsc.server.event.rsc.impl.projectile.OgrsAutocastEvent ev =
+						new com.openrsc.server.event.rsc.impl.projectile.OgrsAutocastEvent(
+							getPlayer().getWorld(), getPlayer(), 1, magicTarget);
+					getPlayer().setAutocastEvent(ev);
+					gameEventHandler.add(ev);
+				}
+			});
+			return;
+		}
+
 		if (player.getRangeEquip() < 0 && player.getThrowingEquip() < 0) {
 
 			if (affectedMob.isPlayer() && !player.finishedPath() && !affectedMob.finishedPath()) {

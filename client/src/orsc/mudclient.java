@@ -13966,37 +13966,44 @@ public final class mudclient implements Runnable {
 	 * packet back. The click is consumed so it doesn't fall through.
 	 */
 	private void drawOgrsRunIcon() {
-		// OGRS — compact run pill. Sparky feedback: "I like the icon" but
-		// the text was too chunky. Dropped the "RUN" label (color already
-		// communicates state) and slimmed the box. Percent stays as a
-		// small readout; the colored bar at the bottom carries most of
-		// the live signal at a glance.
-		final int iconW = 26;
-		final int iconH = 18;
-		final int iconX = this.getSurface().width2 - 226;
+		// OGRS — run pill v3. Sparky feedback (this session): the percent
+		// text was too big for the box, wants the "RUN" label back, and a
+		// bigger energy bar with the percent overlaid on it. Layout: 32x22
+		// box, "RUN" label top-half, energy bar bottom-half with percent
+		// rendered in white on top of it.
+		final int iconW = 32;
+		final int iconH = 22;
+		final int iconX = this.getSurface().width2 - 232;
 		final int iconY = 3;
 		// Background — dark when walking, red-tinted when running.
 		final int bg = ogrsRunButtonVisual ? 0x7E1F1C : 0x2D2C24;
 		this.getSurface().drawBoxAlpha(iconX, iconY, iconW, iconH, bg, 220);
 		this.getSurface().drawBoxBorder(iconX, iconW, iconY, iconH, 0x000000);
 		this.getSurface().drawBoxBorder(iconX + 1, iconW - 2, iconY + 1, iconH - 2, 0x706452);
-		// Energy percent centered in the body.
-		final String pct = ogrsRunEnergyPercent + "%";
-		final int pctW = this.getSurface().stringWidth(0, pct);
-		this.getSurface().drawString(pct,
-			iconX + (iconW - pctW) / 2, iconY + 12, 0xFFFFFF, 0);
-		// Thin energy bar at the very bottom of the icon — 2px tall.
-		final int barY = iconY + iconH - 3;
+		// "RUN" label in the top half.
+		final String runLabel = "RUN";
+		final int runLabelW = this.getSurface().stringWidth(0, runLabel);
+		this.getSurface().drawString(runLabel,
+			iconX + (iconW - runLabelW) / 2, iconY + 9, 0xFFFFFF, 0);
+		// Bigger energy bar in the bottom half — full width minus 2px
+		// padding, 9px tall, with the percent overlaid in white.
+		final int barH = 9;
+		final int barY = iconY + iconH - barH - 2;
 		final int barX = iconX + 2;
 		final int barW = iconW - 4;
-		this.getSurface().drawBoxAlpha(barX, barY, barW, 2, 0x000000, 255);
+		this.getSurface().drawBoxAlpha(barX, barY, barW, barH, 0x000000, 255);
 		final int fillW = Math.max(0, Math.min(barW, barW * ogrsRunEnergyPercent / 100));
 		final int barColour = ogrsRunEnergyPercent > 60 ? 0x4FB04F
 		                    : ogrsRunEnergyPercent > 25 ? 0xD4A64A
 		                    :                              0xB02A2A;
 		if (fillW > 0) {
-			this.getSurface().drawBoxAlpha(barX, barY, fillW, 2, barColour, 255);
+			this.getSurface().drawBoxAlpha(barX, barY, fillW, barH, barColour, 255);
 		}
+		// Percent text overlaid on the bar.
+		final String pct = ogrsRunEnergyPercent + "%";
+		final int pctW = this.getSurface().stringWidth(0, pct);
+		this.getSurface().drawString(pct,
+			iconX + (iconW - pctW) / 2, barY + barH - 1, 0xFFFFFF, 0);
 		// Click handler.
 		if (this.mouseButtonClick != 0
 			&& this.mouseX >= iconX && this.mouseX < iconX + iconW
@@ -14014,22 +14021,24 @@ public final class mudclient implements Runnable {
 		if (!C_CUSTOM_UI) {
 			repositionAuthenticUI();
 		}
-		// OGRS — sparky 2026-05-19 playtest #1: classic-UI clicks on a tab
-		// also walked the world. Fixed by returning tabHit truthfully.
-		// playtest #2 (this session): "I can only open tabs about halfway
-		// up." Root cause: the open branches below check showUiTab == 0
-		// and the close branches check showUiTab != 0. When a click landed
-		// in the upper half of a tab icon, the open branch fired first
-		// (setting showUiTab to e.g. INVENTORY_TAB), then the close branch
-		// fired in the same call (because showUiTab was now != 0) and
-		// toggled it back to 0. Net: tab opened-then-closed and the user
-		// saw nothing.
-		// Fix: snapshot showUiTab at function start and gate both halves
-		// on the snapshotted value so a single click can't trigger both.
-		// Also widen the close hit-region from y < 26 to y < 35 so the
-		// whole visible tab icon area is clickable for closing too.
+		// OGRS — sparky playtest history:
+		//   #1: classic-UI clicks on a tab also walked the world — fixed
+		//       by returning tabHit truthfully.
+		//   #2: "I can only open tabs about halfway up" — fixed by
+		//       snapshotting showUiTab so a single call can't both open
+		//       and close.
+		//   #3 (this session): "the menus glitch... if i hover over them
+		//       they open and close super quick". Root cause: the open
+		//       AND close branches never checked mouseButtonClick — they
+		//       fired on any frame the cursor was inside the tab box.
+		//       With both branches now hitting the same y range, hover
+		//       toggles the tab every frame. Fix: gate the whole
+		//       function on an actual click. Sparky asked for click-only
+		//       behavior ("clicking them and then either clicking the map
+		//       or clicking them again would be fine").
 		final int snapshotTab = this.showUiTab;
 		boolean tabHit = false;
+		if (this.mouseButtonClick != 1) return false;
 		try {
 			if (snapshotTab == 0 && this.mouseX >= this.getSurface().width2 - 35 && this.mouseY >= 0
 				&& this.mouseX < this.getSurface().width2 - 3 && this.mouseY < 35) {
