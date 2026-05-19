@@ -350,6 +350,27 @@ public class EntityHandler {
 		projectiles.add(new SpriteDef("skull projectile", mudclient.spriteProjectile + 4, "projectiles:4", 4));
 		projectiles.add(new SpriteDef("spiked ball projectile", mudclient.spriteProjectile + 5, "projectiles:5", 5));
 		projectiles.add(new SpriteDef("blank projectile", mudclient.spriteProjectile + 6, "projectiles:6", 6));
+		// OGRS §3B — unique per-spell projectile sprites (indices 7-44 = sprite IDs 3167-3204).
+		// Order must match scripts/art/pack-router-sprites.py UNIQUE_PROJ_FOLDERS and
+		// the OgrsProjectileTypes constants on the server side.
+		final String[] ogrsUniqueNames = {
+			"confuse", "weaken", "vulnerability", "enfeeble", "stun",
+			"crumble undead", "fear",
+			"chill bolt", "shock bolt", "elemental bolt", "iban blast",
+			"fire",
+			"thick skin", "burst of strength", "rock skin", "camouflage",
+			"low alch", "high alch", "telegrab",
+			"bones to bananas", "bones to bread",
+			"superheat", "charge",
+			"charge air orb", "charge water orb", "charge earth orb", "charge fire orb",
+			"varrock teleport", "lumbridge teleport", "falador teleport",
+			"camelot teleport", "ardougne teleport", "watchtower teleport",
+			"enchant lvl1", "enchant lvl2", "enchant lvl3", "enchant lvl4", "enchant lvl5"
+		};
+		for (int i = 0; i < ogrsUniqueNames.length; i++) {
+			projectiles.add(new SpriteDef(ogrsUniqueNames[i] + " projectile",
+				mudclient.spriteProjectile + 7 + i, "projectiles:" + (7 + i), 7 + i));
+		}
 	}
 
 	public enum GUIPARTS {

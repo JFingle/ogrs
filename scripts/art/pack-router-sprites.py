@@ -1,13 +1,16 @@
 #!/usr/bin/env python3
 """
-OGRS — Pack the 7 router projectile sprites into Authentic_Sprites.orsc.
+OGRS — Pack art sprites into Authentic_Sprites.orsc.
 
-Replaces ZIP entries 3160-3166 (the projectile slots — ORB, MAGIC, RANGED,
-GNOMEBALL, SKULL, SPIKEBALL, BLANK) with new art authored at
-~/ogrs/art/projectiles/<i>_<name>/frames/frame_02.png. Frame 02 is the
-"peak" frame per the authoring spec, which reads best as a static
-in-flight sprite (the engine doesn't animate projectiles per frame —
-just one static sprite during the flight arc).
+Replaces / adds entries for:
+  * Router slots 3160-3166 (HANDOFF.md §1A / §3A).
+  * Unique spell projectiles 3167-3204 (§1C / §3B): 38 spells, one frame
+    each. Frame_02 picked per the authoring spec (peak frame, best for
+    a static in-flight read).
+  * Router impacts 3700-3727 (§1B / §3C): 7 types x 4 frames each.
+  * Crumble Undead impact 3730-3733 (§1B / §3E): 4 frames.
+  * Directional arrow + flame variants 3740-3755 (§1E / §3D): 8
+    compass directions per sprite (N, NE, E, SE, S, SW, W, NW).
 
 Blob format (from client/src/com/openrsc/client/model/Sprite.unpack):
     int   width            (4 bytes, big-endian)
@@ -19,9 +22,13 @@ Blob format (from client/src/com/openrsc/client/model/Sprite.unpack):
     int   something2       (4 bytes BE)
     int[] pixels (w*h)     (4 bytes ARGB each, BE)
 
-Strategy: read the existing entry's header so we preserve the shift /
-"something" values (they govern draw-origin offsets); only swap the
-pixel payload (and update width/height to the new 30x30).
+Strategy:
+  * Router slots: read the existing entry's header so we preserve the
+    shift / "something" values (they govern draw-origin offsets); only
+    swap the pixel payload.
+  * New slots (unique projectiles, impacts, directions): synthesize a
+    header. requiresShift=1, xShift=yShift=imgW/2 for projectiles
+    (center-anchored), 32/32 for "something" (matching the originals).
 
 Run: python3 scripts/art/pack-router-sprites.py
 """
@@ -38,8 +45,11 @@ ARCHIVE = REPO / "client" / "Cache" / "video" / "Authentic_Sprites.orsc"
 BACKUP = ARCHIVE.with_suffix(ARCHIVE.suffix + ".bak")
 ART_ROOT = REPO / "art" / "projectiles"
 
-# Slot ID -> source folder (matching HANDOFF.md §1A).
-SLOTS = {
+HEADER_FMT = ">IIbIIII"          # width, height, requiresShift, xShift, yShift, s1, s2
+HEADER_LEN = struct.calcsize(HEADER_FMT)  # 25
+
+# -- Router projectile slots (§3A — header preserved from original) ---------
+ROUTER_SLOTS = {
     3160: "0_orb",
     3161: "1_magic",
     3162: "2_ranged",
@@ -49,8 +59,73 @@ SLOTS = {
     3166: "6_blank",
 }
 
-HEADER_FMT = ">IIbIIII"          # width, height, requiresShift, xShift, yShift, s1, s2
-HEADER_LEN = struct.calcsize(HEADER_FMT)  # 25
+# -- Unique spell projectiles (§3B — 38 spells, IDs 3167-3204) -------------
+# Order matters: the index in this list defines the OgrsProjectileTypes
+# integer constant. Keep in lockstep with OgrsProjectileTypes.java and
+# EntityHandler.loadProjectiles().
+UNIQUE_PROJ_FOLDERS = [
+    # idx 7 onward (since 0..6 are router types)
+    "debuff_confuse",        # 7
+    "debuff_weaken",         # 8
+    "debuff_vulnerability",  # 9
+    "debuff_enfeeble",       # 10
+    "debuff_stun",           # 11
+    "debuff_crumble_undead", # 12
+    "debuff_fear",           # 13
+    "bolt_chill",            # 14
+    "bolt_shock",            # 15
+    "bolt_elemental",        # 16
+    "bolt_iban",             # 17
+    "element_fire",          # 18
+    "buff_thick_skin",       # 19
+    "buff_burst_of_strength",# 20
+    "buff_rock_skin",        # 21
+    "buff_camouflage",       # 22
+    "util_low_alch",         # 23
+    "util_high_alch",        # 24
+    "util_telegrab",         # 25
+    "util_bones_to_bananas", # 26
+    "util_bones_to_bread",   # 27
+    "util_superheat",        # 28
+    "util_charge",           # 29
+    "charge_air_orb",        # 30
+    "charge_water_orb",      # 31
+    "charge_earth_orb",      # 32
+    "charge_fire_orb",       # 33
+    "tele_varrock",          # 34
+    "tele_lumbridge",        # 35
+    "tele_falador",          # 36
+    "tele_camelot",          # 37
+    "tele_ardougne",         # 38
+    "tele_watchtower",       # 39
+    "enchant_lvl1",          # 40
+    "enchant_lvl2",          # 41
+    "enchant_lvl3",          # 42
+    "enchant_lvl4",          # 43
+    "enchant_lvl5",          # 44
+]
+UNIQUE_PROJ_BASE = 3167  # type 7 -> slot 3167
+
+# -- Impact sprites (§3C — 7 routers x 4 frames, IDs 3700-3727) ------------
+IMPACT_SLOTS = [
+    # (folder, baseSlotId). 4 frames consumed sequentially.
+    ("0_orb",        3700),
+    ("1_magic",      3704),
+    # 2_ranged has no impact authored (it's an arrow — physical hit, no burst)
+    ("3_gnomeball",  3708),
+    ("4_skull",      3712),
+    ("5_spikeball",  3716),
+    ("element_fire", 3720),   # FIRE family impact
+    ("debuff_crumble_undead", 3724),  # holy bone burst (used by §3E too)
+]
+
+# -- Directional variants (§3D — 8 dirs for arrow + flame, IDs 3740-3755) --
+# Order follows the atan2 picker: 0=E, 1=SE, 2=S, 3=SW, 4=W, 5=NW, 6=N, 7=NE
+DIR_ORDER = ["E", "SE", "S", "SW", "W", "NW", "N", "NE"]
+DIRECTION_SETS = [
+    ("2_ranged",     3740),  # 3740..3747
+    ("element_fire", 3748),  # 3748..3755
+]
 
 
 def read_header(blob: bytes) -> dict:
@@ -64,15 +139,25 @@ def read_header(blob: bytes) -> dict:
     }
 
 
+def synth_header(w: int, h: int, *, anchor_center: bool) -> dict:
+    """Synthesize a header for a brand-new sprite slot. Center-anchored
+    projectiles draw at xShift=w/2, yShift=h/2; impacts use the same
+    center anchor so they wrap the target tile."""
+    return {
+        "width": w, "height": h,
+        "requires_shift": 1,
+        "x_shift": w // 2 if anchor_center else 1,
+        "y_shift": h // 2 if anchor_center else 1,
+        "something1": 32,
+        "something2": 32,
+    }
+
+
 def encode_blob(img: Image.Image, header: dict) -> bytes:
-    """Encode the new sprite blob with the art's dimensions but original
-    shift / something values (so positioning matches the engine's
-    expectations for the projectile slot)."""
     if img.mode != "RGBA":
         img = img.convert("RGBA")
     w, h = img.size
-    pixels = img.tobytes()  # RGBA, row-major
-    # Convert RGBA -> ARGB big-endian ints
+    pixels = img.tobytes()
     out = bytearray()
     out += struct.pack(
         HEADER_FMT,
@@ -89,6 +174,33 @@ def encode_blob(img: Image.Image, header: dict) -> bytes:
     return bytes(out)
 
 
+def replace_router_slot(entries: dict, slot: int, folder: str) -> bool:
+    key = str(slot)
+    if key not in entries:
+        print(f"WARN: slot {slot} missing in archive — skipping")
+        return False
+    png = ART_ROOT / folder / "frames" / "frame_02.png"
+    if not png.exists():
+        print(f"WARN: art missing {png} — leaving slot {slot} as-is")
+        return False
+    old = read_header(entries[key])
+    img = Image.open(png)
+    entries[key] = encode_blob(img, old)
+    return True
+
+
+def write_new_slot(entries: dict, slot: int, png_path: Path, *, anchor_center: bool) -> bool:
+    if not png_path.exists():
+        print(f"WARN: art missing {png_path} — skipping slot {slot}")
+        return False
+    img = Image.open(png_path)
+    if img.mode != "RGBA":
+        img = img.convert("RGBA")
+    hdr = synth_header(img.size[0], img.size[1], anchor_center=anchor_center)
+    entries[str(slot)] = encode_blob(img, hdr)
+    return True
+
+
 def main() -> int:
     if not ARCHIVE.exists():
         print(f"FATAL: {ARCHIVE} not found", file=sys.stderr)
@@ -99,43 +211,78 @@ def main() -> int:
     else:
         print(f"Backup exists at {BACKUP} (leaving alone)")
 
-    # Read all entries + names from the (current) archive. We work from
-    # the backup so the script is idempotent — running it twice yields
-    # the same output without compounding.
     with zipfile.ZipFile(BACKUP, "r") as zin:
         names = zin.namelist()
-        # Read every entry's bytes into memory (~18 MB OK for this repo).
         entries = {n: zin.read(n) for n in names}
 
-    # Build the replacement blobs.
+    # 1) Router slots (existing entries, preserve header).
+    print("Packing router slots (§3A):")
     replaced = 0
-    for slot, folder in SLOTS.items():
-        key = str(slot)
-        if key not in entries:
-            print(f"WARN: slot {slot} missing in archive — skipping")
-            continue
-        png_path = ART_ROOT / folder / "frames" / "frame_02.png"
-        if not png_path.exists():
-            print(f"WARN: art missing {png_path} — leaving slot {slot} as-is")
-            continue
-        old_header = read_header(entries[key])
-        img = Image.open(png_path)
-        new_blob = encode_blob(img, old_header)
-        entries[key] = new_blob
-        print(f"  slot {slot} <- {png_path.relative_to(REPO)} "
-              f"({img.size[0]}x{img.size[1]}, {len(new_blob)} bytes; "
-              f"shift={old_header['x_shift']},{old_header['y_shift']})")
-        replaced += 1
+    for slot, folder in ROUTER_SLOTS.items():
+        if replace_router_slot(entries, slot, folder):
+            print(f"  {slot:4d} <- {folder}/frame_02.png")
+            replaced += 1
 
-    # Rewrite the archive in place.
+    # 2) Unique spell projectiles (§3B), new entries.
+    print("Packing unique spell projectiles (§3B):")
+    added_uniq = 0
+    for idx, folder in enumerate(UNIQUE_PROJ_FOLDERS):
+        slot = UNIQUE_PROJ_BASE + idx
+        png = ART_ROOT / folder / "frames" / "frame_02.png"
+        if write_new_slot(entries, slot, png, anchor_center=True):
+            names_set = set(names)
+            if str(slot) not in names_set:
+                names.append(str(slot))
+            print(f"  {slot:4d} <- {folder}/frame_02.png (type id {idx + 7})")
+            added_uniq += 1
+
+    # 3) Router impact sprites (§3C), 4 frames per type.
+    print("Packing router impacts (§3C):")
+    added_imp = 0
+    for folder, base in IMPACT_SLOTS:
+        for f in range(4):
+            slot = base + f
+            png = ART_ROOT / folder / "impact" / f"frame_{f:02d}.png"
+            if write_new_slot(entries, slot, png, anchor_center=True):
+                if str(slot) not in set(names):
+                    names.append(str(slot))
+                added_imp += 1
+        print(f"  {base:4d}..{base+3} <- {folder}/impact/")
+
+    # 4) Directional variants (§3D), arrow + flame x 8 directions.
+    print("Packing directional variants (§3D):")
+    added_dir = 0
+    for folder, base in DIRECTION_SETS:
+        for i, dname in enumerate(DIR_ORDER):
+            slot = base + i
+            # Naming differs per folder; try a couple of conventions.
+            candidates = [
+                ART_ROOT / folder / "directions" / f"arrow_{dname}.png",
+                ART_ROOT / folder / "directions" / f"flame_{dname}.png",
+                ART_ROOT / folder / "directions" / f"{dname}.png",
+            ]
+            png = next((p for p in candidates if p.exists()), None)
+            if png is None:
+                print(f"WARN: no direction art for {folder}/{dname} — skipping slot {slot}")
+                continue
+            if write_new_slot(entries, slot, png, anchor_center=True):
+                if str(slot) not in set(names):
+                    names.append(str(slot))
+                added_dir += 1
+        print(f"  {base:4d}..{base+7} <- {folder}/directions/")
+
+    # Rewrite archive in place.
     tmp = ARCHIVE.with_suffix(ARCHIVE.suffix + ".tmp")
     with zipfile.ZipFile(tmp, "w", zipfile.ZIP_DEFLATED) as zout:
         for n in names:
             zout.writestr(n, entries[n])
     tmp.replace(ARCHIVE)
-    print(f"Wrote {ARCHIVE} ({len(names)} entries, {replaced} replaced).")
+    print(
+        f"Wrote {ARCHIVE}: {len(names)} entries, "
+        f"{replaced} router replaced + {added_uniq} unique + "
+        f"{added_imp} impact + {added_dir} direction frames."
+    )
 
-    # Optional: mirror to the Windows install if /mnt/c/OGRS exists.
     mirror = Path("/mnt/c/OGRS/Cache/video/Authentic_Sprites.orsc")
     if mirror.parent.exists():
         shutil.copy2(ARCHIVE, mirror)

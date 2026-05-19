@@ -392,6 +392,26 @@ public final class mudclient implements Runnable {
 	// and the live energy bar above it.
 	private boolean ogrsRunButtonVisual = false;
 	private int ogrsRunEnergyPercent = 100;
+	// OGRS §3C — active impact animations spawned when a projectile lands.
+	// Each entry stores world position, the sprite-archive base ID of the
+	// impact's 4-frame strip, and frame counter. Drawn in 3D scene space
+	// after projectiles and ticked once per game tick (4 frames per impact
+	// = 4 game ticks ≈ 2.5 s with the 640 ms tick).
+	private static final class OgrsImpact {
+		final int worldX;          // tile units * tileSize
+		final int worldZ;
+		final int elevationY;
+		final int baseSlotId;      // sprite ID for frame_00 (frames 0..3 sequential)
+		int frame;
+		OgrsImpact(int worldX, int worldZ, int elevationY, int baseSlotId) {
+			this.worldX = worldX;
+			this.worldZ = worldZ;
+			this.elevationY = elevationY;
+			this.baseSlotId = baseSlotId;
+			this.frame = 0;
+		}
+	}
+	private final java.util.ArrayList<OgrsImpact> ogrsImpacts = new java.util.ArrayList<>();
 	// OGRS — minimap click-destination tracking (sparky 2026-05-19 #26).
 	// Captured at the minimap-click site; rendered as a yellow flag on the
 	// minimap each frame until the player's tile equals it. -1 = none.
@@ -5094,7 +5114,10 @@ public final class mudclient implements Runnable {
 									/ this.projectileMaxRange;
 								int var13 = ((this.projectileMaxRange - var3.projectileRange) * var9
 									+ var6 * var3.projectileRange) / this.projectileMaxRange;
-								this.scene.drawSprite(var3.incomingProjectileSprite.id + spriteProjectile, var13,
+								// OGRS §3D — directional variant for arrow + flame.
+								final int ogrsSpriteId = ogrsResolveProjectileSpriteId(
+									var3.incomingProjectileSprite.id, var5, var6, var8, var9);
+								this.scene.drawSprite(ogrsSpriteId, var13,
 									0, var11, var12, 32, 32, (byte) 109);
 								++this.spriteCount;
 							}
@@ -5128,12 +5151,21 @@ public final class mudclient implements Runnable {
 									/ this.projectileMaxRange;
 								int var13 = ((this.projectileMaxRange - var3.projectileRange) * var9
 									+ var6 * var3.projectileRange) / this.projectileMaxRange;
-								this.scene.drawSprite(var3.incomingProjectileSprite.id + spriteProjectile, var13,
+								// OGRS §3D — directional variant for arrow + flame.
+								final int ogrsSpriteId = ogrsResolveProjectileSpriteId(
+									var3.incomingProjectileSprite.id, var5, var6, var8, var9);
+								this.scene.drawSprite(ogrsSpriteId, var13,
 									0, var11, var12, 32, 32, (byte) 109);
 								++this.spriteCount;
 							}
 						}
 					}
+
+					// OGRS §3C — render any active impact animations now
+					// that the projectile draw loops have finished. Drawing
+					// after the projectiles means impact frames overlay
+					// rather than under-render the projectile arc.
+					ogrsDrawImpacts();
 
 					for (centerX = 0; this.npcCount > centerX; ++centerX) {
 						ORSCharacter var3 = this.npcs[centerX];
@@ -12044,6 +12076,9 @@ public final class mudclient implements Runnable {
 					updateEntity = this.players[updateIndex];
 					if (updateEntity.projectileRange > 0) {
 						--updateEntity.projectileRange;
+						if (updateEntity.projectileRange == 0) {
+							ogrsSpawnImpactForCaster(updateEntity);
+						}
 					}
 				}
 
@@ -12051,8 +12086,16 @@ public final class mudclient implements Runnable {
 					updateEntity = this.npcs[updateIndex];
 					if (updateEntity.projectileRange > 0) {
 						--updateEntity.projectileRange;
+						if (updateEntity.projectileRange == 0) {
+							ogrsSpawnImpactForCaster(updateEntity);
+						}
 					}
 				}
+
+				// OGRS §3C — tick all active impact animations forward each
+				// game tick. The render path consumes the per-frame state
+				// to display the 4-frame burst.
+				ogrsTickImpacts();
 
 				if (this.sleepWordDelayTimer > 20) {
 					this.sleepWordDelayTimer = 0;
@@ -13965,6 +14008,88 @@ public final class mudclient implements Runnable {
 	 * the server, which flips state and pushes a fresh SEND_RUN_ENERGY
 	 * packet back. The click is consumed so it doesn't fall through.
 	 */
+	// OGRS §3D — direction picker for arrow + flame projectiles -----------
+
+	/** Returns the absolute sprite ID to draw for this projectile,
+	 *  consulting the 8-direction variants when the type is RANGED (2)
+	 *  or FIRE (18). Other types fall through to the unidirectional
+	 *  base slot (spriteProjectile + type). The octant order matches
+	 *  the DIR_ORDER list in pack-router-sprites.py:
+	 *    0=E, 1=SE, 2=S, 3=SW, 4=W, 5=NW, 6=N, 7=NE. */
+	private int ogrsResolveProjectileSpriteId(int type, int casterX, int casterZ, int targetX, int targetZ) {
+		final int base = type + spriteProjectile;
+		if (type != 2 && type != 18) return base;
+		final int dx = targetX - casterX;
+		final int dz = targetZ - casterZ;
+		if (dx == 0 && dz == 0) return base;
+		double angle = Math.atan2((double) dz, (double) dx);
+		int octant = (int) Math.round(angle / (Math.PI / 4.0));
+		octant = ((octant % 8) + 8) % 8;
+		final int dirBase = (type == 2) ? 3740 : 3748;
+		return dirBase + octant;
+	}
+
+	// OGRS §3C — impact renderer helpers ----------------------------------
+
+	/** Sprite-archive base slot for the 4-frame impact strip of a given
+	 *  projectile type. Matches the layout in
+	 *  scripts/art/pack-router-sprites.py IMPACT_SLOTS. Returns -1 when
+	 *  the type has no authored impact (e.g. ranged arrow). */
+	private static int ogrsImpactBaseFor(int projectileType) {
+		switch (projectileType) {
+			case 0: return 3700; // ORB
+			case 1: return 3704; // MAGIC
+			case 3: return 3708; // GNOMEBALL
+			case 4: return 3712; // SKULL
+			case 5: return 3716; // SPIKEBALL
+			case 18: return 3720; // FIRE (unique)
+			case 12: return 3724; // CRUMBLE_UNDEAD (unique)
+			default: return -1;
+		}
+	}
+
+	/** Resolve which character is the projectile's intended target for
+	 *  this caster. Mirrors the same lookup used in the draw loop. */
+	private ORSCharacter ogrsResolveProjectileTarget(ORSCharacter caster) {
+		if (caster.attackingNpcServerIndex != -1) {
+			return this.npcsServer[caster.attackingNpcServerIndex];
+		}
+		if (caster.attackingPlayerServerIndex != -1) {
+			return this.playerServer[caster.attackingPlayerServerIndex];
+		}
+		return null;
+	}
+
+	private void ogrsSpawnImpactForCaster(ORSCharacter caster) {
+		if (caster == null || caster.incomingProjectileSprite == null) return;
+		final int base = ogrsImpactBaseFor(caster.incomingProjectileSprite.id);
+		if (base < 0) return; // no authored impact for this projectile type
+		final ORSCharacter target = ogrsResolveProjectileTarget(caster);
+		if (target == null) return;
+		final int wy = -this.world.getElevation(target.currentX, target.currentZ) - 55;
+		ogrsImpacts.add(new OgrsImpact(target.currentX, target.currentZ, wy, base));
+	}
+
+	private void ogrsTickImpacts() {
+		java.util.Iterator<OgrsImpact> it = ogrsImpacts.iterator();
+		while (it.hasNext()) {
+			OgrsImpact imp = it.next();
+			imp.frame++;
+			if (imp.frame >= 4) it.remove();
+		}
+	}
+
+	/** Called from the world-render code after projectiles have been
+	 *  drawn. Renders every active impact at its target position with
+	 *  the current frame of its 4-frame burst. */
+	private void ogrsDrawImpacts() {
+		for (OgrsImpact imp : ogrsImpacts) {
+			this.scene.drawSprite(imp.baseSlotId + imp.frame, imp.worldZ, 0,
+				imp.worldX, imp.elevationY, 48, 48, (byte) 109);
+			++this.spriteCount;
+		}
+	}
+
 	private void drawOgrsRunIcon() {
 		// OGRS — run pill v3. Sparky feedback (this session): the percent
 		// text was too big for the box, wants the "RUN" label back, and a
@@ -14556,7 +14681,13 @@ public final class mudclient implements Runnable {
 		loadSprite(spriteUtil, "media", 2);
 		loadSprite(spriteUtil + 2, "media", 4);
 		loadSprite(spriteUtil + 6, "media", 2);
-		loadSprite(spriteProjectile, "media", 7);
+		// OGRS §3B/§3C/§3D — original 7 router slots + 38 unique spell sprites
+		// + 28 impact frames (7 types x 4) + 16 directional variants. Sprite
+		// IDs are non-contiguous (3160-3204 + 3700-3727 + 3740-3755), so we
+		// load them in three batches.
+		loadSprite(spriteProjectile, "media", 45);         // 3160..3204
+		loadSprite(3700, "media", 28);                     // 3700..3727 impacts
+		loadSprite(3740, "media", 16);                     // 3740..3755 directions
 		loadSprite(3284, "media", 11);
 		// loadSprite(spriteLogo, "media", 1);
 
