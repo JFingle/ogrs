@@ -31,8 +31,27 @@ public final class CalebSmithSupplies extends AbstractShop {
 	@Override public Shop[] getShops(World w) { return new Shop[]{shop}; }
 	@Override public boolean isMembers() { return false; }
 	@Override public Shop getShop() { return shop; }
-	@Override public boolean blockTalkNpc(Player p, Npc n) { return false; }
-	@Override public void onTalkNpc(Player p, Npc n) { /* not used */ }
+
+	// OGRS — Talk-to dialog (sparky 2026-05-19: NPCs need character).
+	@Override public boolean blockTalkNpc(Player p, Npc n) { return n.getID() == OWNER_NPC_ID; }
+	@Override public void onTalkNpc(Player p, Npc n) {
+		com.openrsc.server.plugins.Functions.npcsay(p, n,
+			"A hammer in every pack and a chisel for every stone, friend.",
+			"Lumbridge crowd thinks the real smith's in Varrock. They're not wrong, but I make do.");
+		final int opt = com.openrsc.server.plugins.Functions.multi(p, n,
+			"Show me what you've got.",
+			"Why isn't the real smith here?",
+			"Just looking around, thanks.");
+		if (opt == 0) {
+			p.setAccessingShop(shop);
+			com.openrsc.server.net.rsc.ActionSender.showShop(p, shop);
+		} else if (opt == 1) {
+			com.openrsc.server.plugins.Functions.npcsay(p, n,
+				"Varrock's got the ore, the coal, and the customers.",
+				"I sell the toolkit. They sell the finished blade.",
+				"Honest work either way — just different scales.");
+		}
+	}
 	@Override public boolean blockOpNpc(Player p, Npc n, String c) {
 		return n.getID() == OWNER_NPC_ID && "Trade".equalsIgnoreCase(c);
 	}

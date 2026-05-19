@@ -30,8 +30,27 @@ public final class MiriamBakery extends AbstractShop {
 	@Override public Shop[] getShops(World w) { return new Shop[]{shop}; }
 	@Override public boolean isMembers() { return false; }
 	@Override public Shop getShop() { return shop; }
-	@Override public boolean blockTalkNpc(Player p, Npc n) { return false; }
-	@Override public void onTalkNpc(Player p, Npc n) { /* not used */ }
+
+	// OGRS — Talk-to dialog (sparky 2026-05-19: NPCs need character).
+	@Override public boolean blockTalkNpc(Player p, Npc n) { return n.getID() == OWNER_NPC_ID; }
+	@Override public void onTalkNpc(Player p, Npc n) {
+		com.openrsc.server.plugins.Functions.npcsay(p, n,
+			"Morning, dear! Mind the flour — it's everywhere today.",
+			"Lord knows what they're doing at the mill — the price keeps creeping up.");
+		final int opt = com.openrsc.server.plugins.Functions.multi(p, n,
+			"What's for sale today?",
+			"Tell me about the village.",
+			"Just saying hello.");
+		if (opt == 0) {
+			p.setAccessingShop(shop);
+			com.openrsc.server.net.rsc.ActionSender.showShop(p, shop);
+		} else if (opt == 1) {
+			com.openrsc.server.plugins.Functions.npcsay(p, n,
+				"Old Wat's down at the allotment — bring him decent dirt and he'll talk all day.",
+				"The smith's lad keeps a stall now, sweet boy.",
+				"Mind the swamp south of here. The frogs are louder than they ought to be.");
+		}
+	}
 	@Override public boolean blockOpNpc(Player p, Npc n, String c) {
 		return n.getID() == OWNER_NPC_ID && "Trade".equalsIgnoreCase(c);
 	}

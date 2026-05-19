@@ -29,8 +29,27 @@ public final class LydiaCloth extends AbstractShop {
 	@Override public Shop[] getShops(World w) { return new Shop[]{shop}; }
 	@Override public boolean isMembers() { return false; }
 	@Override public Shop getShop() { return shop; }
-	@Override public boolean blockTalkNpc(Player p, Npc n) { return false; }
-	@Override public void onTalkNpc(Player p, Npc n) { /* not used */ }
+
+	// OGRS — Talk-to dialog (sparky 2026-05-19: NPCs need character).
+	@Override public boolean blockTalkNpc(Player p, Npc n) { return n.getID() == OWNER_NPC_ID; }
+	@Override public void onTalkNpc(Player p, Npc n) {
+		com.openrsc.server.plugins.Functions.npcsay(p, n,
+			"Careful with my dye, friend — that's woad, all the way from the north.",
+			"A bit of needle and thread will keep you alive longer than a poor sword will.");
+		final int opt = com.openrsc.server.plugins.Functions.multi(p, n,
+			"Let me see your goods.",
+			"How does one make armour?",
+			"Just looking, thank you.");
+		if (opt == 0) {
+			p.setAccessingShop(shop);
+			com.openrsc.server.net.rsc.ActionSender.showShop(p, shop);
+		} else if (opt == 1) {
+			com.openrsc.server.plugins.Functions.npcsay(p, n,
+				"Cowhide first — tan it at the tanner up in Al-Kharid.",
+				"Then needle, thread, and a steady hand. Patience does the rest.",
+				"Don't try to rush it. The seam where you hurry is the seam that splits.");
+		}
+	}
 	@Override public boolean blockOpNpc(Player p, Npc n, String c) {
 		return n.getID() == OWNER_NPC_ID && "Trade".equalsIgnoreCase(c);
 	}
