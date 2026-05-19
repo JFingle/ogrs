@@ -13931,38 +13931,46 @@ public final class mudclient implements Runnable {
 				this.showUiTab = Config.OPTIONS_TAB;
 			}
 
+			// OGRS — clicking the active tab toggles it closed (sparky 2026-05-19
+			// playtest: 'clicking the inventory again should simply close that
+			// tab also'). For each branch: if we're already on this tab, drop
+			// to showUiTab=0; otherwise switch to it as before.
 			if (this.showUiTab != 0 && this.getSurface().width2 - 35 <= this.mouseX && this.mouseY >= 3
 				&& this.getSurface().width2 - 3 > this.mouseX && this.mouseY < 26) {
-				this.showUiTab = Config.INVENTORY_TAB;
+				this.showUiTab = (this.showUiTab == Config.INVENTORY_TAB) ? 0 : Config.INVENTORY_TAB;
 			}
 
-			if (this.showUiTab != 0 && this.showUiTab != Config.MINIMAP_AND_COMPASS_TAB && this.getSurface().width2 - 68 <= this.mouseX
+			if (this.showUiTab != 0 && this.getSurface().width2 - 68 <= this.mouseX
 				&& this.mouseY >= 3 && this.getSurface().width2 - 33 - 3 > this.mouseX && this.mouseY < 26) {
-				this.showUiTab = Config.MINIMAP_AND_COMPASS_TAB;
-				if (!Config.S_DISABLE_MINIMAP_ROTATION) {
-					this.minimapRandom_2 = (int) (23.0D * Math.random()) - 11; // random rotation of the minimap as anti-bot?
-					this.minimapRandom_1 = (int) (13.0D * Math.random()) - 6;
+				if (this.showUiTab == Config.MINIMAP_AND_COMPASS_TAB) {
+					this.showUiTab = 0; // toggle close
+				} else {
+					this.showUiTab = Config.MINIMAP_AND_COMPASS_TAB;
+					if (!Config.S_DISABLE_MINIMAP_ROTATION) {
+						this.minimapRandom_2 = (int) (23.0D * Math.random()) - 11; // random rotation of the minimap as anti-bot?
+						this.minimapRandom_1 = (int) (13.0D * Math.random()) - 6;
+					}
 				}
 			}
 
 			if (this.showUiTab != 0 && this.mouseX >= this.getSurface().width2 - 66 - 35 && this.mouseY >= 3
 				&& this.getSurface().width2 - 3 - 66 > this.mouseX && this.mouseY < 26) {
-				this.showUiTab = Config.SKILLS_AND_QUESTS_TAB;
+				this.showUiTab = (this.showUiTab == Config.SKILLS_AND_QUESTS_TAB) ? 0 : Config.SKILLS_AND_QUESTS_TAB;
 			}
 
 			if (this.showUiTab != 0 && this.getSurface().width2 - 35 - 99 <= this.mouseX && this.mouseY >= 3
 				&& this.getSurface().width2 - 102 > this.mouseX && this.mouseY < 26) {
-				this.showUiTab = Config.MAGIC_AND_PRAYER_TAB;
+				this.showUiTab = (this.showUiTab == Config.MAGIC_AND_PRAYER_TAB) ? 0 : Config.MAGIC_AND_PRAYER_TAB;
 			}
 
 			if (this.showUiTab != 0 && this.getSurface().width2 - 167 <= this.mouseX && this.mouseY >= 3
 				&& this.getSurface().width2 - 132 - 3 > this.mouseX && this.mouseY < 26) {
-				this.showUiTab = Config.FRIENDS_TAB;
+				this.showUiTab = (this.showUiTab == Config.FRIENDS_TAB) ? 0 : Config.FRIENDS_TAB;
 			}
 
 			if (this.showUiTab != 0 && this.getSurface().width2 - 35 - 165 <= this.mouseX && this.mouseY >= 3
 				&& this.mouseX < this.getSurface().width2 - 168 && this.mouseY < 26) {
-				this.showUiTab = Config.OPTIONS_TAB;
+				this.showUiTab = (this.showUiTab == Config.OPTIONS_TAB) ? 0 : Config.OPTIONS_TAB;
 			}
 
 			if (!S_WANT_EQUIPMENT_TAB) {
