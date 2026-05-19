@@ -296,11 +296,11 @@
       "direction": 0
     },
     {
-      "_n": "Draynor bank \u2014 ledger shelf NW corner behind westmost banker (relocated from 220,638 per sparky feedback).",
+      "_n": "Draynor bank \u2014 ledger shelf at sparky's chosen spot (221, 636), the 'perfect position' per playtest 2026-05-19.",
       "id": 1316,
       "pos": {
-        "X": 217,
-        "Y": 634
+        "X": 221,
+        "Y": 636
       },
       "direction": 0
     },

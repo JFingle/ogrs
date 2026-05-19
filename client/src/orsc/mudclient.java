@@ -7511,7 +7511,10 @@ public final class mudclient implements Runnable {
 				boolean mouseInTabArea = mouseInTabArea_CUSTOM();
 				boolean interfaceOpen = false;
 
-				if (C_CUSTOM_UI && clickedTab) {
+				// OGRS — consume the click for ALL UI modes when a tab was
+				// actually hit (used to be C_CUSTOM_UI only, which let classic-
+				// UI tab clicks bleed through into walk-to-tile).
+				if (clickedTab) {
 					this.mouseButtonClick = 0;
 				}
 
@@ -13980,10 +13983,18 @@ public final class mudclient implements Runnable {
 		if (!C_CUSTOM_UI) {
 			repositionAuthenticUI();
 		}
+		// OGRS — sparky 2026-05-19 playtest: 'when i am hovering the tabs, i
+		// can actually click above them on the map, that doesnt seem right'.
+		// Root cause: this fn used to always return true, but the caller only
+		// consumes the click when C_CUSTOM_UI mode is active — so classic-UI
+		// clicks on a tab also walked the world. Now we return tabHit
+		// truthfully and the caller consumes for all UI modes.
+		boolean tabHit = false;
 		try {
 			if (this.showUiTab == 0 && this.mouseX >= this.getSurface().width2 - 35 && this.mouseY >= 3
 				&& this.mouseX < this.getSurface().width2 - 3 && this.mouseY < 35) {
 				this.showUiTab = Config.INVENTORY_TAB;
+				tabHit = true;
 			}
 
 			if (this.showUiTab == 0 && this.mouseX >= this.getSurface().width2 - 35 - 33 && this.mouseY >= 3
@@ -13993,26 +14004,31 @@ public final class mudclient implements Runnable {
 					this.minimapRandom_1 = (int) (13.0D * Math.random()) - 6; // random rotation of the minimap as anti-bot?
 					this.minimapRandom_2 = (int) (Math.random() * 23.0D) - 11;
 				}
+				tabHit = true;
 			}
 
 			if (this.showUiTab == 0 && this.getSurface().width2 - 101 <= this.mouseX && this.mouseY >= 3
 				&& this.mouseX < this.getSurface().width2 - 3 - 66 && this.mouseY < 35) {
 				this.showUiTab = Config.SKILLS_AND_QUESTS_TAB;
+				tabHit = true;
 			}
 
 			if (this.showUiTab == 0 && this.mouseX >= this.getSurface().width2 - 99 - 35 && this.mouseY >= 3
 				&& this.getSurface().width2 - 3 - 99 > this.mouseX && this.mouseY < 35) {
 				this.showUiTab = Config.MAGIC_AND_PRAYER_TAB;
+				tabHit = true;
 			}
 
 			if (this.showUiTab == 0 && this.mouseX >= this.getSurface().width2 - 35 - 132 && this.mouseY >= 3
 				&& this.mouseX < this.getSurface().width2 - 135 && this.mouseY < 35) {
 				this.showUiTab = Config.FRIENDS_TAB;
+				tabHit = true;
 			}
 
 			if (this.showUiTab == 0 && this.getSurface().width2 - 35 - 165 <= this.mouseX && this.mouseY >= 3
 				&& this.mouseX < this.getSurface().width2 - 165 - 3 && this.mouseY < 35) {
 				this.showUiTab = Config.OPTIONS_TAB;
+				tabHit = true;
 			}
 
 			// OGRS — clicking the active tab toggles it closed (sparky 2026-05-19
@@ -14022,6 +14038,7 @@ public final class mudclient implements Runnable {
 			if (this.showUiTab != 0 && this.getSurface().width2 - 35 <= this.mouseX && this.mouseY >= 3
 				&& this.getSurface().width2 - 3 > this.mouseX && this.mouseY < 26) {
 				this.showUiTab = (this.showUiTab == Config.INVENTORY_TAB) ? 0 : Config.INVENTORY_TAB;
+				tabHit = true;
 			}
 
 			if (this.showUiTab != 0 && this.getSurface().width2 - 68 <= this.mouseX
@@ -14035,26 +14052,31 @@ public final class mudclient implements Runnable {
 						this.minimapRandom_1 = (int) (13.0D * Math.random()) - 6;
 					}
 				}
+				tabHit = true;
 			}
 
 			if (this.showUiTab != 0 && this.mouseX >= this.getSurface().width2 - 66 - 35 && this.mouseY >= 3
 				&& this.getSurface().width2 - 3 - 66 > this.mouseX && this.mouseY < 26) {
 				this.showUiTab = (this.showUiTab == Config.SKILLS_AND_QUESTS_TAB) ? 0 : Config.SKILLS_AND_QUESTS_TAB;
+				tabHit = true;
 			}
 
 			if (this.showUiTab != 0 && this.getSurface().width2 - 35 - 99 <= this.mouseX && this.mouseY >= 3
 				&& this.getSurface().width2 - 102 > this.mouseX && this.mouseY < 26) {
 				this.showUiTab = (this.showUiTab == Config.MAGIC_AND_PRAYER_TAB) ? 0 : Config.MAGIC_AND_PRAYER_TAB;
+				tabHit = true;
 			}
 
 			if (this.showUiTab != 0 && this.getSurface().width2 - 167 <= this.mouseX && this.mouseY >= 3
 				&& this.getSurface().width2 - 132 - 3 > this.mouseX && this.mouseY < 26) {
 				this.showUiTab = (this.showUiTab == Config.FRIENDS_TAB) ? 0 : Config.FRIENDS_TAB;
+				tabHit = true;
 			}
 
 			if (this.showUiTab != 0 && this.getSurface().width2 - 35 - 165 <= this.mouseX && this.mouseY >= 3
 				&& this.mouseX < this.getSurface().width2 - 168 && this.mouseY < 26) {
 				this.showUiTab = (this.showUiTab == Config.OPTIONS_TAB) ? 0 : Config.OPTIONS_TAB;
+				tabHit = true;
 			}
 
 			if (!S_WANT_EQUIPMENT_TAB) {
@@ -14101,7 +14123,7 @@ public final class mudclient implements Runnable {
 		} catch (RuntimeException var3) {
 			throw GenUtil.makeThrowable(var3, "client.OC(" + "dummy" + ')');
 		}
-		return true;
+		return tabHit;
 	}
 
 	private boolean handleTabUIClick_CUSTOM() {
