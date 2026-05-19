@@ -1,10 +1,12 @@
 package com.openrsc.server.model;
 
+import com.openrsc.server.constants.Skill;
 import com.openrsc.server.external.NPCLoc;
 import com.openrsc.server.model.entity.Mob;
 import com.openrsc.server.model.entity.npc.Npc;
 import com.openrsc.server.model.entity.player.Player;
 import com.openrsc.server.model.world.region.Region;
+import com.openrsc.server.util.rsc.DataConversions;
 
 /**
  * A WalkingQueue stores steps the client needs to walk and allows
@@ -65,10 +67,19 @@ public class WalkingQueue {
 	 *
 	 * OGRS — when the mob is a Player who has running enabled and run energy
 	 * > 0, this advances them TWO tiles per tick (one extra path point popped)
-	 * and drains RUN_DRAIN_PER_TILE per tile actually stepped. Adjacency
+	 * and drains the agility-scaled cost per tile actually stepped. Adjacency
 	 * checks stay per-step, so pathfinding stays sane. If energy hits zero
 	 * mid-double-step we just don't take the second step; the player keeps
 	 * walking at 1 tile/tick on subsequent ticks until energy regens.
+	 *
+	 * Agility scaling (sparky 2026-05-19 follow-up to #37):
+	 *   - drain  : 100 base, -50 at lvl 99 (linear) → lvl 99 lasts ~2x longer
+	 *   - regen  : 80/40 idle/walking base, +80/+40 at lvl 99 → ~2x recovery
+	 *   - sprint : agility >= 70 rolls for a bonus 3rd tile (lvl 70 = 0%,
+	 *              lvl 99 = ~29%, lvl 110 boosted ≈ 40%). When it procs,
+	 *              the extra tile also drains. Caps at one bonus per tick.
+	 * Uses the player's current (boosted) agility level so energy potions
+	 * and capes feel rewarding.
 	 */
 	public void processNextMovement() {
 		boolean stepped = takeOneStep();
@@ -81,23 +92,69 @@ public class WalkingQueue {
 		//   not stepped (idle) -> full regen
 		if (mob.isPlayer()) {
 			Player p = (Player) mob;
+			final int agility = p.getSkills().getLevel(Skill.AGILITY.id());
+			final int drainPerTile = agilityDrainPerTile(agility);
 			if (stepped && p.isRunning()) {
-				p.setRunEnergy(p.getRunEnergy() - Player.RUN_DRAIN_PER_TILE);
+				p.setRunEnergy(p.getRunEnergy() - drainPerTile);
 				if (p.getRunEnergy() > 0 && path != null && !path.isEmpty()) {
 					if (takeOneStep()) {
-						p.setRunEnergy(p.getRunEnergy() - Player.RUN_DRAIN_PER_TILE);
+						p.setRunEnergy(p.getRunEnergy() - drainPerTile);
+						// Third-tile sprint roll — only kicks in at high
+						// agility, otherwise the chance is 0. Costs an
+						// extra drain like the other tiles.
+						if (p.getRunEnergy() > 0 && path != null && !path.isEmpty()
+								&& rollAgilitySprint(agility)) {
+							if (takeOneStep()) {
+								p.setRunEnergy(p.getRunEnergy() - drainPerTile);
+							}
+						}
 					}
 				}
 			} else if (stepped) {
 				if (p.getRunEnergy() < Player.MAX_RUN_ENERGY) {
-					p.setRunEnergy(p.getRunEnergy() + Player.RUN_REGEN_WALKING);
+					p.setRunEnergy(p.getRunEnergy()
+						+ agilityScaledRegen(Player.RUN_REGEN_WALKING, agility));
 				}
 			} else {
 				if (p.getRunEnergy() < Player.MAX_RUN_ENERGY) {
-					p.setRunEnergy(p.getRunEnergy() + Player.RUN_REGEN_IDLE);
+					p.setRunEnergy(p.getRunEnergy()
+						+ agilityScaledRegen(Player.RUN_REGEN_IDLE, agility));
 				}
 			}
 		}
+	}
+
+	/**
+	 * Agility-scaled drain per tile. lvl 1 ≈ 99, lvl 50 ≈ 75, lvl 99 = 50.
+	 * Boosted levels above 99 keep clamping down toward 50 (no free running).
+	 */
+	private static int agilityDrainPerTile(int agility) {
+		final int clamped = Math.max(1, Math.min(120, agility));
+		final int reduction = (clamped * 50) / 99; // 0..50 (cap at 60 if boosted, then clamp below)
+		return Math.max(50, Player.RUN_DRAIN_PER_TILE - reduction);
+	}
+
+	/**
+	 * Agility-scaled regen. lvl 1 ≈ base, lvl 99 ≈ 2× base. Boosted levels
+	 * keep climbing slightly past 2× but we cap at 2.5× to bound it.
+	 */
+	private static int agilityScaledRegen(int base, int agility) {
+		final int clamped = Math.max(1, Math.min(120, agility));
+		final int bonus = (base * clamped) / 99;
+		final int total = base + bonus;
+		final int cap = (base * 5) / 2; // 2.5× ceiling
+		return Math.min(cap, total);
+	}
+
+	/**
+	 * Returns true when a high-agility player gets a bonus third tile this
+	 * tick. lvl < 70 ⇒ never. lvl 70 = 0%, +1pp per level up to lvl 99 = 29%,
+	 * keeps climbing slightly past 99 for boosted/cape effects.
+	 */
+	private static boolean rollAgilitySprint(int agility) {
+		if (agility < 70) return false;
+		final int chance = Math.min(40, agility - 70); // pp
+		return DataConversions.random(99) < chance;
 	}
 
 	/**
