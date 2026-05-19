@@ -64,6 +64,9 @@ public final class OgrsClientItems {
 		// id 1606 — from content/items/spider_egg.yaml
 		items.add(new ItemDef("Spider Egg", "A leathery, waxen orb the size of a marble. Something inside twitches.", "Examine", 35, 19, "items:19", false, false, 0, 0x3A2E20, false, false, true, i++));
 
+		// id 1607 — from content/items/iron_dagger_spiderbane.yaml
+		items.add(new ItemDef("Iron dagger of spiderbane", "Iron blade etched with eight-legged runes. Aches to taste arachnid.", "", 280, 28, "items:28", false, true, 49, 0x2A4A2A, false, false, true, i++));
+
 		return i;
 	}
 }

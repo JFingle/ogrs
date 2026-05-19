@@ -1,0 +1,39 @@
+# OGRS item: Iron dagger of spiderbane.
+#
+# First Slayer-bane weapon (sparky 2026-05-19 #36 spec). +5% melee
+# damage vs every spider variant. Slayer level 1 to wield, so it's
+# accessible day-one for a player just starting their Slayer track.
+#
+# Stats clone an iron dagger (aim 5 / power 5) — same swing speed and
+# raw bite, with the bane multiplier as the reason to actually wield
+# it over a plain iron. Damage bonus logic in
+# server/.../content/OgrsSlayerBane.java; the requiredSkill=18 gates
+# the wield itself via the upstream wield-requirement check.
+#
+# Sprite reuses items:28 (upstream iron dagger) tinted faintly green
+# so it reads as "venomous bite". Replace with a dedicated
+# arachnid-etched sprite when the 2003scape model pipeline lands.
+
+id: 1607
+name: Iron dagger of spiderbane
+description: Iron blade etched with eight-legged runes. Aches to taste arachnid.
+command: ""
+stackable: false
+untradeable: false
+members_only: false
+noteable: true
+base_price: 280
+picture_mask: 0x2A4A2A
+wieldable: true
+wearable_id: 49
+weapon:
+  appearance_id: 49
+  wearable_id: 49
+  wear_slot: 4         # main weapon slot
+  required_skill: 18   # Slayer (after stock 18 skills on the OGRS world)
+  required_level: 1
+  aim_bonus: 5
+  power_bonus: 5
+sprite:
+  id: 28
+  location: "items:28"

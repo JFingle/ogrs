@@ -1669,12 +1669,15 @@ public enum ItemId {
 	OGRS_BURNT_CROP(1604),
 	// Spider drops — sparky 2026-05-19 playtest: 'spiders have zero loot'.
 	OGRS_SPIDER_LEG(1605),
-	OGRS_SPIDER_EGG(1606);
+	OGRS_SPIDER_EGG(1606),
+	// Slayer -bane weapons (#36). YAML pipeline now carries weapon stats;
+	// damage hook in content/OgrsSlayerBane.
+	OGRS_IRON_DAGGER_SPIDERBANE(1607);
 
 	private int itemId;
 
 	public static final int maxAuthentic = 1289;
-	public static final int maxCustom = 1606;
+	public static final int maxCustom = 1607;
 
 	private static final Map<Integer, ItemId> byId = new HashMap<Integer, ItemId>();
 	private static final Map<String, ItemId> byName = new HashMap<String, ItemId>();

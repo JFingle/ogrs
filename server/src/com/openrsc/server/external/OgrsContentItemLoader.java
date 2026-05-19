@@ -135,6 +135,29 @@ public class OgrsContentItemLoader {
 		final String commandStr = (String) data.getOrDefault("command", "");
 		final String[] command = commandStr.split(",");
 
+		// OGRS — wieldable + weapon-stat support (sparky 2026-05-19, #36).
+		// Top-level keys for the simple "is it wieldable, at all" pair
+		// (wieldable / wearable_id). Optional `weapon:` sub-block carries
+		// the proper weapon stats — required skill/level for equipping,
+		// aim/power bonuses, etc. All fields default to authentic-OpenRSC
+		// values so existing pre-#36 YAMLs keep their old behavior.
+		final boolean wieldable = asBool(data, "wieldable", false);
+		final int topWearableId = asInt(data, "wearable_id", 0);
+
+		@SuppressWarnings("unchecked")
+		final Map<String, Object> weapon =
+			(Map<String, Object>) data.getOrDefault("weapon", java.util.Collections.emptyMap());
+		final int appearanceId   = asInt(weapon, "appearance_id", topWearableId);
+		final int wearableId     = asInt(weapon, "wearable_id", topWearableId);
+		final int wearSlot       = asInt(weapon, "wear_slot", 4);
+		final int requiredLevel  = asInt(weapon, "required_level", 1);
+		final int requiredSkill  = asInt(weapon, "required_skill", 0);
+		final int armourBonus    = asInt(weapon, "armour_bonus", 0);
+		final int weaponAimBonus = asInt(weapon, "aim_bonus", 0);
+		final int weaponPowerBonus = asInt(weapon, "power_bonus", 0);
+		final int magicBonus     = asInt(weapon, "magic_bonus", 0);
+		final int prayerBonus    = asInt(weapon, "prayer_bonus", 0);
+
 		final ItemDefinition def = new ItemDefinition(
 			id,
 			name,
@@ -144,17 +167,17 @@ public class OgrsContentItemLoader {
 			asBool(data, "members_only", false),
 			asBool(data, "stackable", false),
 			asBool(data, "untradeable", false),
-			false,                                  // isWearable — MVP items aren't wearable
-			0,                                      // appearanceID
-			0,                                      // wearableID
-			0,                                      // wearSlot
-			1,                                      // requiredLevel
-			1,                                      // requiredSkillID
-			0L,                                     // armourBonus
-			0,                                      // weaponAimBonus
-			0,                                      // weaponPowerBonus
-			0,                                      // magicBonus
-			0,                                      // prayerBonus
+			wieldable,
+			appearanceId,
+			wearableId,
+			wearSlot,
+			requiredLevel,
+			requiredSkill,
+			(long) armourBonus,
+			weaponAimBonus,
+			weaponPowerBonus,
+			magicBonus,
+			prayerBonus,
 			asInt(data, "base_price", 1),
 			asBool(data, "noteable", true)
 		);

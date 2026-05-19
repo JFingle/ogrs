@@ -185,6 +185,17 @@ public class CombatFormula {
 			}
 		}
 
+		// OGRS — Slayer-bane melee bonus (#36). Applies after upstream
+		// skillcape mods, before the hit/miss gate so a missed hit still
+		// does 0. Multiplier lives in OgrsSlayerBane keyed off the
+		// wielded weapon id and the victim NPC family.
+		if (isHit) {
+			final double mult = com.openrsc.server.content.OgrsSlayerBane.melee(source, victim);
+			if (mult > 1.0) {
+				damage = (int) Math.round(damage * mult);
+			}
+		}
+
 		//LOGGER.info(source + " " + (isHit ? "hit" : "missed") + " " + victim + ", Damage: " + damage);
 
 		return isHit ? damage : 0;
