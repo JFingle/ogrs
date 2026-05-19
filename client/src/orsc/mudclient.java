@@ -7594,6 +7594,10 @@ public final class mudclient implements Runnable {
 					this.drawUiTabOptions(15, mustDrawMenu);
 				}
 
+				// OGRS — always-visible run-toggle icon (sparky 2026-05-19:
+				// 'add a small run icon to the left of the setting menu').
+				drawOgrsRunIcon();
+
 				if (!this.topMouseMenuVisible && !this.optionsMenuShow) {
 					this.createTopMouseMenu(-128);
 				}
@@ -9227,46 +9231,12 @@ public final class mudclient implements Runnable {
 
 			}
 
-			// OGRS — Run toggle button + live energy bar (#37 Commit C).
-			// Both states (running flag + energy percent) are server-pushed
-			// via opcode 251 (SEND_RUN_ENERGY); setOgrsRunState updates the
-			// fields. Click still sends sendCommandString("run") — the
-			// server's RunEnergyCommand flips state and pushes a fresh
-			// packet back, so the button color/bar settle to truth.
-			final int runBtnX = posX + 4;
-			final int runBtnY = posY + 156;
-			final int runBtnW = 70;
-			final int runBtnH = 18;
-
-			// Energy bar above the button — 4px tall, full width.
-			final int barY = runBtnY - 6;
-			final int barH = 4;
-			this.getSurface().drawBoxAlpha(runBtnX, barY, runBtnW, barH, 0x2D2C24, 255);
-			final int fillW = Math.max(0, Math.min(runBtnW, runBtnW * ogrsRunEnergyPercent / 100));
-			// Color: green > yellow > red as energy depletes.
-			final int barColour = ogrsRunEnergyPercent > 60 ? 0x4FB04F
-			                    : ogrsRunEnergyPercent > 25 ? 0xD4A64A
-			                    :                              0xB02A2A;
-			if (fillW > 0) {
-				this.getSurface().drawBoxAlpha(runBtnX, barY, fillW, barH, barColour, 255);
-			}
-
-			final int runBtnColour = ogrsRunButtonVisual ? 0x7E1F1C : 0x5A5A55;
-			this.getSurface().drawBoxAlpha(runBtnX, runBtnY, runBtnW, runBtnH, runBtnColour, 192);
-			this.getSurface().drawBoxBorder(runBtnX, runBtnW, runBtnY, runBtnH, 0x2D2C24);
-			this.getSurface().drawBoxBorder(runBtnX + 1, runBtnW - 2, runBtnY + 1, runBtnH - 2, 0x706452);
-			final String runLabel = ogrsRunButtonVisual
-				? "RUN: " + ogrsRunEnergyPercent + "%"
-				: "Walk: " + ogrsRunEnergyPercent + "%";
-			final int runLabelW = this.getSurface().stringWidth(1, runLabel);
-			this.getSurface().drawString(runLabel,
-				runBtnX + (runBtnW - runLabelW) / 2, runBtnY + 12, 0xFFFFFF, 1);
-			if (this.mouseButtonClick != 0
-				&& this.mouseX >= runBtnX && this.mouseX < runBtnX + runBtnW
-				&& this.mouseY >= runBtnY && this.mouseY < runBtnY + runBtnH) {
-				this.sendCommandString("run");
-				this.mouseButtonClick = 0;
-			}
+			// OGRS — Run toggle previously lived here as a button + energy
+			// bar below the minimap. Sparky 2026-05-19: 'the run is bugging
+			// the map view'. Relocated to a standalone icon left of the
+			// Options/settings tab — see drawOgrsRunIcon() called from the
+			// main render loop. State (ogrsRunButtonVisual / ogrsRunEnergyPercent)
+			// still updates via SEND_RUN_ENERGY (#37 Commit C).
 
 		} catch (RuntimeException var18) {
 			throw GenUtil.makeThrowable(var18, "client.HD(" + var1 + ',' + var2 + ')');
@@ -13975,6 +13945,61 @@ public final class mudclient implements Runnable {
 			return 3;
 	}
 
+	/**
+	 * OGRS — always-visible run-toggle icon, rendered to the LEFT of the
+	 * Options/Settings tab (sparky 2026-05-19). Replaces the older
+	 * in-minimap-tab run button + bar that was occluding the map view.
+	 *
+	 * Layout matches the tab strip: 33 wide × 32 tall, top-aligned at y=3.
+	 * X = (width2 - 200) - 33 = width2 - 233. Server pushes state via
+	 * SEND_RUN_ENERGY (#37 Commit C); local fields drive the visual.
+	 *
+	 * Click anywhere inside the icon fires sendCommandString("run") —
+	 * the existing chat-command pipeline routes to RunEnergyCommand on
+	 * the server, which flips state and pushes a fresh SEND_RUN_ENERGY
+	 * packet back. The click is consumed so it doesn't fall through.
+	 */
+	private void drawOgrsRunIcon() {
+		final int iconW = 33;
+		final int iconH = 32;
+		final int iconX = this.getSurface().width2 - 233;
+		final int iconY = 3;
+		// Background — dark when walking, red-tinted when running.
+		final int bg = ogrsRunButtonVisual ? 0x7E1F1C : 0x2D2C24;
+		this.getSurface().drawBoxAlpha(iconX, iconY, iconW, iconH, bg, 220);
+		this.getSurface().drawBoxBorder(iconX, iconW, iconY, iconH, 0x000000);
+		this.getSurface().drawBoxBorder(iconX + 1, iconW - 2, iconY + 1, iconH - 2, 0x706452);
+		// Label centered horizontally.
+		final String runLabel = "RUN";
+		final int runLabelW = this.getSurface().stringWidth(1, runLabel);
+		this.getSurface().drawString(runLabel,
+			iconX + (iconW - runLabelW) / 2, iconY + 13, 0xFFFFFF, 1);
+		// Energy percent under the label.
+		final String pct = ogrsRunEnergyPercent + "%";
+		final int pctW = this.getSurface().stringWidth(1, pct);
+		this.getSurface().drawString(pct,
+			iconX + (iconW - pctW) / 2, iconY + 24, 0xFFFFFF, 1);
+		// Thin energy bar at the very bottom of the icon — 2px tall.
+		final int barY = iconY + iconH - 3;
+		final int barX = iconX + 2;
+		final int barW = iconW - 4;
+		this.getSurface().drawBoxAlpha(barX, barY, barW, 2, 0x000000, 255);
+		final int fillW = Math.max(0, Math.min(barW, barW * ogrsRunEnergyPercent / 100));
+		final int barColour = ogrsRunEnergyPercent > 60 ? 0x4FB04F
+		                    : ogrsRunEnergyPercent > 25 ? 0xD4A64A
+		                    :                              0xB02A2A;
+		if (fillW > 0) {
+			this.getSurface().drawBoxAlpha(barX, barY, fillW, 2, barColour, 255);
+		}
+		// Click handler.
+		if (this.mouseButtonClick != 0
+			&& this.mouseX >= iconX && this.mouseX < iconX + iconW
+			&& this.mouseY >= 0 && this.mouseY < iconY + iconH) {
+			this.sendCommandString("run");
+			this.mouseButtonClick = 0;
+		}
+	}
+
 	private boolean handleTabUIClick() {
 		if (C_CUSTOM_UI) {
 			repositionCustomUI();
@@ -13991,13 +14016,13 @@ public final class mudclient implements Runnable {
 		// truthfully and the caller consumes for all UI modes.
 		boolean tabHit = false;
 		try {
-			if (this.showUiTab == 0 && this.mouseX >= this.getSurface().width2 - 35 && this.mouseY >= 3
+			if (this.showUiTab == 0 && this.mouseX >= this.getSurface().width2 - 35 && this.mouseY >= 0
 				&& this.mouseX < this.getSurface().width2 - 3 && this.mouseY < 35) {
 				this.showUiTab = Config.INVENTORY_TAB;
 				tabHit = true;
 			}
 
-			if (this.showUiTab == 0 && this.mouseX >= this.getSurface().width2 - 35 - 33 && this.mouseY >= 3
+			if (this.showUiTab == 0 && this.mouseX >= this.getSurface().width2 - 35 - 33 && this.mouseY >= 0
 				&& this.getSurface().width2 - 3 - 33 > this.mouseX && this.mouseY < 35) {
 				this.showUiTab = Config.MINIMAP_AND_COMPASS_TAB;
 				if (!Config.S_DISABLE_MINIMAP_ROTATION) {
@@ -14007,25 +14032,25 @@ public final class mudclient implements Runnable {
 				tabHit = true;
 			}
 
-			if (this.showUiTab == 0 && this.getSurface().width2 - 101 <= this.mouseX && this.mouseY >= 3
+			if (this.showUiTab == 0 && this.getSurface().width2 - 101 <= this.mouseX && this.mouseY >= 0
 				&& this.mouseX < this.getSurface().width2 - 3 - 66 && this.mouseY < 35) {
 				this.showUiTab = Config.SKILLS_AND_QUESTS_TAB;
 				tabHit = true;
 			}
 
-			if (this.showUiTab == 0 && this.mouseX >= this.getSurface().width2 - 99 - 35 && this.mouseY >= 3
+			if (this.showUiTab == 0 && this.mouseX >= this.getSurface().width2 - 99 - 35 && this.mouseY >= 0
 				&& this.getSurface().width2 - 3 - 99 > this.mouseX && this.mouseY < 35) {
 				this.showUiTab = Config.MAGIC_AND_PRAYER_TAB;
 				tabHit = true;
 			}
 
-			if (this.showUiTab == 0 && this.mouseX >= this.getSurface().width2 - 35 - 132 && this.mouseY >= 3
+			if (this.showUiTab == 0 && this.mouseX >= this.getSurface().width2 - 35 - 132 && this.mouseY >= 0
 				&& this.mouseX < this.getSurface().width2 - 135 && this.mouseY < 35) {
 				this.showUiTab = Config.FRIENDS_TAB;
 				tabHit = true;
 			}
 
-			if (this.showUiTab == 0 && this.getSurface().width2 - 35 - 165 <= this.mouseX && this.mouseY >= 3
+			if (this.showUiTab == 0 && this.getSurface().width2 - 35 - 165 <= this.mouseX && this.mouseY >= 0
 				&& this.mouseX < this.getSurface().width2 - 165 - 3 && this.mouseY < 35) {
 				this.showUiTab = Config.OPTIONS_TAB;
 				tabHit = true;
@@ -14035,14 +14060,14 @@ public final class mudclient implements Runnable {
 			// playtest: 'clicking the inventory again should simply close that
 			// tab also'). For each branch: if we're already on this tab, drop
 			// to showUiTab=0; otherwise switch to it as before.
-			if (this.showUiTab != 0 && this.getSurface().width2 - 35 <= this.mouseX && this.mouseY >= 3
+			if (this.showUiTab != 0 && this.getSurface().width2 - 35 <= this.mouseX && this.mouseY >= 0
 				&& this.getSurface().width2 - 3 > this.mouseX && this.mouseY < 26) {
 				this.showUiTab = (this.showUiTab == Config.INVENTORY_TAB) ? 0 : Config.INVENTORY_TAB;
 				tabHit = true;
 			}
 
 			if (this.showUiTab != 0 && this.getSurface().width2 - 68 <= this.mouseX
-				&& this.mouseY >= 3 && this.getSurface().width2 - 33 - 3 > this.mouseX && this.mouseY < 26) {
+				&& this.mouseY >= 0 && this.getSurface().width2 - 33 - 3 > this.mouseX && this.mouseY < 26) {
 				if (this.showUiTab == Config.MINIMAP_AND_COMPASS_TAB) {
 					this.showUiTab = 0; // toggle close
 				} else {
@@ -14055,25 +14080,25 @@ public final class mudclient implements Runnable {
 				tabHit = true;
 			}
 
-			if (this.showUiTab != 0 && this.mouseX >= this.getSurface().width2 - 66 - 35 && this.mouseY >= 3
+			if (this.showUiTab != 0 && this.mouseX >= this.getSurface().width2 - 66 - 35 && this.mouseY >= 0
 				&& this.getSurface().width2 - 3 - 66 > this.mouseX && this.mouseY < 26) {
 				this.showUiTab = (this.showUiTab == Config.SKILLS_AND_QUESTS_TAB) ? 0 : Config.SKILLS_AND_QUESTS_TAB;
 				tabHit = true;
 			}
 
-			if (this.showUiTab != 0 && this.getSurface().width2 - 35 - 99 <= this.mouseX && this.mouseY >= 3
+			if (this.showUiTab != 0 && this.getSurface().width2 - 35 - 99 <= this.mouseX && this.mouseY >= 0
 				&& this.getSurface().width2 - 102 > this.mouseX && this.mouseY < 26) {
 				this.showUiTab = (this.showUiTab == Config.MAGIC_AND_PRAYER_TAB) ? 0 : Config.MAGIC_AND_PRAYER_TAB;
 				tabHit = true;
 			}
 
-			if (this.showUiTab != 0 && this.getSurface().width2 - 167 <= this.mouseX && this.mouseY >= 3
+			if (this.showUiTab != 0 && this.getSurface().width2 - 167 <= this.mouseX && this.mouseY >= 0
 				&& this.getSurface().width2 - 132 - 3 > this.mouseX && this.mouseY < 26) {
 				this.showUiTab = (this.showUiTab == Config.FRIENDS_TAB) ? 0 : Config.FRIENDS_TAB;
 				tabHit = true;
 			}
 
-			if (this.showUiTab != 0 && this.getSurface().width2 - 35 - 165 <= this.mouseX && this.mouseY >= 3
+			if (this.showUiTab != 0 && this.getSurface().width2 - 35 - 165 <= this.mouseX && this.mouseY >= 0
 				&& this.mouseX < this.getSurface().width2 - 168 && this.mouseY < 26) {
 				this.showUiTab = (this.showUiTab == Config.OPTIONS_TAB) ? 0 : Config.OPTIONS_TAB;
 				tabHit = true;
