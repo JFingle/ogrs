@@ -14592,10 +14592,16 @@ public final class mudclient implements Runnable {
 					this.world.playerAlive = true;
 					return false;
 				} else {
-					this.getSurface().drawColoredStringCentered(256, "Loading... Please wait", 0xFFFFFF, 0, 1, 192);
-					this.drawChatMessageTabs(5);
-					// this.getSurface().draw(this.graphics, this.screenOffsetX,
-					// 256, this.screenOffsetY);
+					// OGRS — only show the "Loading..." overlay on
+					// loadingArea-true loads (logins / teleports). For
+					// normal walk-crosses we hide it; the previous frame
+					// just stays visible for the few ms the section load
+					// takes, which feels much smoother than a flashing
+					// overlay every ~16 tiles of travel.
+					if (var3) {
+						this.getSurface().drawColoredStringCentered(256, "Loading... Please wait", 0xFFFFFF, 0, 1, 192);
+						this.drawChatMessageTabs(5);
+					}
 					clientPort.draw();
 					int oldBaseX = this.midRegionBaseX;
 					int oldBaseZ = this.midRegionBaseZ;
@@ -14696,6 +14702,22 @@ public final class mudclient implements Runnable {
 						for (int j = 0; var23.waypointIndexCurrent >= j; ++j) {
 							var23.waypointsX[j] -= this.tileSize * baseDX;
 							var23.waypointsZ[j] -= baseDZ * this.tileSize;
+						}
+					}
+
+					// OGRS — also translate the local player so walk
+					// interpolation persists across region boundaries. The
+					// engine's original behavior reset the local player's
+					// waypoints in PacketHandler, which made the character
+					// snap-teleport every ~16 tiles of travel (very obvious
+					// while running). Translating into the new region's
+					// coord space keeps the visual seamless.
+					if (this.localPlayer != null) {
+						this.localPlayer.currentX -= this.tileSize * baseDX;
+						this.localPlayer.currentZ -= this.tileSize * baseDZ;
+						for (int j = 0; j <= this.localPlayer.waypointIndexCurrent; ++j) {
+							this.localPlayer.waypointsX[j] -= this.tileSize * baseDX;
+							this.localPlayer.waypointsZ[j] -= this.tileSize * baseDZ;
 						}
 					}
 

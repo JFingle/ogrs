@@ -1383,11 +1383,34 @@ public class PacketHandler {
 		int currentX = mc.getLocalPlayerX() * tileSize + 64;
 		int currentZ = mc.getLocalPlayerZ() * tileSize + 64;
 		mc.setPlayerCount(0);
-		if (needNextRegion) {
-			mc.getLocalPlayer().waypointIndexNext = 0;
-			mc.getLocalPlayer().waypointIndexCurrent = 0;
-			mc.getLocalPlayer().currentX = mc.getLocalPlayer().waypointsX[0] = currentX;
-			mc.getLocalPlayer().currentZ = mc.getLocalPlayer().waypointsZ[0] = currentZ;
+		// OGRS — the original engine unconditionally reset the local
+		// player's waypoint queue here whenever loadNextRegion fired, which
+		// made the character snap-teleport at every region boundary (very
+		// obvious while running). loadNextRegion now translates the
+		// local-player waypoints into the new coord space, so a normal
+		// walk-cross can interpolate seamlessly across the seam.
+		//
+		// We still want a snap for actual teleports (large position deltas
+		// across region loads), otherwise the character would visibly slide
+		// across the map. Decide based on the post-translation distance
+		// between the player's last known visual position and the new tile:
+		// > 8 tiles -> treat as a teleport, snap the waypoint queue;
+		// otherwise -> leave waypoints alone so createPlayer naturally
+		// appends the new step and walk animation continues.
+		if (needNextRegion && mc.getLocalPlayer() != null) {
+			ORSCharacter lp = mc.getLocalPlayer();
+			int lastIdx = lp.waypointIndexCurrent;
+			int dx = lp.waypointsX[lastIdx] - currentX;
+			int dz = lp.waypointsZ[lastIdx] - currentZ;
+			int distSq = dx * dx + dz * dz;
+			int eightTilesSq = (8 * tileSize) * (8 * tileSize);
+			if (distSq > eightTilesSq) {
+				// Teleport — snap.
+				lp.waypointIndexNext = 0;
+				lp.waypointIndexCurrent = 0;
+				lp.currentX = lp.waypointsX[0] = currentX;
+				lp.currentZ = lp.waypointsZ[0] = currentZ;
+			}
 		}
 
 		mc.setLocalPlayer(
