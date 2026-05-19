@@ -1,39 +1,381 @@
 {
   "npclocs": [
-    { "id": 836, "start": { "X": 122, "Y": 650 }, "min": { "X": 120, "Y": 648 }, "max": { "X": 124, "Y": 652 } },
-
-    { "_n": "Old Wat the Farmer — west side of the allotment so he doesn't trample plots; roams the lane between the field and the castle wall",
-      "id": 837, "start": { "X": 147, "Y": 650 }, "min": { "X": 147, "Y": 649 }, "max": { "X": 148, "Y": 652 } },
-    { "_n": "Edith the Baker — village square",
-      "id": 838, "start": { "X": 128, "Y": 656 }, "min": { "X": 127, "Y": 655 }, "max": { "X": 130, "Y": 658 } },
-    { "_n": "Garth the Smith — by the smithy",
-      "id": 839, "start": { "X": 132, "Y": 657 }, "min": { "X": 131, "Y": 655 }, "max": { "X": 134, "Y": 659 } },
-    { "_n": "Marigold the Cloth Seller — market",
-      "id": 840, "start": { "X": 129, "Y": 654 }, "min": { "X": 127, "Y": 652 }, "max": { "X": 131, "Y": 656 } },
-    { "_n": "Wendel the Fisherman — riverside south",
-      "id": 841, "start": { "X": 124, "Y": 668 }, "min": { "X": 121, "Y": 666 }, "max": { "X": 126, "Y": 671 } },
-
-    { "_n": "Generic Man (id 11) — outside Lumbridge castle gates, west",
-      "id": 11, "start": { "X": 118, "Y": 651 }, "min": { "X": 115, "Y": 649 }, "max": { "X": 120, "Y": 654 } },
-    { "_n": "Generic Man — outside castle, east",
-      "id": 11, "start": { "X": 126, "Y": 651 }, "min": { "X": 124, "Y": 649 }, "max": { "X": 128, "Y": 654 } },
-    { "_n": "Generic Man — south of castle gates",
-      "id": 11, "start": { "X": 121, "Y": 654 }, "min": { "X": 119, "Y": 652 }, "max": { "X": 123, "Y": 656 } },
-    { "_n": "Generic Man — east of castle, road",
-      "id": 11, "start": { "X": 130, "Y": 645 }, "min": { "X": 128, "Y": 643 }, "max": { "X": 134, "Y": 647 } },
-    { "_n": "Generic Man — west, near Old Wat's field",
-      "id": 11, "start": { "X": 114, "Y": 650 }, "min": { "X": 112, "Y": 648 }, "max": { "X": 116, "Y": 653 } },
-
-    { "_n": "Extra Goblin spawns (id 62) thickening the existing camp around (208, 497)",
-      "id": 62, "start": { "X": 210, "Y": 499 }, "min": { "X": 200, "Y": 488 }, "max": { "X": 218, "Y": 510 } },
-    { "id": 62, "start": { "X": 205, "Y": 502 }, "min": { "X": 200, "Y": 488 }, "max": { "X": 218, "Y": 510 } },
-    { "id": 62, "start": { "X": 213, "Y": 495 }, "min": { "X": 200, "Y": 488 }, "max": { "X": 218, "Y": 510 } },
-    { "id": 62, "start": { "X": 207, "Y": 506 }, "min": { "X": 200, "Y": 488 }, "max": { "X": 218, "Y": 510 } },
-    { "id": 62, "start": { "X": 215, "Y": 501 }, "min": { "X": 200, "Y": 488 }, "max": { "X": 218, "Y": 510 } },
-    { "id": 62, "start": { "X": 211, "Y": 489 }, "min": { "X": 200, "Y": 488 }, "max": { "X": 218, "Y": 510 } },
-
-    { "_n": "Goblin Shaman (id 842) — mid-tier camp lieutenant near the firepit. 100% pouch drop on quest stage 1 (see OldWatsSeedPouch).",
-      "id": 842, "start": { "X": 208, "Y": 497 }, "min": { "X": 205, "Y": 494 }, "max": { "X": 211, "Y": 500 } },
-    { "id": 842, "start": { "X": 213, "Y": 503 }, "min": { "X": 210, "Y": 500 }, "max": { "X": 216, "Y": 506 } }
+    {
+      "id": 836,
+      "start": {
+        "X": 122,
+        "Y": 650
+      },
+      "min": {
+        "X": 120,
+        "Y": 648
+      },
+      "max": {
+        "X": 124,
+        "Y": 652
+      }
+    },
+    {
+      "_n": "Old Wat the Farmer \u2014 west side of the allotment so he doesn't trample plots; roams the lane between the field and the castle wall",
+      "id": 837,
+      "start": {
+        "X": 147,
+        "Y": 650
+      },
+      "min": {
+        "X": 147,
+        "Y": 649
+      },
+      "max": {
+        "X": 148,
+        "Y": 652
+      }
+    },
+    {
+      "_n": "Edith the Baker \u2014 village square",
+      "id": 838,
+      "start": {
+        "X": 128,
+        "Y": 656
+      },
+      "min": {
+        "X": 127,
+        "Y": 655
+      },
+      "max": {
+        "X": 130,
+        "Y": 658
+      }
+    },
+    {
+      "_n": "Garth the Smith \u2014 by the smithy",
+      "id": 839,
+      "start": {
+        "X": 132,
+        "Y": 657
+      },
+      "min": {
+        "X": 131,
+        "Y": 655
+      },
+      "max": {
+        "X": 134,
+        "Y": 659
+      }
+    },
+    {
+      "_n": "Marigold the Cloth Seller \u2014 market",
+      "id": 840,
+      "start": {
+        "X": 129,
+        "Y": 654
+      },
+      "min": {
+        "X": 127,
+        "Y": 652
+      },
+      "max": {
+        "X": 131,
+        "Y": 656
+      }
+    },
+    {
+      "_n": "Wendel the Fisherman \u2014 riverside south",
+      "id": 841,
+      "start": {
+        "X": 124,
+        "Y": 668
+      },
+      "min": {
+        "X": 121,
+        "Y": 666
+      },
+      "max": {
+        "X": 126,
+        "Y": 671
+      }
+    },
+    {
+      "_n": "Generic Man (id 11) \u2014 outside Lumbridge castle gates, west",
+      "id": 11,
+      "start": {
+        "X": 118,
+        "Y": 651
+      },
+      "min": {
+        "X": 115,
+        "Y": 649
+      },
+      "max": {
+        "X": 120,
+        "Y": 654
+      }
+    },
+    {
+      "_n": "Generic Man \u2014 outside castle, east",
+      "id": 11,
+      "start": {
+        "X": 126,
+        "Y": 651
+      },
+      "min": {
+        "X": 124,
+        "Y": 649
+      },
+      "max": {
+        "X": 128,
+        "Y": 654
+      }
+    },
+    {
+      "_n": "Generic Man \u2014 south of castle gates",
+      "id": 11,
+      "start": {
+        "X": 121,
+        "Y": 654
+      },
+      "min": {
+        "X": 119,
+        "Y": 652
+      },
+      "max": {
+        "X": 123,
+        "Y": 656
+      }
+    },
+    {
+      "_n": "Generic Man \u2014 east of castle, road",
+      "id": 11,
+      "start": {
+        "X": 130,
+        "Y": 645
+      },
+      "min": {
+        "X": 128,
+        "Y": 643
+      },
+      "max": {
+        "X": 134,
+        "Y": 647
+      }
+    },
+    {
+      "_n": "Generic Man \u2014 west, near Old Wat's field",
+      "id": 11,
+      "start": {
+        "X": 114,
+        "Y": 650
+      },
+      "min": {
+        "X": 112,
+        "Y": 648
+      },
+      "max": {
+        "X": 116,
+        "Y": 653
+      }
+    },
+    {
+      "_n": "Extra Goblin spawns (id 62) thickening the existing camp around (208, 497)",
+      "id": 62,
+      "start": {
+        "X": 210,
+        "Y": 499
+      },
+      "min": {
+        "X": 200,
+        "Y": 488
+      },
+      "max": {
+        "X": 218,
+        "Y": 510
+      }
+    },
+    {
+      "id": 62,
+      "start": {
+        "X": 205,
+        "Y": 502
+      },
+      "min": {
+        "X": 200,
+        "Y": 488
+      },
+      "max": {
+        "X": 218,
+        "Y": 510
+      }
+    },
+    {
+      "id": 62,
+      "start": {
+        "X": 213,
+        "Y": 495
+      },
+      "min": {
+        "X": 200,
+        "Y": 488
+      },
+      "max": {
+        "X": 218,
+        "Y": 510
+      }
+    },
+    {
+      "id": 62,
+      "start": {
+        "X": 207,
+        "Y": 506
+      },
+      "min": {
+        "X": 200,
+        "Y": 488
+      },
+      "max": {
+        "X": 218,
+        "Y": 510
+      }
+    },
+    {
+      "id": 62,
+      "start": {
+        "X": 215,
+        "Y": 501
+      },
+      "min": {
+        "X": 200,
+        "Y": 488
+      },
+      "max": {
+        "X": 218,
+        "Y": 510
+      }
+    },
+    {
+      "id": 62,
+      "start": {
+        "X": 211,
+        "Y": 489
+      },
+      "min": {
+        "X": 200,
+        "Y": 488
+      },
+      "max": {
+        "X": 218,
+        "Y": 510
+      }
+    },
+    {
+      "_n": "Goblin Shaman (id 842) \u2014 mid-tier camp lieutenant near the firepit. 100% pouch drop on quest stage 1 (see OldWatsSeedPouch).",
+      "id": 842,
+      "start": {
+        "X": 208,
+        "Y": 497
+      },
+      "min": {
+        "X": 205,
+        "Y": 494
+      },
+      "max": {
+        "X": 211,
+        "Y": 500
+      }
+    },
+    {
+      "id": 842,
+      "start": {
+        "X": 213,
+        "Y": 503
+      },
+      "min": {
+        "X": 210,
+        "Y": 500
+      },
+      "max": {
+        "X": 216,
+        "Y": 506
+      }
+    },
+    {
+      "_n": "OGRS \u2014 spider hollow SW of Lumbridge, basic spider #1",
+      "id": 34,
+      "start": {
+        "X": 105,
+        "Y": 663
+      },
+      "min": {
+        "X": 103,
+        "Y": 661
+      },
+      "max": {
+        "X": 107,
+        "Y": 665
+      }
+    },
+    {
+      "_n": "OGRS \u2014 spider hollow, basic spider #2",
+      "id": 34,
+      "start": {
+        "X": 107,
+        "Y": 665
+      },
+      "min": {
+        "X": 105,
+        "Y": 663
+      },
+      "max": {
+        "X": 109,
+        "Y": 667
+      }
+    },
+    {
+      "_n": "OGRS \u2014 spider hollow, basic spider #3",
+      "id": 34,
+      "start": {
+        "X": 112,
+        "Y": 661
+      },
+      "min": {
+        "X": 110,
+        "Y": 659
+      },
+      "max": {
+        "X": 114,
+        "Y": 663
+      }
+    },
+    {
+      "_n": "OGRS \u2014 spider hollow, basic spider #4",
+      "id": 34,
+      "start": {
+        "X": 108,
+        "Y": 668
+      },
+      "min": {
+        "X": 106,
+        "Y": 666
+      },
+      "max": {
+        "X": 110,
+        "Y": 670
+      }
+    },
+    {
+      "_n": "OGRS \u2014 spider hollow, Giant Spider matriarch (lvl 8)",
+      "id": 23,
+      "start": {
+        "X": 110,
+        "Y": 664
+      },
+      "min": {
+        "X": 108,
+        "Y": 662
+      },
+      "max": {
+        "X": 112,
+        "Y": 666
+      }
+    }
   ]
 }

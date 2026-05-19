@@ -1666,12 +1666,15 @@ public enum ItemId {
 	OGRS_BAKED_POTATO(1601),
 	OGRS_ROASTED_ONION(1602),
 	OGRS_CHARRED_TOMATO(1603),
-	OGRS_BURNT_CROP(1604);
+	OGRS_BURNT_CROP(1604),
+	// Spider drops — sparky 2026-05-19 playtest: 'spiders have zero loot'.
+	OGRS_SPIDER_LEG(1605),
+	OGRS_SPIDER_EGG(1606);
 
 	private int itemId;
 
 	public static final int maxAuthentic = 1289;
-	public static final int maxCustom = 1604;
+	public static final int maxCustom = 1606;
 
 	private static final Map<Integer, ItemId> byId = new HashMap<Integer, ItemId>();
 	private static final Map<String, ItemId> byName = new HashMap<String, ItemId>();

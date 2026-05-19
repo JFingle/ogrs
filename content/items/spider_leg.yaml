@@ -1,0 +1,19 @@
+# OGRS item: Spider Leg.
+# Drops from common spiders. Edible raw for a tiny HP nudge — bushcraft food.
+# Sprite reuses upstream items:133 raw chicken with a dark tint for spider-y look.
+# Sprite hunt deferred — better dedicated sprite when 2003scape models pipeline lands.
+
+id: 1605
+name: Spider Leg
+description: A bristly leg, snapped clean at the joint. Some folk roast them. Most don't.
+command: "Eat"
+stackable: false
+untradeable: false
+members_only: false
+noteable: true
+base_price: 3
+picture_mask: 0x2A1810
+sprite:
+  id: 133
+  location: "items:133"
+eat_heals: 1

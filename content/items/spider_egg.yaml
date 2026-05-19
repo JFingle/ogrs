@@ -1,0 +1,19 @@
+# OGRS item: Spider Egg.
+# Rare drop from spiders. Hatchable into a baby spider? Quest item? Ingredient?
+# For v1 just exists as a curio + future-hook for #18 masterworking feeder or
+# alchemy ingredient. Sprite reuses upstream items:19 Egg with a dark tint.
+# Sprite hunt deferred.
+
+id: 1606
+name: Spider Egg
+description: A leathery, waxen orb the size of a marble. Something inside twitches.
+command: "Examine"
+stackable: false
+untradeable: false
+members_only: false
+noteable: true
+base_price: 35
+picture_mask: 0x3A2E20
+sprite:
+  id: 19
+  location: "items:19"

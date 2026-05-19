@@ -296,11 +296,11 @@
       "direction": 0
     },
     {
-      "_n": "Draynor bank \u2014 ledger shelf along the east wall behind the easternmost banker.",
+      "_n": "Draynor bank \u2014 ledger shelf NW corner behind westmost banker (relocated from 220,638 per sparky feedback).",
       "id": 1316,
       "pos": {
-        "X": 220,
-        "Y": 638
+        "X": 217,
+        "Y": 634
       },
       "direction": 0
     },

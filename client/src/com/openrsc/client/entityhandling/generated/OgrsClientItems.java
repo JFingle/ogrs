@@ -58,6 +58,12 @@ public final class OgrsClientItems {
 		// id 1604 — from content/items/burnt_crop.yaml
 		items.add(new ItemDef("Burnt Crop", "An unrecognisable lump of charcoal that used to be food.", "", 1, 64, "items:64", false, false, 0, 0x2A1A0E, false, true, false, i++));
 
+		// id 1605 — from content/items/spider_leg.yaml
+		items.add(new ItemDef("Spider Leg", "A bristly leg, snapped clean at the joint. Some folk roast them. Most don't.", "Eat", 3, 133, "items:133", false, false, 0, 0x2A1810, false, false, true, i++));
+
+		// id 1606 — from content/items/spider_egg.yaml
+		items.add(new ItemDef("Spider Egg", "A leathery, waxen orb the size of a marble. Something inside twitches.", "Examine", 35, 19, "items:19", false, false, 0, 0x3A2E20, false, false, true, i++));
+
 		return i;
 	}
 }

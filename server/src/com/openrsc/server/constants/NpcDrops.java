@@ -1741,6 +1741,16 @@ public class NpcDrops {
 		currentNpcDrops.addEmptyDrop(128 - currentNpcDrops.getTotalWeight());
 		this.npcDrops.put(NpcId.SHADOW_WARRIOR.id(), currentNpcDrops);
 
+		// OGRS — spider drops (sparky 2026-05-19 playtest: spiders had zero loot).
+		// Same table feeds the basic Spider and the level-8 Giant Spider. Larger
+		// variants (lvl31 / Deadly Red / Poison / Ice / Shadow / Jungle / Dungeon)
+		// can be tuned separately when we add tiered spider drops.
+		currentNpcDrops = new DropTable("OGRS Spider (34, 23)");
+		currentNpcDrops.addItemDrop(ItemId.OGRS_SPIDER_LEG.id(), 1, 64);   // ~50%
+		currentNpcDrops.addItemDrop(ItemId.OGRS_SPIDER_EGG.id(), 1, 13);   // ~10%
+		currentNpcDrops.addEmptyDrop(128 - currentNpcDrops.getTotalWeight());
+		this.npcDrops.put(NpcId.SPIDER.id(), currentNpcDrops);              // (34)
+		this.npcDrops.put(NpcId.GIANT_SPIDER_LVL8.id(), currentNpcDrops);   // (23)
 	}
 
 	/** Custom Drop Tables **/
