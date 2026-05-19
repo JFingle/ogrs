@@ -376,6 +376,22 @@
         "X": 112,
         "Y": 666
       }
+    },
+    {
+      "_n": "OGRS \u2014 Old Aric the Wayfinder (id 843), Lumbridge castle approach. Hangs out where new players walk on their way to town square.",
+      "id": 843,
+      "start": {
+        "X": 126,
+        "Y": 651
+      },
+      "min": {
+        "X": 124,
+        "Y": 649
+      },
+      "max": {
+        "X": 128,
+        "Y": 653
+      }
     }
   ]
 }

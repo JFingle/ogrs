@@ -49,6 +49,10 @@ public final class OgrsClientNpcs {
 		sprites = new int[]{142, 140, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
 		npcs.add(new NPCDef("Goblin Shaman", "A taller, dark-robed goblin with rune-scratched bones around its neck.", "", "Pickpocket", 30, 25, 35, 25, false, sprites, 0x000000, 0x000000, 0x000000, 0x000000, 245, 230, 9, 8, 5, i++));
 
+		// id 843 — from content/npcs/old_aric.yaml
+		sprites = new int[]{6, 1, 2, -1, -1, -1, -1, -1, -1, -1, -1, -1};
+		npcs.add(new NPCDef("Old Aric", "A weathered elder, leaning on a staff. His eyes carry the look of someone who has walked further than most.", "", "Examine", 1, 1, 10, 1, false, sprites, 0xFFFFFF, 0xE8E0D0, 0xA9A29A, 0xE6C8A0, 160, 220, 6, 6, 5, i++));
+
 		return i;
 	}
 }

@@ -1,0 +1,50 @@
+# OGRS NPC: Old Aric the Wayfinder.
+#
+# Wandering elder who hangs out near Lumbridge castle entrance — first
+# adventurer many new players will meet. Talk-to dispenses tips that
+# adapt to the player's current skill levels (the lowest skill gets
+# called out first, so new accounts feel guided).
+#
+# Inspired by OSRS's Adventurer Jon, but framed as an "elder pilgrim"
+# rather than a retired adventurer — fits OGRS's biblical-thematic
+# direction (memory: themes over names, archetype over literal).
+#
+# Spawn at (126, 651) — between castle entrance and town square, on
+# the path new players take if they skip tutorial. Talk-to plugin:
+# OldAric.java.
+
+id: 843
+name: Old Aric
+description: A weathered elder, leaning on a staff. His eyes carry the look of someone who has walked further than most.
+command: ""              # left-blank — TalkNpcTrigger auto-renders "Talk-to"
+command2: "Examine"
+
+stats:
+  attack: 1
+  strength: 1
+  defense: 1
+  hits: 10
+  combat_level: 1
+  ranged: false
+
+flags:
+  members_only: false
+  attackable: false
+  aggressive: false
+
+respawn_time_ticks: 211
+
+# 12 sprite slots: head, shirt, pants, shield, weapon, hat,
+#                  body, legs, gloves, boots, amulet, cape
+# Head 6 = bearded male (same family as Grizzled, but white hair +
+# robes make him visually distinct).
+sprites: [6, 1, 2, -1, -1, -1, -1, -1, -1, -1, -1, -1]
+
+colors:
+  hair:   0xFFFFFF   # white — venerable
+  top:    0xE8E0D0   # off-white robe
+  bottom: 0xA9A29A   # ash-grey trousers
+  skin:   0xE6C8A0   # paler than Grizzled
+
+camera: { x: 160, y: 220 }
+models: { walk: 6, combat: 6, combat_sprite: 5 }
