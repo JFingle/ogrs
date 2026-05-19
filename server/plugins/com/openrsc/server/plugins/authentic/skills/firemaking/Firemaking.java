@@ -286,9 +286,38 @@ public class Firemaking implements UseObjTrigger, UseInvTrigger {
 
 	@Override
 	public void onUseInv(Player player, Integer invIndex, Item item1, Item item2) {
-		if (item1.getCatalogId() == TINDERBOX && inArray(item2.getCatalogId(), LOGS) || item2.getCatalogId() == TINDERBOX && inArray(item1.getCatalogId(), LOGS)) {
-			player.playerServerMessage(MessageType.QUEST, "I think you should put the logs down before you light them!");
+		// OGRS — sparky 2026-05-19 QoL: using tinderbox on log in the
+		// inventory drops the log under the player and immediately starts
+		// firemaking, instead of nagging "put the logs down before you light
+		// them". Mirrors OSRS behavior.
+		final Item log;
+		if (item1.getCatalogId() == TINDERBOX && inArray(item2.getCatalogId(), LOGS)) {
+			log = item2;
+		} else if (item2.getCatalogId() == TINDERBOX && inArray(item1.getCatalogId(), LOGS)) {
+			log = item1;
+		} else {
+			return;
 		}
+
+		// Refuse on tiles where you couldn't drop normally — saves us from
+		// dropping the log into water/walls and then failing the fire.
+		if (player.getViewArea().getGameObject(player.getLocation()) != null) {
+			player.playerServerMessage(MessageType.QUEST, "You can't light a fire here.");
+			return;
+		}
+
+		// Drop one log to the ground under the player.
+		if (!player.getCarriedItems().getInventory().remove(log, true,
+				log.getDef(player.getWorld()).isStackable() || log.getNoted())) {
+			return;
+		}
+		final GroundItem dropped = new GroundItem(player.getWorld(),
+			log.getCatalogId(), player.getX(), player.getY(), 1, player);
+		player.getWorld().registerItem(dropped, player.getConfig().GAME_TICK * 145);
+
+		// Reuse the existing onUseObj firemaking path so all the formula/XP
+		// branches stay in one place — the tinderbox is still in inventory.
+		onUseObj(player, dropped, item1.getCatalogId() == TINDERBOX ? item1 : item2);
 	}
 
 	public static int getExp(int level, int baseExp) {
