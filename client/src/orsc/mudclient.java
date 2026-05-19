@@ -2919,11 +2919,14 @@ public final class mudclient implements Runnable {
 				this.getSurface().drawLineHoriz(sx, 20 + sy + row * 20, width, 0);
 			}
 
+			// OGRS — sparky 2026-05-19: capitalize skill names. Short forms use
+			// the three-letter caps ATK/DEF/STR convention that's standard in
+			// every modern RPG. Long forms get title-case 'Attack' / 'Defense'.
 			this.getSurface().drawColoredStringCentered(width / 2 + sx, (isAndroid() ? "C" : "Select c") + "ombat style", 0xFFFFFF, 0, 3, 16 + sy);
-			this.getSurface().drawColoredStringCentered(width / 2 + sx, "Controlled (+1 " + (isAndroid() ? "all" : "of each") + ")", 0, 0, 3, sy + 36);
-			this.getSurface().drawColoredStringCentered(width / 2 + sx, "Aggressive (+3 " + (isAndroid() ? "str" : "strength") + ")", 0, 0, 3, 56 + sy);
-			this.getSurface().drawColoredStringCentered(width / 2 + sx, "Accurate   (+3 " + (isAndroid() ? "att" : "attack") + ")", 0, 0, 3, sy + 76);
-			this.getSurface().drawColoredStringCentered(width / 2 + sx, "Defensive  (+3 " + (isAndroid() ? "def" : "defense") + ")", 0, 0, 3, sy + 96);
+			this.getSurface().drawColoredStringCentered(width / 2 + sx, "Controlled (+1 " + (isAndroid() ? "ALL" : "of each") + ")", 0, 0, 3, sy + 36);
+			this.getSurface().drawColoredStringCentered(width / 2 + sx, "Aggressive (+3 " + (isAndroid() ? "STR" : "Strength") + ")", 0, 0, 3, 56 + sy);
+			this.getSurface().drawColoredStringCentered(width / 2 + sx, "Accurate   (+3 " + (isAndroid() ? "ATK" : "Attack") + ")", 0, 0, 3, sy + 76);
+			this.getSurface().drawColoredStringCentered(width / 2 + sx, "Defensive  (+3 " + (isAndroid() ? "DEF" : "Defense") + ")", 0, 0, 3, sy + 96);
 		} catch (RuntimeException var7) {
 			throw GenUtil.makeThrowable(var7, "client.TB(" + "dummy" + ')');
 		}
