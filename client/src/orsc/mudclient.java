@@ -391,6 +391,11 @@ public final class mudclient implements Runnable {
 	// the existing ::run echo message. A proper SEND_RUN_ENERGY packet that
 	// pushes server state to client would fix that — deferred to Commit C.
 	private boolean ogrsRunButtonVisual = false;
+	// OGRS — minimap click-destination tracking (sparky 2026-05-19 #26).
+	// Captured at the minimap-click site; rendered as a yellow flag on the
+	// minimap each frame until the player's tile equals it. -1 = none.
+	private int ogrsClickDestX = -1;
+	private int ogrsClickDestY = -1;
 	private int[] playerStatBase;
 	private int[] playerExperience;
 	private boolean experienceOff = false;
@@ -9156,6 +9161,28 @@ public final class mudclient implements Runnable {
 				this.drawMinimapEntity(var15, var12 + posX + var4 / 2, (byte) -67, posY - mZ + var5 / 2);
 			}
 
+			// OGRS — click-destination flag (sparky 2026-05-19 #26). Rendered
+			// at the player's last-clicked minimap tile until they arrive
+			// (then ogrsClickDestX is cleared below). Same trig projection
+			// pattern as the entity-on-minimap loops above. Two-pixel yellow
+			// dot with a tiny white ring to keep it visible over varied
+			// terrain colors.
+			if (this.ogrsClickDestX >= 0) {
+				int playerTileX = this.localPlayer.currentX / this.tileSize;
+				int playerTileZ = this.localPlayer.currentZ / this.tileSize;
+				if (playerTileX == this.ogrsClickDestX && playerTileZ == this.ogrsClickDestY) {
+					this.ogrsClickDestX = -1;
+					this.ogrsClickDestY = -1;
+				} else {
+					int dx = var6 * (64 + this.ogrsClickDestX * this.tileSize - this.localPlayer.currentX) * 3 / 2048;
+					int dz = var6 * 3 * (64 + this.tileSize * this.ogrsClickDestY - this.localPlayer.currentZ) / 2048;
+					int dpx = var11 * dx + var10 * dz >> 18;
+					int dpz = var11 * dz - var10 * dx >> 18;
+					this.getSurface().drawCircle(posX - (-(var4 / 2) - dpx), var5 / 2 + posY - dpz, 3, 0xFFFFFF, 255, 0);
+					this.getSurface().drawCircle(posX - (-(var4 / 2) - dpx), var5 / 2 + posY - dpz, 2, 0xFFFF00, 255, 0);
+				}
+			}
+
 			this.getSurface().drawCircle(posX + var4 / 2, var5 / 2 + posY, 2, 0xFFFFFF, 255, -1057205208);
 			this.getSurface().drawMinimapSprite(spriteSelect(GUIPARTS.COMPASS.getDef()), posY + 19, posX + 19, 842218000, 128,
 				255 & this.cameraRotation + 128);
@@ -9182,6 +9209,10 @@ public final class mudclient implements Runnable {
 					if (this.mouseButtonClick == 1) {
 						this.walkToActionSource(this.playerLocalX, this.playerLocalZ, mX / 128, (mZ / 128),
 							false);
+						// OGRS — remember the destination so we can render a
+						// flag on the minimap until arrival.
+						this.ogrsClickDestX = mX / 128;
+						this.ogrsClickDestY = mZ / 128;
 					}
 					if (!Config.isAndroid() && Config.S_WANT_CUSTOM_SPRITES && this.mouseButtonClick == 2) {
 						this.cameraRotation = 128;
