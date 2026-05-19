@@ -194,6 +194,11 @@ public class ServerConfiguration {
 	 *  Plant/harvest mechanics are separate work; this flag just registers the
 	 *  skill so XP/levels/DB column exist. */
 	public boolean WANT_FARMING;
+	/** OGRS — OSRS-style run-energy. When on, players can toggle running (::run),
+	 *  which makes WalkingQueue pop 2 tiles per tick instead of 1 as long as
+	 *  Player.runEnergy > 0. Energy drains while running, regenerates while
+	 *  walking/idle. Persisted via player_cache key 'ogrs_run_energy'. */
+	public boolean WANT_RUN_ENERGY;
 	public boolean WANT_CUSTOM_LEATHER;
 	public boolean WANT_BETTER_JEWELRY_CRAFTING;
 	public boolean MORE_SHAFTS_PER_BETTER_LOG;
@@ -640,6 +645,7 @@ public class ServerConfiguration {
 		WANT_HARVESTING = tryReadBool("want_harvesting").orElse(false);
 		WANT_SLAYER = tryReadBool("want_slayer").orElse(false);
 		WANT_FARMING = tryReadBool("want_farming").orElse(false);
+		WANT_RUN_ENERGY = tryReadBool("want_run_energy").orElse(false);
 		WANT_CUSTOM_LEATHER = tryReadBool("want_custom_leather").orElse(false);
 		WANT_CUSTOM_LANDSCAPE = tryReadBool("custom_landscape").orElse(false);
 		WANT_EQUIPMENT_TAB = tryReadBool("want_equipment_tab").orElse(false);

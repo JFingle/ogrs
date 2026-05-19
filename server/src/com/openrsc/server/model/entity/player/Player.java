@@ -215,6 +215,20 @@ public final class Player extends Mob {
 	 */
 	private int fatigue = 0, sleepStateFatigue = 0;
 	/**
+	 * OGRS — OSRS-style run energy. 0..MAX_RUN_ENERGY (internal units).
+	 * 100 displayed units = MAX_RUN_ENERGY internal. Each tile run drains
+	 * RUN_DRAIN_PER_TILE; each idle tick regens RUN_REGEN_IDLE; each walking
+	 * tick regens RUN_REGEN_WALKING. Gated by ServerConfiguration.WANT_RUN_ENERGY.
+	 * Loaded from player_cache key "ogrs_run_energy" on login; toggle is
+	 * transient (defaults to false each login).
+	 */
+	public static final int MAX_RUN_ENERGY = 10000;
+	public static final int RUN_DRAIN_PER_TILE = 100;   // 100 tiles per full bar
+	public static final int RUN_REGEN_IDLE = 80;        // ~125 ticks (80 sec @ 640ms) to full from 0
+	public static final int RUN_REGEN_WALKING = 40;     // half rate while walking
+	private int runEnergy = MAX_RUN_ENERGY;
+	private boolean running = false;
+	/**
 	 * The main accounts group is
 	 */
 	private int groupID = Group.DEFAULT_GROUP;
@@ -1290,6 +1304,29 @@ public final class Player extends Mob {
 		} else {
 			this.fatigue = 0;
 		}
+	}
+
+	// OGRS — run-energy accessors. Capped via clamp; toggle is transient.
+	public int getRunEnergy() {
+		return getWorld().getServer().getConfig().WANT_RUN_ENERGY ? runEnergy : 0;
+	}
+
+	public void setRunEnergy(final int value) {
+		if (!getWorld().getServer().getConfig().WANT_RUN_ENERGY) return;
+		this.runEnergy = Math.max(0, Math.min(MAX_RUN_ENERGY, value));
+		if (this.runEnergy == 0) this.running = false;
+	}
+
+	public boolean isRunning() {
+		return getWorld().getServer().getConfig().WANT_RUN_ENERGY && running && runEnergy > 0;
+	}
+
+	public void setRunning(final boolean running) {
+		if (!getWorld().getServer().getConfig().WANT_RUN_ENERGY) {
+			this.running = false;
+			return;
+		}
+		this.running = running && runEnergy > 0;
 	}
 
 	public int getIncorrectSleepTimes() {

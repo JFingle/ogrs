@@ -62,15 +62,57 @@ public class WalkingQueue {
 
 	/**
 	 * Processes the next player's movement.
+	 *
+	 * OGRS — when the mob is a Player who has running enabled and run energy
+	 * > 0, this advances them TWO tiles per tick (one extra path point popped)
+	 * and drains RUN_DRAIN_PER_TILE per tile actually stepped. Adjacency
+	 * checks stay per-step, so pathfinding stays sane. If energy hits zero
+	 * mid-double-step we just don't take the second step; the player keeps
+	 * walking at 1 tile/tick on subsequent ticks until energy regens.
 	 */
 	public void processNextMovement() {
+		boolean stepped = takeOneStep();
+
+		// OGRS — run-energy drain + regen lives here because this method
+		// runs once per tick per player, which is exactly the cadence we
+		// need. Three cases:
+		//   stepped + running  -> drain, maybe take a second tile (and drain again)
+		//   stepped + walking  -> modest regen
+		//   not stepped (idle) -> full regen
+		if (mob.isPlayer()) {
+			Player p = (Player) mob;
+			if (stepped && p.isRunning()) {
+				p.setRunEnergy(p.getRunEnergy() - Player.RUN_DRAIN_PER_TILE);
+				if (p.getRunEnergy() > 0 && path != null && !path.isEmpty()) {
+					if (takeOneStep()) {
+						p.setRunEnergy(p.getRunEnergy() - Player.RUN_DRAIN_PER_TILE);
+					}
+				}
+			} else if (stepped) {
+				if (p.getRunEnergy() < Player.MAX_RUN_ENERGY) {
+					p.setRunEnergy(p.getRunEnergy() + Player.RUN_REGEN_WALKING);
+				}
+			} else {
+				if (p.getRunEnergy() < Player.MAX_RUN_ENERGY) {
+					p.setRunEnergy(p.getRunEnergy() + Player.RUN_REGEN_IDLE);
+				}
+			}
+		}
+	}
+
+	/**
+	 * Pops one path point and moves the mob to it. Returns true if a step
+	 * happened (so callers can chain another), false if the path was empty
+	 * or the adjacency check failed.
+	 */
+	private boolean takeOneStep() {
 		if (path == null) {
 			handlePlayerFinishedWalking();
-			return;
+			return false;
 		} else if (path.isEmpty()) {
 			handlePlayerFinishedWalking();
 			reset();
-			return;
+			return false;
 		}
 
 		// Player is walking if path is not null or empty.
@@ -83,7 +125,7 @@ public class WalkingQueue {
 				walkPoint = path.getLastPoint();
 				((Player) mob).teleport(walkPoint.getX(), walkPoint.getY(), false);
 			}
-			return;
+			return false;
 		}
 
 		int destX = walkPoint.getX();
@@ -93,7 +135,7 @@ public class WalkingQueue {
 		if (!PathValidation.checkAdjacent(mob, new Point(startX, startY), new Point(destX, destY))) {
 			reset();
 			if (DEBUG && mob.isPlayer()) System.out.println("Failed adjacent check, not pathing.");
-			return;
+			return false;
 		}
 
 		if (mob.isNpc()) {
@@ -110,7 +152,7 @@ public class WalkingQueue {
 			player.setLocation(Point.location(destX, destY));
 			player.stepIncrementActivity();
 		}
-
+		return true;
 	}
 
 	public Point getNextMovement() {
