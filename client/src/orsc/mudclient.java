@@ -13966,25 +13966,25 @@ public final class mudclient implements Runnable {
 	 * packet back. The click is consumed so it doesn't fall through.
 	 */
 	private void drawOgrsRunIcon() {
-		final int iconW = 33;
-		final int iconH = 32;
-		final int iconX = this.getSurface().width2 - 233;
+		// OGRS — compact run pill. Sparky feedback: "I like the icon" but
+		// the text was too chunky. Dropped the "RUN" label (color already
+		// communicates state) and slimmed the box. Percent stays as a
+		// small readout; the colored bar at the bottom carries most of
+		// the live signal at a glance.
+		final int iconW = 26;
+		final int iconH = 18;
+		final int iconX = this.getSurface().width2 - 226;
 		final int iconY = 3;
 		// Background — dark when walking, red-tinted when running.
 		final int bg = ogrsRunButtonVisual ? 0x7E1F1C : 0x2D2C24;
 		this.getSurface().drawBoxAlpha(iconX, iconY, iconW, iconH, bg, 220);
 		this.getSurface().drawBoxBorder(iconX, iconW, iconY, iconH, 0x000000);
 		this.getSurface().drawBoxBorder(iconX + 1, iconW - 2, iconY + 1, iconH - 2, 0x706452);
-		// Label centered horizontally.
-		final String runLabel = "RUN";
-		final int runLabelW = this.getSurface().stringWidth(1, runLabel);
-		this.getSurface().drawString(runLabel,
-			iconX + (iconW - runLabelW) / 2, iconY + 13, 0xFFFFFF, 1);
-		// Energy percent under the label.
+		// Energy percent centered in the body.
 		final String pct = ogrsRunEnergyPercent + "%";
-		final int pctW = this.getSurface().stringWidth(1, pct);
+		final int pctW = this.getSurface().stringWidth(0, pct);
 		this.getSurface().drawString(pct,
-			iconX + (iconW - pctW) / 2, iconY + 24, 0xFFFFFF, 1);
+			iconX + (iconW - pctW) / 2, iconY + 12, 0xFFFFFF, 0);
 		// Thin energy bar at the very bottom of the icon — 2px tall.
 		final int barY = iconY + iconH - 3;
 		final int barX = iconX + 2;
@@ -14014,21 +14014,30 @@ public final class mudclient implements Runnable {
 		if (!C_CUSTOM_UI) {
 			repositionAuthenticUI();
 		}
-		// OGRS — sparky 2026-05-19 playtest: 'when i am hovering the tabs, i
-		// can actually click above them on the map, that doesnt seem right'.
-		// Root cause: this fn used to always return true, but the caller only
-		// consumes the click when C_CUSTOM_UI mode is active — so classic-UI
-		// clicks on a tab also walked the world. Now we return tabHit
-		// truthfully and the caller consumes for all UI modes.
+		// OGRS — sparky 2026-05-19 playtest #1: classic-UI clicks on a tab
+		// also walked the world. Fixed by returning tabHit truthfully.
+		// playtest #2 (this session): "I can only open tabs about halfway
+		// up." Root cause: the open branches below check showUiTab == 0
+		// and the close branches check showUiTab != 0. When a click landed
+		// in the upper half of a tab icon, the open branch fired first
+		// (setting showUiTab to e.g. INVENTORY_TAB), then the close branch
+		// fired in the same call (because showUiTab was now != 0) and
+		// toggled it back to 0. Net: tab opened-then-closed and the user
+		// saw nothing.
+		// Fix: snapshot showUiTab at function start and gate both halves
+		// on the snapshotted value so a single click can't trigger both.
+		// Also widen the close hit-region from y < 26 to y < 35 so the
+		// whole visible tab icon area is clickable for closing too.
+		final int snapshotTab = this.showUiTab;
 		boolean tabHit = false;
 		try {
-			if (this.showUiTab == 0 && this.mouseX >= this.getSurface().width2 - 35 && this.mouseY >= 0
+			if (snapshotTab == 0 && this.mouseX >= this.getSurface().width2 - 35 && this.mouseY >= 0
 				&& this.mouseX < this.getSurface().width2 - 3 && this.mouseY < 35) {
 				this.showUiTab = Config.INVENTORY_TAB;
 				tabHit = true;
 			}
 
-			if (this.showUiTab == 0 && this.mouseX >= this.getSurface().width2 - 35 - 33 && this.mouseY >= 0
+			if (snapshotTab == 0 && this.mouseX >= this.getSurface().width2 - 35 - 33 && this.mouseY >= 0
 				&& this.getSurface().width2 - 3 - 33 > this.mouseX && this.mouseY < 35) {
 				this.showUiTab = Config.MINIMAP_AND_COMPASS_TAB;
 				if (!Config.S_DISABLE_MINIMAP_ROTATION) {
@@ -14038,43 +14047,41 @@ public final class mudclient implements Runnable {
 				tabHit = true;
 			}
 
-			if (this.showUiTab == 0 && this.getSurface().width2 - 101 <= this.mouseX && this.mouseY >= 0
+			if (snapshotTab == 0 && this.getSurface().width2 - 101 <= this.mouseX && this.mouseY >= 0
 				&& this.mouseX < this.getSurface().width2 - 3 - 66 && this.mouseY < 35) {
 				this.showUiTab = Config.SKILLS_AND_QUESTS_TAB;
 				tabHit = true;
 			}
 
-			if (this.showUiTab == 0 && this.mouseX >= this.getSurface().width2 - 99 - 35 && this.mouseY >= 0
+			if (snapshotTab == 0 && this.mouseX >= this.getSurface().width2 - 99 - 35 && this.mouseY >= 0
 				&& this.getSurface().width2 - 3 - 99 > this.mouseX && this.mouseY < 35) {
 				this.showUiTab = Config.MAGIC_AND_PRAYER_TAB;
 				tabHit = true;
 			}
 
-			if (this.showUiTab == 0 && this.mouseX >= this.getSurface().width2 - 35 - 132 && this.mouseY >= 0
+			if (snapshotTab == 0 && this.mouseX >= this.getSurface().width2 - 35 - 132 && this.mouseY >= 0
 				&& this.mouseX < this.getSurface().width2 - 135 && this.mouseY < 35) {
 				this.showUiTab = Config.FRIENDS_TAB;
 				tabHit = true;
 			}
 
-			if (this.showUiTab == 0 && this.getSurface().width2 - 35 - 165 <= this.mouseX && this.mouseY >= 0
+			if (snapshotTab == 0 && this.getSurface().width2 - 35 - 165 <= this.mouseX && this.mouseY >= 0
 				&& this.mouseX < this.getSurface().width2 - 165 - 3 && this.mouseY < 35) {
 				this.showUiTab = Config.OPTIONS_TAB;
 				tabHit = true;
 			}
 
-			// OGRS — clicking the active tab toggles it closed (sparky 2026-05-19
-			// playtest: 'clicking the inventory again should simply close that
-			// tab also'). For each branch: if we're already on this tab, drop
-			// to showUiTab=0; otherwise switch to it as before.
-			if (this.showUiTab != 0 && this.getSurface().width2 - 35 <= this.mouseX && this.mouseY >= 0
-				&& this.getSurface().width2 - 3 > this.mouseX && this.mouseY < 26) {
-				this.showUiTab = (this.showUiTab == Config.INVENTORY_TAB) ? 0 : Config.INVENTORY_TAB;
+			// Close-tab branches — only fire when a tab was already open at
+			// the start of this click (snapshotTab != 0).
+			if (snapshotTab != 0 && this.getSurface().width2 - 35 <= this.mouseX && this.mouseY >= 0
+				&& this.getSurface().width2 - 3 > this.mouseX && this.mouseY < 35) {
+				this.showUiTab = (snapshotTab == Config.INVENTORY_TAB) ? 0 : Config.INVENTORY_TAB;
 				tabHit = true;
 			}
 
-			if (this.showUiTab != 0 && this.getSurface().width2 - 68 <= this.mouseX
-				&& this.mouseY >= 0 && this.getSurface().width2 - 33 - 3 > this.mouseX && this.mouseY < 26) {
-				if (this.showUiTab == Config.MINIMAP_AND_COMPASS_TAB) {
+			if (snapshotTab != 0 && this.getSurface().width2 - 68 <= this.mouseX
+				&& this.mouseY >= 0 && this.getSurface().width2 - 33 - 3 > this.mouseX && this.mouseY < 35) {
+				if (snapshotTab == Config.MINIMAP_AND_COMPASS_TAB) {
 					this.showUiTab = 0; // toggle close
 				} else {
 					this.showUiTab = Config.MINIMAP_AND_COMPASS_TAB;
@@ -14086,27 +14093,27 @@ public final class mudclient implements Runnable {
 				tabHit = true;
 			}
 
-			if (this.showUiTab != 0 && this.mouseX >= this.getSurface().width2 - 66 - 35 && this.mouseY >= 0
-				&& this.getSurface().width2 - 3 - 66 > this.mouseX && this.mouseY < 26) {
-				this.showUiTab = (this.showUiTab == Config.SKILLS_AND_QUESTS_TAB) ? 0 : Config.SKILLS_AND_QUESTS_TAB;
+			if (snapshotTab != 0 && this.mouseX >= this.getSurface().width2 - 66 - 35 && this.mouseY >= 0
+				&& this.getSurface().width2 - 3 - 66 > this.mouseX && this.mouseY < 35) {
+				this.showUiTab = (snapshotTab == Config.SKILLS_AND_QUESTS_TAB) ? 0 : Config.SKILLS_AND_QUESTS_TAB;
 				tabHit = true;
 			}
 
-			if (this.showUiTab != 0 && this.getSurface().width2 - 35 - 99 <= this.mouseX && this.mouseY >= 0
-				&& this.getSurface().width2 - 102 > this.mouseX && this.mouseY < 26) {
-				this.showUiTab = (this.showUiTab == Config.MAGIC_AND_PRAYER_TAB) ? 0 : Config.MAGIC_AND_PRAYER_TAB;
+			if (snapshotTab != 0 && this.getSurface().width2 - 35 - 99 <= this.mouseX && this.mouseY >= 0
+				&& this.getSurface().width2 - 102 > this.mouseX && this.mouseY < 35) {
+				this.showUiTab = (snapshotTab == Config.MAGIC_AND_PRAYER_TAB) ? 0 : Config.MAGIC_AND_PRAYER_TAB;
 				tabHit = true;
 			}
 
-			if (this.showUiTab != 0 && this.getSurface().width2 - 167 <= this.mouseX && this.mouseY >= 0
-				&& this.getSurface().width2 - 132 - 3 > this.mouseX && this.mouseY < 26) {
-				this.showUiTab = (this.showUiTab == Config.FRIENDS_TAB) ? 0 : Config.FRIENDS_TAB;
+			if (snapshotTab != 0 && this.getSurface().width2 - 167 <= this.mouseX && this.mouseY >= 0
+				&& this.getSurface().width2 - 132 - 3 > this.mouseX && this.mouseY < 35) {
+				this.showUiTab = (snapshotTab == Config.FRIENDS_TAB) ? 0 : Config.FRIENDS_TAB;
 				tabHit = true;
 			}
 
-			if (this.showUiTab != 0 && this.getSurface().width2 - 35 - 165 <= this.mouseX && this.mouseY >= 0
-				&& this.mouseX < this.getSurface().width2 - 168 && this.mouseY < 26) {
-				this.showUiTab = (this.showUiTab == Config.OPTIONS_TAB) ? 0 : Config.OPTIONS_TAB;
+			if (snapshotTab != 0 && this.getSurface().width2 - 35 - 165 <= this.mouseX && this.mouseY >= 0
+				&& this.mouseX < this.getSurface().width2 - 168 && this.mouseY < 35) {
+				this.showUiTab = (snapshotTab == Config.OPTIONS_TAB) ? 0 : Config.OPTIONS_TAB;
 				tabHit = true;
 			}
 
