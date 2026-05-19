@@ -690,7 +690,6 @@ public final class Formulae {
 	 * new items.
 	 */
 	private static int ogrsGearBatchBonus(final Player player, final int skill) {
-		final com.openrsc.server.constants.Skill[] s = null; // alias-tidiness
 		// Cooking — chef's hat AND cooking cape stack additively.
 		if (skill == com.openrsc.server.constants.Skill.COOKING.id()) {
 			int bonus = 0;
@@ -702,24 +701,77 @@ public final class Formulae {
 			}
 			return bonus;
 		}
-		// Per-skill cape branches — wearing your own skill's cape extends
-		// the batch by +5. Future "skill outfit" sets (lumberjack hat etc)
-		// stack on top in these branches when those items get authored.
-		if (skill == com.openrsc.server.constants.Skill.WOODCUTTING.id()
-			&& hasEquippedAnywhere(player, com.openrsc.server.constants.ItemId.WOODCUTTING_CAPE.id())) {
-			return 5;
+		// Woodcutting — cape +5 stacks with axe tier bonus.
+		if (skill == com.openrsc.server.constants.Skill.WOODCUTTING.id()) {
+			int bonus = 0;
+			if (hasEquippedAnywhere(player, com.openrsc.server.constants.ItemId.WOODCUTTING_CAPE.id())) {
+				bonus += 5;
+			}
+			bonus += axeBatchBonus(player);
+			return bonus;
 		}
+		// Mining — cape +5 stacks with pickaxe tier bonus.
+		if (skill == com.openrsc.server.constants.Skill.MINING.id()) {
+			int bonus = 0;
+			if (hasEquippedAnywhere(player, com.openrsc.server.constants.ItemId.MINING_CAPE.id())) {
+				bonus += 5;
+			}
+			bonus += pickaxeBatchBonus(player);
+			return bonus;
+		}
+		// Fishing & Firemaking — capes only (no tool-tier item in upstream).
 		if (skill == com.openrsc.server.constants.Skill.FISHING.id()
 			&& hasEquippedAnywhere(player, com.openrsc.server.constants.ItemId.FISHING_CAPE.id())) {
-			return 5;
-		}
-		if (skill == com.openrsc.server.constants.Skill.MINING.id()
-			&& hasEquippedAnywhere(player, com.openrsc.server.constants.ItemId.MINING_CAPE.id())) {
 			return 5;
 		}
 		if (skill == com.openrsc.server.constants.Skill.FIREMAKING.id()
 			&& hasEquippedAnywhere(player, com.openrsc.server.constants.ItemId.FIREMAKING_CAPE.id())) {
 			return 5;
+		}
+		return 0;
+	}
+
+	/**
+	 * OGRS — Woodcutting axe tier bonus to batch. Sparky 2026-05-19:
+	 * 'scale by axe quality'. Bronze does nothing extra over the level
+	 * curve; dragon adds a meaningful boost. Returns the additive bonus
+	 * for whichever axe the player has wielded (highest tier wins if
+	 * somehow holding two — they can't, this is paranoia).
+	 *
+	 * Tier ladder is intentionally tighter than the equip-level ladder
+	 * (Iron/Steel both modest because they're early upgrades, Mithril +
+	 * Adamant the meaningful mid-game jumps, Rune+ the real reward).
+	 */
+	private static int axeBatchBonus(final Player p) {
+		final com.openrsc.server.constants.ItemId[] order = {
+			com.openrsc.server.constants.ItemId.DRAGON_AXE,
+			com.openrsc.server.constants.ItemId.RUNE_AXE,
+			com.openrsc.server.constants.ItemId.ADAMANTITE_AXE,
+			com.openrsc.server.constants.ItemId.MITHRIL_AXE,
+			com.openrsc.server.constants.ItemId.STEEL_AXE,
+			com.openrsc.server.constants.ItemId.IRON_AXE,
+			com.openrsc.server.constants.ItemId.BRONZE_AXE,
+		};
+		final int[] bonus = { 10, 7, 5, 3, 2, 1, 0 };
+		for (int i = 0; i < order.length; i++) {
+			if (hasEquippedAnywhere(p, order[i].id())) return bonus[i];
+		}
+		return 0;
+	}
+
+	/** OGRS — Mining pickaxe tier bonus. Same shape as axeBatchBonus. */
+	private static int pickaxeBatchBonus(final Player p) {
+		final com.openrsc.server.constants.ItemId[] order = {
+			com.openrsc.server.constants.ItemId.RUNE_PICKAXE,
+			com.openrsc.server.constants.ItemId.ADAMANTITE_PICKAXE,
+			com.openrsc.server.constants.ItemId.MITHRIL_PICKAXE,
+			com.openrsc.server.constants.ItemId.STEEL_PICKAXE,
+			com.openrsc.server.constants.ItemId.IRON_PICKAXE,
+			com.openrsc.server.constants.ItemId.BRONZE_PICKAXE,
+		};
+		final int[] bonus = { 7, 5, 3, 2, 1, 0 };
+		for (int i = 0; i < order.length; i++) {
+			if (hasEquippedAnywhere(p, order[i].id())) return bonus[i];
 		}
 		return 0;
 	}
