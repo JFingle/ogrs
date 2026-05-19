@@ -11825,10 +11825,16 @@ public final class mudclient implements Runnable {
 							stepsToMove = 10 + waypointIndexCurrent - waypointIndexNext;
 						}
 
-						amountToMove = Config.C_MOVE_PER_FRAME;
-						if (stepsToMove > 2) {
-							amountToMove = stepsToMove * amountToMove - amountToMove;
-						}
+						// OGRS — pace movement to the queue depth instead of
+						// the original "lag by 1 then catch up" logic. The
+						// engine defaulted to a fixed 4px/frame and only
+						// kicked in (stepsToMove-1)*base catch-up when the
+						// queue exceeded 2. With running adding 2-3 steps
+						// per tick, the queue oscillated between 2 and 4+,
+						// which is exactly the "ping pong" feel sparky
+						// reported. Scaling linearly per queue depth keeps
+						// the character moving in lockstep with the server.
+						amountToMove = Math.max(1, stepsToMove) * Config.C_MOVE_PER_FRAME;
 
 						if (updateEntity.waypointsX[waypointIndexNext] - updateEntity.currentX <= this.tileSize * 3
 							&& updateEntity.waypointsZ[waypointIndexNext] - updateEntity.currentZ <= this.tileSize * 3
