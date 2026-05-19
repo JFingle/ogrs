@@ -22,7 +22,12 @@ public class Man implements TalkNpcTrigger {
 
 	@Override
 	public void onTalkNpc(Player player, Npc n) {
-		int selected = DataConversions.getRandom().nextInt(20);
+		// OGRS — pool extended from 20 to 25 with five Lumbridge-area-aware
+		// lines that reference OGRS-added content (Old Aric, Old Wat, the
+		// allotment, the spider hollow, Garth's smith stall). Keeps upstream
+		// flavor intact while letting villagers feel like they live in THIS
+		// world. (sparky 2026-05-19: 'NPCs need more character'.)
+		int selected = DataConversions.getRandom().nextInt(25);
 		boolean autoChoose = DataConversions.getRandom().nextBoolean();
 		String[] menuOptions;
 
@@ -104,5 +109,31 @@ public class Man implements TalkNpcTrigger {
 				"The one we've got isn't very good");
 		else if (selected == 19)
 			npcsay(player, n, "Yo wassup!");
+		// OGRS-flavor lines (20-24). Reference Lumbridge-area content the
+		// player can actually find: Old Aric near castle, Old Wat at the
+		// allotment east of town, Edith's bakery, the spider hollow SW
+		// of Lumbridge, Garth's smith stall.
+		else if (selected == 20)
+			npcsay(player, n,
+				"Did you talk to the old pilgrim by the castle yet?",
+				"Says he's seen everything twice. Probably has.");
+		else if (selected == 21)
+			npcsay(player, n,
+				"Edith's flour prices are getting out of hand.",
+				"It's the mill, she says. I say it's something else entirely.");
+		else if (selected == 22)
+			npcsay(player, n,
+				"Don't wander southwest of Lumbridge if you can help it.",
+				"There's spiders down there. Big ones.",
+				"My cousin's lad saw one big as a hound.");
+		else if (selected == 23)
+			npcsay(player, n,
+				"Old Wat's allotment is the strangest patch of dirt in the kingdom.",
+				"He talks to his plants like they're listening.",
+				"Maybe they are. Things grow there.");
+		else if (selected == 24)
+			npcsay(player, n,
+				"Garth at the smith stall — his tools are honest work.",
+				"Won't sell you a sword, mind. Says that's Varrock's trade.");
 	}
 }
