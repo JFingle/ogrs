@@ -14417,14 +14417,34 @@ public final class mudclient implements Runnable {
 		} catch (RuntimeException ignore) { ogrsImpacts.clear(); }
 	}
 
-	// OGRS 2026-05-20: kill-switches to bisect the post-cast freeze.
-	// Bisection round 1: with both off, freezes stopped — bug is in one
-	// of these two. Round 2 (now): re-enable direction picker (simpler,
-	// less likely to be the culprit) while leaving impact renderer off.
-	// If freezes stay gone, the bug was in the impact renderer; we'll
-	// rebuild impacts with more care next round.
+	// OGRS 2026-05-20: BOTH must stay disabled until the sprite-ID
+	// allocation is reworked.
+	//
+	// Root cause discovered after bisection round 2 (dir picker on,
+	// impacts off → still froze): the scene renderer dispatches via
+	// MudClientGraphics.drawEntity, which for any sprite ID < 5000
+	// resolves the sprite through
+	//     EntityHandler.projectiles.get(spriteId - mudclient.spriteProjectile)
+	// The projectiles list has only 45 entries (indices 0-44, sprite
+	// IDs 3160-3204), so any higher ID does projectiles.get(N>=45)
+	// and throws IndexOutOfBoundsException. The render loop ends up
+	// swallowing that exception and stops processing — the client
+	// keeps drawing the old frame buffer but stops responding to
+	// input or sending packets to the server, which is exactly the
+	// "frozen" signature we kept seeing.
+	//
+	// To re-enable either feature we need ONE of:
+	//   (a) Register the impact + directional sprites as additional
+	//       projectile types (extends loadProjectiles, sprite IDs must
+	//       sit in the 3160-3224 reserved range). Tight — only ~20
+	//       free slots, can't cover 28 impact frames + 16 directionals.
+	//   (b) Shift spriteTexture (3225) up to free more projectile
+	//       slots, then register everything as projectile entries.
+	//   (c) Use a different render path that doesn't go through
+	//       drawEntity (e.g. project world coords to screen and use
+	//       surface.drawSprite directly).
 	private static final boolean OGRS_IMPACTS_ENABLED = false;
-	private static final boolean OGRS_DIR_PICKER_ENABLED = true;
+	private static final boolean OGRS_DIR_PICKER_ENABLED = false;
 
 	private void drawOgrsRunIcon() {
 		// OGRS — run pill v4. Sparky feedback (this session): icon wasn't
