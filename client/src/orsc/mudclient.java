@@ -14334,7 +14334,9 @@ public final class mudclient implements Runnable {
 			double angle = Math.atan2((double) dz, (double) dx);
 			int octant = (int) Math.round(angle / (Math.PI / 4.0));
 			octant = ((octant % 8) + 8) % 8;
-			final int dirBase = (type == 2) ? 3740 : 3748;
+			// Index-based sprite IDs (see EntityHandler.loadProjectiles
+			// layout): arrow directions at indices 73-80, flame 81-88.
+			final int dirBase = (type == 2) ? (spriteProjectile + 73) : (spriteProjectile + 81);
 			return dirBase + octant;
 		} catch (RuntimeException ignore) {
 			return base;
@@ -14343,19 +14345,23 @@ public final class mudclient implements Runnable {
 
 	// OGRS §3C — impact renderer helpers ----------------------------------
 
-	/** Sprite-archive base slot for the 4-frame impact strip of a given
-	 *  projectile type. Matches the layout in
-	 *  scripts/art/pack-router-sprites.py IMPACT_SLOTS. Returns -1 when
-	 *  the type has no authored impact (e.g. ranged arrow). */
+	/** Scene-routing sprite ID for the 4-frame impact strip of a given
+	 *  projectile type. Returns the INDEX-based ID (spriteProjectile +
+	 *  projectiles-list index) so MudClientGraphics.drawEntity can do its
+	 *  projectiles.get(id - 3160) lookup without OOB. The SpriteDef at
+	 *  that index points to the actual archive art at 3700+.
+	 *
+	 *  Layout matches EntityHandler.loadProjectiles. -1 = no authored
+	 *  impact (e.g. ranged arrow). */
 	private static int ogrsImpactBaseFor(int projectileType) {
 		switch (projectileType) {
-			case 0: return 3700; // ORB
-			case 1: return 3704; // MAGIC
-			case 3: return 3708; // GNOMEBALL
-			case 4: return 3712; // SKULL
-			case 5: return 3716; // SPIKEBALL
-			case 18: return 3720; // FIRE (unique)
-			case 12: return 3724; // CRUMBLE_UNDEAD (unique)
+			case 0:  return spriteProjectile + 45; // ORB impact base
+			case 1:  return spriteProjectile + 49; // MAGIC
+			case 3:  return spriteProjectile + 53; // GNOMEBALL
+			case 4:  return spriteProjectile + 57; // SKULL
+			case 5:  return spriteProjectile + 61; // SPIKEBALL
+			case 18: return spriteProjectile + 65; // FIRE
+			case 12: return spriteProjectile + 69; // CRUMBLE_UNDEAD
 			default: return -1;
 		}
 	}
@@ -14417,34 +14423,19 @@ public final class mudclient implements Runnable {
 		} catch (RuntimeException ignore) { ogrsImpacts.clear(); }
 	}
 
-	// OGRS 2026-05-20: BOTH must stay disabled until the sprite-ID
-	// allocation is reworked.
+	// OGRS 2026-05-20: re-enabled after the sprite-ID range fix.
 	//
-	// Root cause discovered after bisection round 2 (dir picker on,
-	// impacts off → still froze): the scene renderer dispatches via
-	// MudClientGraphics.drawEntity, which for any sprite ID < 5000
-	// resolves the sprite through
-	//     EntityHandler.projectiles.get(spriteId - mudclient.spriteProjectile)
-	// The projectiles list has only 45 entries (indices 0-44, sprite
-	// IDs 3160-3204), so any higher ID does projectiles.get(N>=45)
-	// and throws IndexOutOfBoundsException. The render loop ends up
-	// swallowing that exception and stops processing — the client
-	// keeps drawing the old frame buffer but stops responding to
-	// input or sending packets to the server, which is exactly the
-	// "frozen" signature we kept seeing.
-	//
-	// To re-enable either feature we need ONE of:
-	//   (a) Register the impact + directional sprites as additional
-	//       projectile types (extends loadProjectiles, sprite IDs must
-	//       sit in the 3160-3224 reserved range). Tight — only ~20
-	//       free slots, can't cover 28 impact frames + 16 directionals.
-	//   (b) Shift spriteTexture (3225) up to free more projectile
-	//       slots, then register everything as projectile entries.
-	//   (c) Use a different render path that doesn't go through
-	//       drawEntity (e.g. project world coords to screen and use
-	//       surface.drawSprite directly).
-	private static final boolean OGRS_IMPACTS_ENABLED = false;
-	private static final boolean OGRS_DIR_PICKER_ENABLED = false;
+	// Root cause (resolved): MudClientGraphics.drawEntity routes any
+	// scene-stored sprite ID < 5000 through
+	//     EntityHandler.projectiles.get(id - mudclient.spriteProjectile)
+	// so passing IDs > 3204 used to OOB and freeze the render loop.
+	// Fix: extended EntityHandler.loadProjectiles with 44 extra entries
+	// whose SpriteDefs point at the archive sprite IDs in the 3700+
+	// range. scene.drawSprite now uses INDEX-based IDs (3205+) which
+	// stay within projectiles.size() so the get() lookup is safe; the
+	// SpriteDef's authenticSpriteID delivers the actual art.
+	private static final boolean OGRS_IMPACTS_ENABLED = true;
+	private static final boolean OGRS_DIR_PICKER_ENABLED = true;
 
 	private void drawOgrsRunIcon() {
 		// OGRS — run pill v4. Sparky feedback (this session): icon wasn't

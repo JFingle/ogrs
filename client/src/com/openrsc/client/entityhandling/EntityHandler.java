@@ -371,6 +371,42 @@ public class EntityHandler {
 			projectiles.add(new SpriteDef(ogrsUniqueNames[i] + " projectile",
 				mudclient.spriteProjectile + 7 + i, "projectiles:" + (7 + i), 7 + i));
 		}
+		// OGRS §3C/§3D — additional entries so scene.drawSprite can render
+		// impact frames + 8-direction projectile variants without hitting
+		// the projectiles.get(N>=size) OOB that wedged the render loop.
+		// Each entry's INDEX in this list determines what scene.drawSprite
+		// ID maps to it (3160 + index). The SpriteDef.authenticSpriteID
+		// points to where the actual art lives in Authentic_Sprites.orsc
+		// (3700+ for impacts, 3740+ for directionals).
+		//
+		// Slot layout (index -> archive sprite ID):
+		//   45..48  ORB impact 0..3        -> 3700..3703
+		//   49..52  MAGIC impact 0..3      -> 3704..3707
+		//   53..56  GNOMEBALL impact 0..3  -> 3708..3711
+		//   57..60  SKULL impact 0..3      -> 3712..3715
+		//   61..64  SPIKEBALL impact 0..3  -> 3716..3719
+		//   65..68  FIRE impact 0..3       -> 3720..3723
+		//   69..72  CRUMBLE impact 0..3    -> 3724..3727
+		//   73..80  Arrow direction E..NE  -> 3740..3747
+		//   81..88  Flame direction E..NE  -> 3748..3755
+		final int[] ogrsImpactBases = { 3700, 3704, 3708, 3712, 3716, 3720, 3724 };
+		final String[] ogrsImpactTypes = { "orb", "magic", "gnomeball", "skull", "spikeball", "fire", "crumble" };
+		for (int t = 0; t < ogrsImpactBases.length; t++) {
+			for (int f = 0; f < 4; f++) {
+				final int idx = projectiles.size();
+				projectiles.add(new SpriteDef(ogrsImpactTypes[t] + " impact f" + f,
+					ogrsImpactBases[t] + f, "projectiles_impact:" + (t * 4 + f), idx));
+			}
+		}
+		final String[] ogrsDirNames = { "arrow", "flame" };
+		final int[] ogrsDirBases = { 3740, 3748 };
+		for (int s = 0; s < ogrsDirNames.length; s++) {
+			for (int d = 0; d < 8; d++) {
+				final int idx = projectiles.size();
+				projectiles.add(new SpriteDef(ogrsDirNames[s] + " dir " + d,
+					ogrsDirBases[s] + d, "projectiles_dir:" + (s * 8 + d), idx));
+			}
+		}
 	}
 
 	public enum GUIPARTS {
