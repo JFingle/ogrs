@@ -14317,15 +14317,20 @@ public final class mudclient implements Runnable {
 	 *    0=E, 1=SE, 2=S, 3=SW, 4=W, 5=NW, 6=N, 7=NE. */
 	private int ogrsResolveProjectileSpriteId(int type, int casterX, int casterZ, int targetX, int targetZ) {
 		final int base = type + spriteProjectile;
+		if (!OGRS_DIR_PICKER_ENABLED) return base;
 		if (type != 2 && type != 18) return base;
-		final int dx = targetX - casterX;
-		final int dz = targetZ - casterZ;
-		if (dx == 0 && dz == 0) return base;
-		double angle = Math.atan2((double) dz, (double) dx);
-		int octant = (int) Math.round(angle / (Math.PI / 4.0));
-		octant = ((octant % 8) + 8) % 8;
-		final int dirBase = (type == 2) ? 3740 : 3748;
-		return dirBase + octant;
+		try {
+			final int dx = targetX - casterX;
+			final int dz = targetZ - casterZ;
+			if (dx == 0 && dz == 0) return base;
+			double angle = Math.atan2((double) dz, (double) dx);
+			int octant = (int) Math.round(angle / (Math.PI / 4.0));
+			octant = ((octant % 8) + 8) % 8;
+			final int dirBase = (type == 2) ? 3740 : 3748;
+			return dirBase + octant;
+		} catch (RuntimeException ignore) {
+			return base;
+		}
 	}
 
 	// OGRS §3C — impact renderer helpers ----------------------------------
@@ -14360,34 +14365,54 @@ public final class mudclient implements Runnable {
 	}
 
 	private void ogrsSpawnImpactForCaster(ORSCharacter caster) {
+		// OGRS 2026-05-20: temporarily disabled while we diagnose the
+		// post-cast client freeze. The impact renderer is the most
+		// likely culprit since the freeze happens right after a kill
+		// (when an impact would spawn). We'll re-enable once the freeze
+		// source is confirmed.
+		if (!OGRS_IMPACTS_ENABLED) return;
 		if (caster == null || caster.incomingProjectileSprite == null) return;
 		final int base = ogrsImpactBaseFor(caster.incomingProjectileSprite.id);
-		if (base < 0) return; // no authored impact for this projectile type
+		if (base < 0) return;
 		final ORSCharacter target = ogrsResolveProjectileTarget(caster);
 		if (target == null) return;
-		final int wy = -this.world.getElevation(target.currentX, target.currentZ) - 55;
-		ogrsImpacts.add(new OgrsImpact(target.currentX, target.currentZ, wy, base));
+		if (ogrsImpacts.size() >= 8) return;   // hard cap to prevent runaway lists
+		try {
+			final int wy = -this.world.getElevation(target.currentX, target.currentZ) - 55;
+			ogrsImpacts.add(new OgrsImpact(target.currentX, target.currentZ, wy, base));
+		} catch (RuntimeException ignore) { /* defensive */ }
 	}
 
 	private void ogrsTickImpacts() {
-		java.util.Iterator<OgrsImpact> it = ogrsImpacts.iterator();
-		while (it.hasNext()) {
-			OgrsImpact imp = it.next();
-			imp.frame++;
-			if (imp.frame >= 4) it.remove();
-		}
+		if (!OGRS_IMPACTS_ENABLED) { ogrsImpacts.clear(); return; }
+		try {
+			java.util.Iterator<OgrsImpact> it = ogrsImpacts.iterator();
+			while (it.hasNext()) {
+				OgrsImpact imp = it.next();
+				imp.frame++;
+				if (imp.frame >= 4) it.remove();
+			}
+		} catch (RuntimeException ignore) { ogrsImpacts.clear(); }
 	}
 
 	/** Called from the world-render code after projectiles have been
 	 *  drawn. Renders every active impact at its target position with
 	 *  the current frame of its 4-frame burst. */
 	private void ogrsDrawImpacts() {
-		for (OgrsImpact imp : ogrsImpacts) {
-			this.scene.drawSprite(imp.baseSlotId + imp.frame, imp.worldZ, 0,
-				imp.worldX, imp.elevationY, 48, 48, (byte) 109);
-			++this.spriteCount;
-		}
+		if (!OGRS_IMPACTS_ENABLED) return;
+		try {
+			for (OgrsImpact imp : ogrsImpacts) {
+				this.scene.drawSprite(imp.baseSlotId + imp.frame, imp.worldZ, 0,
+					imp.worldX, imp.elevationY, 48, 48, (byte) 109);
+				++this.spriteCount;
+			}
+		} catch (RuntimeException ignore) { ogrsImpacts.clear(); }
 	}
+
+	// OGRS 2026-05-20: kill-switches to bisect the post-cast freeze.
+	// Flip to true once we have confirmation the bug is somewhere else.
+	private static final boolean OGRS_IMPACTS_ENABLED = false;
+	private static final boolean OGRS_DIR_PICKER_ENABLED = false;
 
 	private void drawOgrsRunIcon() {
 		// OGRS — run pill v4. Sparky feedback (this session): icon wasn't
