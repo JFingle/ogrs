@@ -5115,10 +5115,14 @@ public final class mudclient implements Runnable {
 								int var13 = ((this.projectileMaxRange - var3.projectileRange) * var9
 									+ var6 * var3.projectileRange) / this.projectileMaxRange;
 								// OGRS §3D — directional variant for arrow + flame.
+								// Render size bumped 32 -> 48 so the artist
+								// agent's projectiles read at the intended
+								// scale instead of looking lost on screen
+								// (sparky 2026-05-20 feedback).
 								final int ogrsSpriteId = ogrsResolveProjectileSpriteId(
 									var3.incomingProjectileSprite.id, var5, var6, var8, var9);
 								this.scene.drawSprite(ogrsSpriteId, var13,
-									0, var11, var12, 32, 32, (byte) 109);
+									0, var11, var12, 48, 48, (byte) 109);
 								++this.spriteCount;
 							}
 						}
@@ -5152,10 +5156,14 @@ public final class mudclient implements Runnable {
 								int var13 = ((this.projectileMaxRange - var3.projectileRange) * var9
 									+ var6 * var3.projectileRange) / this.projectileMaxRange;
 								// OGRS §3D — directional variant for arrow + flame.
+								// Render size bumped 32 -> 48 so the artist
+								// agent's projectiles read at the intended
+								// scale instead of looking lost on screen
+								// (sparky 2026-05-20 feedback).
 								final int ogrsSpriteId = ogrsResolveProjectileSpriteId(
 									var3.incomingProjectileSprite.id, var5, var6, var8, var9);
 								this.scene.drawSprite(ogrsSpriteId, var13,
-									0, var11, var12, 32, 32, (byte) 109);
+									0, var11, var12, 48, 48, (byte) 109);
 								++this.spriteCount;
 							}
 						}
@@ -14410,9 +14418,13 @@ public final class mudclient implements Runnable {
 	}
 
 	// OGRS 2026-05-20: kill-switches to bisect the post-cast freeze.
-	// Flip to true once we have confirmation the bug is somewhere else.
+	// Bisection round 1: with both off, freezes stopped — bug is in one
+	// of these two. Round 2 (now): re-enable direction picker (simpler,
+	// less likely to be the culprit) while leaving impact renderer off.
+	// If freezes stay gone, the bug was in the impact renderer; we'll
+	// rebuild impacts with more care next round.
 	private static final boolean OGRS_IMPACTS_ENABLED = false;
-	private static final boolean OGRS_DIR_PICKER_ENABLED = false;
+	private static final boolean OGRS_DIR_PICKER_ENABLED = true;
 
 	private void drawOgrsRunIcon() {
 		// OGRS — run pill v4. Sparky feedback (this session): icon wasn't
