@@ -127,6 +127,18 @@ DIRECTION_SETS = [
     ("element_fire", 3748),  # 3748..3755
 ]
 
+# -- Debuff swirl impacts (§1D — 4-frame triple-helix wrap, IDs 3760-3779)
+# Sparky 2026-05-20: "use these for spells where the visual should wrap the
+# target rather than burst outward". Mapped per debuff so each gets its
+# dedicated color motif.
+SWIRL_IMPACT_SLOTS = [
+    ("debuff_confuse",       3760),  # 3760..3763 — purple/white question wraps
+    ("debuff_weaken",        3764),  # 3764..3767 — olive droplet drains downward
+    ("debuff_vulnerability", 3768),  # 3768..3771 — purple+red fissures
+    ("debuff_enfeeble",      3772),  # 3772..3775 — yellow-green mist
+    ("debuff_stun",          3776),  # 3776..3779 — white lightning bolts
+]
+
 
 def read_header(blob: bytes) -> dict:
     if len(blob) < HEADER_LEN:
@@ -257,7 +269,20 @@ def main() -> int:
                 added_imp += 1
         print(f"  {base:4d}..{base+3} <- {folder}/impact/")
 
-    # 4) Directional variants (§3D), arrow + flame x 8 directions.
+    # 4) Debuff swirl impacts (§1D), 4 frames each from impact_swirl/.
+    print("Packing debuff swirl impacts (§1D):")
+    added_swirl = 0
+    for folder, base in SWIRL_IMPACT_SLOTS:
+        for f in range(4):
+            slot = base + f
+            png = ART_ROOT / folder / "impact_swirl" / f"frame_{f:02d}.png"
+            if write_new_slot(entries, slot, png, anchor_center=True):
+                if str(slot) not in set(names):
+                    names.append(str(slot))
+                added_swirl += 1
+        print(f"  {base:4d}..{base+3} <- {folder}/impact_swirl/")
+
+    # 5) Directional variants (§3D), arrow + flame x 8 directions.
     print("Packing directional variants (§3D):")
     added_dir = 0
     for folder, base in DIRECTION_SETS:
@@ -288,7 +313,8 @@ def main() -> int:
     print(
         f"Wrote {ARCHIVE}: {len(names)} entries, "
         f"{replaced} router replaced + {added_uniq} unique + "
-        f"{added_imp} impact + {added_dir} direction frames."
+        f"{added_imp} impact + {added_swirl} swirl + "
+        f"{added_dir} direction frames."
     )
 
     mirror = Path("/mnt/c/OGRS/Cache/video/Authentic_Sprites.orsc")

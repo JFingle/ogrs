@@ -14370,15 +14370,14 @@ public final class mudclient implements Runnable {
 			case 15: return spriteProjectile + 45; // SHOCK_BOLT -> golden sparkle
 			case 16: return spriteProjectile + 45; // ELEMENTAL_BOLT -> golden sparkle
 			case 17: return spriteProjectile + 65; // IBAN_BLAST -> fire splash
-			// Debuffs (CONFUSE 7, WEAKEN 8, VULNERABILITY 9, ENFEEBLE 10,
-			// STUN 11, FEAR 13) reuse SKULL's cursed purple wisps until
-			// we wire the dedicated swirl/hybrid impacts (HANDOFF §1D).
-			case 7:
-			case 8:
-			case 9:
-			case 10:
-			case 11:
-			case 13: return spriteProjectile + 57; // SKULL family
+			// Debuffs (§1D triple-helix swirl wraps). Each debuff has its
+			// own 4-frame swirl tinted to match its color motif.
+			case 7:  return spriteProjectile + 89;  // CONFUSE swirl
+			case 8:  return spriteProjectile + 93;  // WEAKEN swirl
+			case 9:  return spriteProjectile + 97;  // VULNERABILITY swirl
+			case 10: return spriteProjectile + 101; // ENFEEBLE swirl
+			case 11: return spriteProjectile + 105; // STUN swirl
+			case 13: return spriteProjectile + 57;  // FEAR still on SKULL until its own swirl is authored
 			default: return -1;
 		}
 	}
@@ -15102,6 +15101,7 @@ public final class mudclient implements Runnable {
 		loadSprite(spriteProjectile, "media", 45);         // 3160..3204
 		loadSprite(3700, "media", 28);                     // 3700..3727 impacts
 		loadSprite(3740, "media", 16);                     // 3740..3755 directions
+		loadSprite(3760, "media", 20);                     // 3760..3779 debuff swirls
 		loadSprite(3284, "media", 11);
 		// loadSprite(spriteLogo, "media", 1);
 

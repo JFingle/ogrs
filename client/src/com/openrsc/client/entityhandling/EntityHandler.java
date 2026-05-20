@@ -407,6 +407,21 @@ public class EntityHandler {
 					ogrsDirBases[s] + d, "projectiles_dir:" + (s * 8 + d), idx));
 			}
 		}
+		// OGRS §1D — debuff swirl impacts (5 debuffs x 4 frames). Layout:
+		//   89..92   CONFUSE swirl       -> archive 3760..3763
+		//   93..96   WEAKEN swirl        -> archive 3764..3767
+		//   97..100  VULNERABILITY swirl -> archive 3768..3771
+		//   101..104 ENFEEBLE swirl      -> archive 3772..3775
+		//   105..108 STUN swirl          -> archive 3776..3779
+		final String[] ogrsSwirlNames = { "confuse", "weaken", "vulnerability", "enfeeble", "stun" };
+		final int[] ogrsSwirlBases = { 3760, 3764, 3768, 3772, 3776 };
+		for (int s = 0; s < ogrsSwirlNames.length; s++) {
+			for (int f = 0; f < 4; f++) {
+				final int idx = projectiles.size();
+				projectiles.add(new SpriteDef(ogrsSwirlNames[s] + " swirl f" + f,
+					ogrsSwirlBases[s] + f, "projectiles_swirl:" + (s * 4 + f), idx));
+			}
+		}
 	}
 
 	public enum GUIPARTS {
