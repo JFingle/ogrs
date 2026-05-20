@@ -14113,6 +14113,18 @@ public final class mudclient implements Runnable {
 		{"Chill Bolt",        "Chill",    "chill_bolt",      3174,  3},
 		{"Shock Bolt",        "Shock",    "shock_bolt",      3175,  7},
 		{"Elemental Bolt",    "Elem Bl",  "elemental_bolt",  3176, 11},
+		// OGRS enchant tiers — cmd prefix "enchant:" routes the picker
+		// click to the local-spell-select path instead of the server-
+		// side autocast command, because enchants target inventory
+		// items, not mobs (sparky 2026-05-20). Clicking the tile sets
+		// the spell as the player's selected spell — same effect as
+		// picking it from the spellbook sub-page — so the next
+		// inventory click triggers the enchant cast.
+		{"Enchant Lvl 1",     "Ench 1",   "enchant:1",       3200,  7},
+		{"Enchant Lvl 2",     "Ench 2",   "enchant:2",       3201, 27},
+		{"Enchant Lvl 3",     "Ench 3",   "enchant:3",       3202, 49},
+		{"Enchant Lvl 4",     "Ench 4",   "enchant:4",       3203, 57},
+		{"Enchant Lvl 5",     "Ench 5",   "enchant:5",       3204, 68},
 	};
 
 	// Current autocast (client-side mirror). Index into OGRS_AUTOCAST_SPELLS,
@@ -14315,7 +14327,24 @@ public final class mudclient implements Runnable {
 
 			if (this.mouseButtonClick == 1 && hovered) {
 				ogrsAutocastPickIdx = i;
-				this.sendCommandString("autocast " + cmd);
+				if (cmd.startsWith("enchant:")) {
+					// Enchant target = inventory item. Set the player's
+					// selected spell to this enchant tier — same effect as
+					// picking it in the spellbook — so the next inventory
+					// click casts it.
+					final int tier = Integer.parseInt(cmd.substring("enchant:".length()));
+					final int spellIdx = ogrsFindEnchantSpellIndex(tier);
+					if (spellIdx >= 0) {
+						this.selectedSpell = spellIdx;
+						this.lastSelectedSpell = spellIdx;
+						this.selectedItemInventoryIndex = -1;
+						// Hop to the inventory tab so the next click lands
+						// somewhere meaningful — matches spellbook UX.
+						this.showUiTab = Config.INVENTORY_TAB;
+					}
+				} else {
+					this.sendCommandString("autocast " + cmd);
+				}
 				ogrsAutocastPickerOpen = false;
 				this.mouseButtonClick = 0;
 				return;
@@ -14392,6 +14421,17 @@ public final class mudclient implements Runnable {
 			this.getSurface().drawBoxBorder(tabX, 32, tabY, 32, 0x000000);
 			this.getSurface().drawBoxBorder(tabX + 1, 30, tabY + 1, 30, active ? 0xD4A64A : 0x706452);
 		}
+	}
+
+	/** Locate the EntityHandler spell index for "Enchant lvl-N (amulet|
+	 *  jewelry)". -1 if not present (rare — defensive). */
+	private static int ogrsFindEnchantSpellIndex(int tier) {
+		final String wanted = "enchant lvl-" + tier;
+		for (int i = 0; i < EntityHandler.spellCount(); i++) {
+			final String n = EntityHandler.getSpellDef(i).getName().toLowerCase();
+			if (n.startsWith(wanted)) return i;
+		}
+		return -1;
 	}
 
 	// OGRS §3D — direction picker for arrow + flame projectiles -----------
