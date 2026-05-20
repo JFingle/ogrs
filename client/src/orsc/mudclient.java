@@ -14355,6 +14355,7 @@ public final class mudclient implements Runnable {
 	 *  impact (e.g. ranged arrow). */
 	private static int ogrsImpactBaseFor(int projectileType) {
 		switch (projectileType) {
+			// Authored router types — each gets its dedicated burst.
 			case 0:  return spriteProjectile + 45; // ORB impact base
 			case 1:  return spriteProjectile + 49; // MAGIC
 			case 3:  return spriteProjectile + 53; // GNOMEBALL
@@ -14362,6 +14363,22 @@ public final class mudclient implements Runnable {
 			case 5:  return spriteProjectile + 61; // SPIKEBALL
 			case 18: return spriteProjectile + 65; // FIRE
 			case 12: return spriteProjectile + 69; // CRUMBLE_UNDEAD
+			// Borrowed impacts for spells whose authored set doesn't
+			// have its own burst yet — picked by visual affinity so
+			// landings still feel weighty.
+			case 14: return spriteProjectile + 49; // CHILL_BOLT  -> ice shatter
+			case 15: return spriteProjectile + 45; // SHOCK_BOLT -> golden sparkle
+			case 16: return spriteProjectile + 45; // ELEMENTAL_BOLT -> golden sparkle
+			case 17: return spriteProjectile + 65; // IBAN_BLAST -> fire splash
+			// Debuffs (CONFUSE 7, WEAKEN 8, VULNERABILITY 9, ENFEEBLE 10,
+			// STUN 11, FEAR 13) reuse SKULL's cursed purple wisps until
+			// we wire the dedicated swirl/hybrid impacts (HANDOFF §1D).
+			case 7:
+			case 8:
+			case 9:
+			case 10:
+			case 11:
+			case 13: return spriteProjectile + 57; // SKULL family
 			default: return -1;
 		}
 	}
@@ -14392,7 +14409,12 @@ public final class mudclient implements Runnable {
 		if (target == null) return;
 		if (ogrsImpacts.size() >= 8) return;   // hard cap to prevent runaway lists
 		try {
-			final int wy = -this.world.getElevation(target.currentX, target.currentZ) - 55;
+			// OGRS 2026-05-20: the burst was rendering near the target's
+			// feet because the 48-tall sprite drew downward from its
+			// world-Y anchor. Bias the anchor up by roughly the sprite's
+			// vertical center so the explosion wraps the target's chest /
+			// head instead of the dirt.
+			final int wy = -this.world.getElevation(target.currentX, target.currentZ) - 95;
 			ogrsImpacts.add(new OgrsImpact(target.currentX, target.currentZ, wy, base));
 		} catch (RuntimeException ignore) { /* defensive */ }
 	}
