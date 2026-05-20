@@ -7626,8 +7626,14 @@ public final class mudclient implements Runnable {
 					this.drawUiTabOptions(15, mustDrawMenu);
 				}
 
-				// OGRS — always-visible run-toggle icon (sparky 2026-05-19:
-				// 'add a small run icon to the left of the setting menu').
+				if (this.showUiTab == Config.COMBAT_TAB) {
+					this.drawUiTabCombat(mustDrawMenu);
+				}
+
+				// OGRS — always-visible COMBAT_TAB icon (combat styles +
+				// magic autocast picker) and run-toggle icon. Both render
+				// in the tab-strip row regardless of which tab is open.
+				drawOgrsCombatTabIcon();
 				drawOgrsRunIcon();
 
 				if (!this.topMouseMenuVisible && !this.optionsMenuShow) {
@@ -14008,6 +14014,121 @@ public final class mudclient implements Runnable {
 	 * the server, which flips state and pushes a fresh SEND_RUN_ENERGY
 	 * packet back. The click is consumed so it doesn't fall through.
 	 */
+	// OGRS — COMBAT_TAB: unified melee style + autocast picker ------------
+	//
+	// Sparky 2026-05-19: "it can be a combat tab, then you can select your
+	// melee, range and magic style there and it doesnt popup on the screen
+	// impeeding vision". This is the picker UI; chat command (::autocast
+	// + the popup-style combat menu) remain available as fallbacks.
+	//
+	// Quick-pick spells exposed in the autocast section. Names match the
+	// AutocastCommand parser; click sends `autocast <name>` via the
+	// existing chat-command pipeline.
+	private static final String[][] OGRS_AUTOCAST_PICKS = {
+		{"Wind Strike",  "wind_strike"},
+		{"Water Strike", "water_strike"},
+		{"Earth Strike", "earth_strike"},
+		{"Fire Strike",  "fire_strike"},
+		{"Confuse",      "confuse"},
+		{"Weaken",       "weaken"},
+	};
+
+	private void drawUiTabCombat(boolean mustTrackMouse) {
+		final int maxY = getUITabsY();
+		final int panelX = this.getSurface().width2 - 199;
+		final int panelY = Config.C_CUSTOM_UI ? (maxY - 280) : (36 + 25);
+		final int panelW = 196;
+		final int panelH = 264;
+
+		// Panel background.
+		this.getSurface().drawBoxAlpha(panelX, panelY, panelW, panelH, 0x2D2C24, 230);
+		this.getSurface().drawBoxBorder(panelX, panelW, panelY, panelH, 0x000000);
+		this.getSurface().drawBoxBorder(panelX + 1, panelW - 2, panelY + 1, panelH - 2, 0x706452);
+		this.getSurface().drawColoredStringCentered(panelX + panelW / 2, "COMBAT", 0xFFFFFF, 1, 3, panelY + 14);
+
+		// --- Melee style buttons (top half) ---
+		final String[] meleeLabels = {
+			"Controlled (+1 all)",
+			"Aggressive (+3 STR)",
+			"Accurate   (+3 ATK)",
+			"Defensive  (+3 DEF)",
+		};
+		final int btnH = 20;
+		int rowY = panelY + 24;
+		this.getSurface().drawString("Melee style:", panelX + 8, rowY + 4, 0xC0C0C0, 1);
+		rowY += 12;
+		for (int i = 0; i < meleeLabels.length; i++) {
+			final int by = rowY + i * (btnH + 2);
+			final boolean active = (this.combatStyle == i);
+			final int bg = active ? 0x4B3F1A : 0x1A1814;
+			this.getSurface().drawBoxAlpha(panelX + 6, by, panelW - 12, btnH, bg, 255);
+			this.getSurface().drawBoxBorder(panelX + 6, panelW - 12, by, btnH, active ? 0xD4A64A : 0x504640);
+			this.getSurface().drawString(meleeLabels[i], panelX + 12, by + 14, 0xFFFFFF, 1);
+			if (this.mouseButtonClick == 1
+				&& this.mouseX >= panelX + 6 && this.mouseX < panelX + panelW - 6
+				&& this.mouseY >= by && this.mouseY < by + btnH) {
+				this.combatStyle = i;
+				this.proposedStyle = i;
+				this.packetHandler.getClientStream().newPacket(29);
+				this.packetHandler.getClientStream().bufferBits.putByte(this.combatStyle);
+				this.packetHandler.getClientStream().finishPacket();
+				this.mouseButtonClick = 0;
+			}
+		}
+
+		// --- Magic autocast picker (bottom half) ---
+		rowY += meleeLabels.length * (btnH + 2) + 12;
+		this.getSurface().drawString("Magic autocast:", panelX + 8, rowY, 0xC0C0C0, 1);
+		rowY += 6;
+		// 2-column grid of quick-pick spells.
+		final int colW = (panelW - 18) / 2;
+		final int qBtnH = 16;
+		for (int i = 0; i < OGRS_AUTOCAST_PICKS.length; i++) {
+			final int col = i % 2;
+			final int row = i / 2;
+			final int bx = panelX + 6 + col * (colW + 2);
+			final int by = rowY + row * (qBtnH + 2);
+			this.getSurface().drawBoxAlpha(bx, by, colW, qBtnH, 0x1A1814, 255);
+			this.getSurface().drawBoxBorder(bx, colW, by, qBtnH, 0x504640);
+			this.getSurface().drawString(OGRS_AUTOCAST_PICKS[i][0], bx + 4, by + 12, 0xFFFFFF, 0);
+			if (this.mouseButtonClick == 1
+				&& this.mouseX >= bx && this.mouseX < bx + colW
+				&& this.mouseY >= by && this.mouseY < by + qBtnH) {
+				this.sendCommandString("autocast " + OGRS_AUTOCAST_PICKS[i][1]);
+				this.mouseButtonClick = 0;
+			}
+		}
+		// Off button — full-width.
+		rowY += ((OGRS_AUTOCAST_PICKS.length + 1) / 2) * (qBtnH + 2) + 4;
+		this.getSurface().drawBoxAlpha(panelX + 6, rowY, panelW - 12, qBtnH, 0x3A1A1A, 255);
+		this.getSurface().drawBoxBorder(panelX + 6, panelW - 12, rowY, qBtnH, 0x7E1F1C);
+		this.getSurface().drawColoredStringCentered(panelX + panelW / 2, "OFF", 0xFF8080, 0, 0, rowY + 12);
+		if (this.mouseButtonClick == 1
+			&& this.mouseX >= panelX + 6 && this.mouseX < panelX + panelW - 6
+			&& this.mouseY >= rowY && this.mouseY < rowY + qBtnH) {
+			this.sendCommandString("autocast off");
+			this.mouseButtonClick = 0;
+		}
+	}
+
+	/** Always-visible COMBAT_TAB icon. Drawn to the left of OPTIONS in
+	 *  the tab strip, matching the rest of the row vertically. Click
+	 *  toggles the COMBAT panel open/closed. */
+	private void drawOgrsCombatTabIcon() {
+		final int tabX = this.getSurface().width2 - 233;
+		final int tabY = Config.C_CUSTOM_UI ? getUITabsY() : 3;
+		final int tabW = 32;
+		final int tabH = 32;
+		final boolean active = (this.showUiTab == Config.COMBAT_TAB);
+		final int bg = active ? 0x4B3F1A : 0x2D2C24;
+		this.getSurface().drawBoxAlpha(tabX, tabY, tabW, tabH, bg, 230);
+		this.getSurface().drawBoxBorder(tabX, tabW, tabY, tabH, 0x000000);
+		this.getSurface().drawBoxBorder(tabX + 1, tabW - 2, tabY + 1, tabH - 2, 0x706452);
+		// Two crossed sword glyphs implied by a simple X with hilt blobs.
+		// Draw "CB" centered (Combat). Cheap to read at a glance.
+		this.getSurface().drawColoredStringCentered(tabX + tabW / 2, "CB", 0xD4A64A, 1, 3, tabY + 18);
+	}
+
 	// OGRS §3D — direction picker for arrow + flame projectiles -----------
 
 	/** Returns the absolute sprite ID to draw for this projectile,
@@ -14091,15 +14212,26 @@ public final class mudclient implements Runnable {
 	}
 
 	private void drawOgrsRunIcon() {
-		// OGRS — run pill v3. Sparky feedback (this session): the percent
-		// text was too big for the box, wants the "RUN" label back, and a
-		// bigger energy bar with the percent overlaid on it. Layout: 32x22
-		// box, "RUN" label top-half, energy bar bottom-half with percent
-		// rendered in white on top of it.
+		// OGRS — run pill v4. Sparky feedback (this session): icon wasn't
+		// showing on mobile. Root cause: it was hard-coded to top-right
+		// (y=3), but C_CUSTOM_UI / Android relocate the tab strip to the
+		// bottom of the screen, leaving the icon stranded in dead space
+		// (and often behind chat / touch UI). Position now follows the
+		// tab strip — top-right in authentic mode, bottom-right (above
+		// the tabs) in custom/mobile mode.
 		final int iconW = 32;
 		final int iconH = 22;
-		final int iconX = this.getSurface().width2 - 232;
-		final int iconY = 3;
+		// 233 px clears the 6 standard tab icons (33 px each, ~198 px) plus
+		// a small gap. Same horizontal slot regardless of UI mode.
+		final int iconX = this.getSurface().width2 - 233 - 33;
+		final int iconY;
+		if (Config.C_CUSTOM_UI) {
+			// Sit just above the bottom tab strip so a thumb tapping the
+			// run icon doesn't accidentally tap a tab below it.
+			iconY = getUITabsY() - iconH - 4;
+		} else {
+			iconY = 3;
+		}
 		// Background — dark when walking, red-tinted when running.
 		final int bg = ogrsRunButtonVisual ? 0x7E1F1C : 0x2D2C24;
 		this.getSurface().drawBoxAlpha(iconX, iconY, iconW, iconH, bg, 220);
@@ -14129,10 +14261,11 @@ public final class mudclient implements Runnable {
 		final int pctW = this.getSurface().stringWidth(0, pct);
 		this.getSurface().drawString(pct,
 			iconX + (iconW - pctW) / 2, barY + barH - 1, 0xFFFFFF, 0);
-		// Click handler.
+		// Click handler — uses the icon's actual Y range so mobile (where
+		// the icon sits near the bottom of the screen) still gets a hit.
 		if (this.mouseButtonClick != 0
 			&& this.mouseX >= iconX && this.mouseX < iconX + iconW
-			&& this.mouseY >= 0 && this.mouseY < iconY + iconH) {
+			&& this.mouseY >= iconY && this.mouseY < iconY + iconH) {
 			this.sendCommandString("run");
 			this.mouseButtonClick = 0;
 		}
@@ -14205,6 +14338,13 @@ public final class mudclient implements Runnable {
 				tabHit = true;
 			}
 
+			// OGRS — COMBAT_TAB, to the left of OPTIONS (width2 - 233..-201).
+			if (snapshotTab == 0 && this.getSurface().width2 - 35 - 198 <= this.mouseX && this.mouseY >= 0
+				&& this.mouseX < this.getSurface().width2 - 198 - 3 && this.mouseY < 35) {
+				this.showUiTab = Config.COMBAT_TAB;
+				tabHit = true;
+			}
+
 			// Close-tab branches — only fire when a tab was already open at
 			// the start of this click (snapshotTab != 0).
 			if (snapshotTab != 0 && this.getSurface().width2 - 35 <= this.mouseX && this.mouseY >= 0
@@ -14251,6 +14391,13 @@ public final class mudclient implements Runnable {
 				tabHit = true;
 			}
 
+			// OGRS — COMBAT_TAB close/toggle branch.
+			if (snapshotTab != 0 && this.getSurface().width2 - 35 - 198 <= this.mouseX && this.mouseY >= 0
+				&& this.mouseX < this.getSurface().width2 - 201 && this.mouseY < 35) {
+				this.showUiTab = (snapshotTab == Config.COMBAT_TAB) ? 0 : Config.COMBAT_TAB;
+				tabHit = true;
+			}
+
 			if (!S_WANT_EQUIPMENT_TAB) {
 				if (this.showUiTab == Config.INVENTORY_TAB
 					&& (this.mouseX < this.getSurface().width2 - 248 || 36 + this.m_cl / 5 * 34 < this.mouseY)) {
@@ -14289,6 +14436,11 @@ public final class mudclient implements Runnable {
 			}
 
 			if (this.showUiTab == Config.OPTIONS_TAB && (this.getSurface().width2 - 199 > this.mouseX || this.mouseY > 325)) {
+				this.showUiTab = 0;
+			}
+
+			// OGRS — COMBAT_TAB auto-close when click lands outside its panel.
+			if (this.showUiTab == Config.COMBAT_TAB && (this.getSurface().width2 - 199 > this.mouseX || this.mouseY > 290)) {
 				this.showUiTab = 0;
 			}
 
@@ -14342,6 +14494,13 @@ public final class mudclient implements Runnable {
 			if (this.showUiTab == 0 && this.getSurface().width2 - 35 - 165 <= this.mouseX && this.mouseY >= minY
 				&& this.mouseX < this.getSurface().width2 - 165 - 3 && this.mouseY < maxY) {
 				this.showUiTab = Config.OPTIONS_TAB;
+				return true;
+			}
+
+			// OGRS — COMBAT_TAB icon (to the left of OPTIONS).
+			if (this.mouseX >= this.getSurface().width2 - 233 && this.mouseY >= minY
+				&& this.mouseX < this.getSurface().width2 - 201 && this.mouseY < maxY) {
+				this.showUiTab = (this.showUiTab == Config.COMBAT_TAB) ? 0 : Config.COMBAT_TAB;
 				return true;
 			}
 

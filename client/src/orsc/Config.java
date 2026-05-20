@@ -32,6 +32,7 @@ public class Config {
 	public static final int MAGIC_AND_PRAYER_TAB = 4;
 	public static final int FRIENDS_TAB = 5;
 	public static final int OPTIONS_TAB = 6;
+	public static final int COMBAT_TAB = 7; // OGRS — unified combat styles + autocast picker
 
 	/* Configurable: */
 	public static boolean C_EXPERIENCE_DROPS = false;
