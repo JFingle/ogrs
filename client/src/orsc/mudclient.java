@@ -14046,11 +14046,28 @@ public final class mudclient implements Runnable {
 	private boolean ogrsAutocastPickerOpen = false;
 
 	private void drawUiTabCombat(boolean mustTrackMouse) {
+		// OGRS 2026-05-20: wrap the whole tab in try/catch so any silent
+		// rendering exception bubbles up to the log instead of freezing
+		// the render loop on the next frame.
+		try {
+			drawUiTabCombatInner(mustTrackMouse);
+		} catch (RuntimeException re) {
+			System.err.println("[OGRS] drawUiTabCombat threw: " + re);
+			re.printStackTrace();
+			// Recover: close the picker so subsequent frames go through the
+			// simpler base-tab path.
+			ogrsAutocastPickerOpen = false;
+		}
+	}
+
+	private void drawUiTabCombatInner(boolean mustTrackMouse) {
 		final int maxY = getUITabsY();
 		final int panelX = this.getSurface().width2 - 199;
-		final int panelY = Config.C_CUSTOM_UI ? (maxY - 280) : (36 + 25);
 		final int panelW = 196;
-		final int panelH = 264;
+		// Picker mode needs a bigger panel so the 3x9 sprite grid fits at
+		// a readable tile size. Base combat tab stays at 264.
+		final int panelH = ogrsAutocastPickerOpen ? 380 : 264;
+		final int panelY = Config.C_CUSTOM_UI ? (maxY - panelH - 4) : (36 + 25);
 
 		// Panel background.
 		this.getSurface().drawBoxAlpha(panelX, panelY, panelW, panelH, 0x2D2C24, 230);
@@ -14132,21 +14149,19 @@ public final class mudclient implements Runnable {
 	}
 
 	/** Picker overlay shown inside the combat tab when "Set Auto Cast"
-	 *  is clicked. 4-column grid of 38x38 spell tiles. Each tile shows
-	 *  the spell's projectile sprite + name + level requirement. Tiles
-	 *  the player can't currently cast (level too low, or no runes) are
-	 *  dimmed but still selectable — selecting a spell you can't cast
-	 *  yet just queues it for when you can. */
+	 *  is clicked. 3-column grid of 60-wide x 56-tall spell tiles, each
+	 *  with a 40x40 sprite + level. Greyed tiles for spells the player
+	 *  can't cast yet (magic level too low). Click selects + closes. */
 	private void drawOgrsAutocastPicker(int panelX, int panelY, int panelW, int panelH) {
 		this.getSurface().drawColoredStringCentered(panelX + panelW / 2, "PICK A SPELL", 0xFFFFFF, 1, 3, panelY + 14);
 		// Back button — top-right of panel.
-		final int backW = 36;
-		final int backH = 14;
+		final int backW = 44;
+		final int backH = 16;
 		final int backX = panelX + panelW - backW - 4;
 		final int backY = panelY + 4;
 		this.getSurface().drawBoxAlpha(backX, backY, backW, backH, 0x1A1814, 255);
 		this.getSurface().drawBoxBorder(backX, backW, backY, backH, 0x706452);
-		this.getSurface().drawColoredStringCentered(backX + backW / 2, "Back", 0xFFFFFF, 0, 0, backY + 10);
+		this.getSurface().drawColoredStringCentered(backX + backW / 2, "Back", 0xFFFFFF, 1, 1, backY + 12);
 		if (this.mouseButtonClick == 1
 			&& this.mouseX >= backX && this.mouseX < backX + backW
 			&& this.mouseY >= backY && this.mouseY < backY + backH) {
@@ -14155,47 +14170,64 @@ public final class mudclient implements Runnable {
 			return;
 		}
 
-		// Tile grid. 4 columns, ~38 px each, with a 32x32 sprite area.
-		final int cols = 4;
-		final int tileW = (panelW - 12) / cols;
-		final int tileH = 38;
-		final int gridX = panelX + 6;
-		final int gridY = panelY + 22;
+		// 3-column grid; tile is sprite-on-top (40x40) + level on bottom.
+		final int cols = 3;
+		final int tilePad = 4;
+		final int tileW = (panelW - 8 - (cols - 1) * tilePad) / cols;
+		final int tileH = 56;
+		final int gridX = panelX + 4;
+		final int gridY = panelY + 24;
 		final int playerMagicLevel = this.playerStatCurrent[6];
+		int hoveredIdx = -1;
 
 		for (int i = 0; i < OGRS_AUTOCAST_SPELLS.length; i++) {
 			final int col = i % cols;
 			final int row = i / cols;
-			final int tx = gridX + col * tileW;
-			final int ty = gridY + row * tileH;
-			final String name = (String) OGRS_AUTOCAST_SPELLS[i][0];
+			final int tx = gridX + col * (tileW + tilePad);
+			final int ty = gridY + row * (tileH + tilePad);
 			final String cmd  = (String) OGRS_AUTOCAST_SPELLS[i][1];
 			final int spriteId = (Integer) OGRS_AUTOCAST_SPELLS[i][2];
 			final int reqLvl   = (Integer) OGRS_AUTOCAST_SPELLS[i][3];
 			final boolean canCast = playerMagicLevel >= reqLvl;
 			final boolean isCurrent = (i == ogrsAutocastPickIdx);
+			final boolean hovered = (this.mouseX >= tx && this.mouseX < tx + tileW
+				&& this.mouseY >= ty && this.mouseY < ty + tileH);
+			if (hovered) hoveredIdx = i;
 
-			final int bg = isCurrent ? 0x4B3F1A : 0x1A1814;
-			this.getSurface().drawBoxAlpha(tx, ty, tileW - 2, tileH - 2, bg, 255);
-			this.getSurface().drawBoxBorder(tx, tileW - 2, ty, tileH - 2,
+			// Tile background — dark by default; gold tint when selected.
+			final int bg = isCurrent ? 0x4B3F1A : (hovered ? 0x2A2820 : 0x1A1814);
+			this.getSurface().drawBoxAlpha(tx, ty, tileW, tileH, bg, 255);
+			// Double-border for a refined trim look: dark outer + beige
+			// inner. Selected tile gets a gold inner instead.
+			this.getSurface().drawBoxBorder(tx, tileW, ty, tileH, 0x000000);
+			this.getSurface().drawBoxBorder(tx + 1, tileW - 2, ty + 1, tileH - 2,
 				isCurrent ? 0xD4A64A : (canCast ? 0x706452 : 0x303030));
 
-			// Sprite — use the surface sprite with the row x col centered.
+			// Sprite — drawSpriteClipping is more robust than scaled
+			// drawSprite for the synthesized 30x30 art and it does the
+			// dim/grey effect with the optional color transform.
 			if (spriteId >= 0 && spriteId < this.getSurface().sprites.length
 				&& this.getSurface().sprites[spriteId] != null) {
-				final int spriteCenterX = tx + (tileW - 2) / 2 - 12;
-				final int spriteCenterY = ty + 1;
-				this.getSurface().drawSprite(this.getSurface().sprites[spriteId],
-					spriteCenterX, spriteCenterY, 24, 24, 0);
+				final int spriteSize = 40;
+				final int spriteX = tx + (tileW - spriteSize) / 2;
+				final int spriteY = ty + 2;
+				try {
+					if (canCast) {
+						this.getSurface().drawSpriteClipping(this.getSurface().sprites[spriteId],
+							spriteX, spriteY, spriteSize, spriteSize, 0, 0, 0, false, 0, 1);
+					} else {
+						// Grey out: 50% alpha tint
+						this.getSurface().drawSpriteClipping(this.getSurface().sprites[spriteId],
+							spriteX, spriteY, spriteSize, spriteSize, 0, 0, 0, false, 0, 1, 0x40808080);
+					}
+				} catch (Exception ignore) { /* sprite missing — skip */ }
 			}
-			// Level requirement bottom strip.
+			// Level requirement strip at the bottom.
 			final int lvlColor = canCast ? 0x80FF80 : 0xFF8080;
-			this.getSurface().drawColoredStringCentered(tx + (tileW - 2) / 2,
-				"L" + reqLvl, lvlColor, 0, 0, ty + tileH - 4);
+			this.getSurface().drawColoredStringCentered(tx + tileW / 2,
+				"Lv " + reqLvl, lvlColor, 1, 1, ty + tileH - 4);
 
-			if (this.mouseButtonClick == 1
-				&& this.mouseX >= tx && this.mouseX < tx + tileW - 2
-				&& this.mouseY >= ty && this.mouseY < ty + tileH - 2) {
+			if (this.mouseButtonClick == 1 && hovered) {
 				ogrsAutocastPickIdx = i;
 				this.sendCommandString("autocast " + cmd);
 				ogrsAutocastPickerOpen = false;
@@ -14204,24 +14236,19 @@ public final class mudclient implements Runnable {
 			}
 		}
 
-		// Hover tooltip: show the spell name + req level for the spell
-		// the cursor's over. Helps since 4 tiles per row leaves tile
-		// labels too cramped for a name + level.
-		for (int i = 0; i < OGRS_AUTOCAST_SPELLS.length; i++) {
-			final int col = i % cols;
-			final int row = i / cols;
-			final int tx = gridX + col * tileW;
-			final int ty = gridY + row * tileH;
-			if (this.mouseX >= tx && this.mouseX < tx + tileW - 2
-				&& this.mouseY >= ty && this.mouseY < ty + tileH - 2) {
-				final String name = (String) OGRS_AUTOCAST_SPELLS[i][0];
-				final int reqLvl  = (Integer) OGRS_AUTOCAST_SPELLS[i][3];
-				final boolean canCast = playerMagicLevel >= reqLvl;
-				this.getSurface().drawColoredStringCentered(panelX + panelW / 2,
-					name + " (lvl " + reqLvl + (canCast ? "" : " - need higher magic") + ")",
-					canCast ? 0xFFFFFF : 0xFF8080, 0, 0, panelY + panelH - 8);
-				break;
-			}
+		// Footer: spell name on hover, or current selection summary.
+		final int footerY = panelY + panelH - 14;
+		if (hoveredIdx >= 0) {
+			final String name = (String) OGRS_AUTOCAST_SPELLS[hoveredIdx][0];
+			final int reqLvl  = (Integer) OGRS_AUTOCAST_SPELLS[hoveredIdx][3];
+			final boolean canCast = playerMagicLevel >= reqLvl;
+			this.getSurface().drawColoredStringCentered(panelX + panelW / 2,
+				name + (canCast ? "" : " (need lvl " + reqLvl + " magic)"),
+				canCast ? 0xFFFFFF : 0xFF8080, 1, 1, footerY);
+		} else if (ogrsAutocastPickIdx >= 0) {
+			this.getSurface().drawColoredStringCentered(panelX + panelW / 2,
+				"Set: " + OGRS_AUTOCAST_SPELLS[ogrsAutocastPickIdx][0],
+				0xD4A64A, 1, 1, footerY);
 		}
 	}
 
@@ -14548,6 +14575,7 @@ public final class mudclient implements Runnable {
 			if (snapshotTab != 0 && this.getSurface().width2 - 35 - 198 <= this.mouseX && this.mouseY >= 0
 				&& this.mouseX < this.getSurface().width2 - 201 && this.mouseY < 35) {
 				this.showUiTab = (snapshotTab == Config.COMBAT_TAB) ? 0 : Config.COMBAT_TAB;
+				if (this.showUiTab != Config.COMBAT_TAB) ogrsAutocastPickerOpen = false;
 				tabHit = true;
 			}
 
@@ -14597,9 +14625,12 @@ public final class mudclient implements Runnable {
 			// is to the LEFT of the panel left edge, so the standard
 			// width2-199 threshold used by other tabs auto-closes on its
 			// own icon — same-frame open-then-close bug). Use the icon's
-			// own X as the close threshold.
-			if (this.showUiTab == Config.COMBAT_TAB && (this.getSurface().width2 - 233 > this.mouseX || this.mouseY > 290)) {
+			// own X as the close threshold. Threshold bumped to 400 when
+			// the picker is open since the picker panel is taller.
+			final int combatAutoCloseY = ogrsAutocastPickerOpen ? 400 : 290;
+			if (this.showUiTab == Config.COMBAT_TAB && (this.getSurface().width2 - 233 > this.mouseX || this.mouseY > combatAutoCloseY)) {
 				this.showUiTab = 0;
+				ogrsAutocastPickerOpen = false;
 			}
 
 		} catch (RuntimeException var3) {
@@ -14659,6 +14690,7 @@ public final class mudclient implements Runnable {
 			if (this.mouseX >= this.getSurface().width2 - 233 && this.mouseY >= minY
 				&& this.mouseX < this.getSurface().width2 - 201 && this.mouseY < maxY) {
 				this.showUiTab = (this.showUiTab == Config.COMBAT_TAB) ? 0 : Config.COMBAT_TAB;
+				if (this.showUiTab != Config.COMBAT_TAB) ogrsAutocastPickerOpen = false;
 				return true;
 			}
 
