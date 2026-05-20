@@ -5666,34 +5666,20 @@ public final class mudclient implements Runnable {
 					this.panelMessageTabs.drawPanel();
 					MiscFunctions.textListEntryHeightMod = 0;
 
-					//redstones below (temporary, can be done better with proper tab sprites for ui)
-					if (C_CUSTOM_UI) {
-						int maxY = getUITabsY();
-						int x = this.getSurface().width2 - 199 - 1;
-						if (this.showUiTab == Config.OPTIONS_TAB) {
-							this.getSurface().drawBox(x, maxY, 32, 32, GenUtil.buildColor(255, 0, 0));
-						}
-						x += 33;
-						if (this.showUiTab == Config.FRIENDS_TAB) {
-							this.getSurface().drawBox(x, maxY, 32, 32, GenUtil.buildColor(255, 0, 0));
-						}
-						x += 33;
-						if (this.showUiTab == Config.MAGIC_AND_PRAYER_TAB) {
-							this.getSurface().drawBox(x, maxY, 32, 32, GenUtil.buildColor(255, 0, 0));
-						}
-						x += 33;
-						if (this.showUiTab == Config.SKILLS_AND_QUESTS_TAB) {
-							this.getSurface().drawBox(x, maxY, 32, 32, GenUtil.buildColor(255, 0, 0));
-						}
-						x += 33;
-						x += 33;
-						if (this.showUiTab == Config.INVENTORY_TAB) {
-							this.getSurface().drawBox(x, maxY, 32, 32, GenUtil.buildColor(255, 0, 0));
-						}
-					}
-					//redstones above
+					// OGRS — old "redstones" red-box active-tab highlight in
+					// C_CUSTOM_UI mode replaced by drawOgrsUnifiedTabs() below,
+					// which paints a consistent gold-trim frame around every
+					// tab including CB. Left this branch commented for the
+					// per-tab x bookkeeping reference but it's no longer used.
+					//
+					// (was: 6 drawBox calls that flashed a solid red 32x32
+					//  block over whichever tab was currently active)
 
 					this.getSurface().a(spriteSelect(GUIPARTS.MENUBAR.getDef()), 0, this.getSurface().width2 - 200, 128, getUITabsY());
+					// OGRS — overlay uniform trim around all 7 tabs (the 6
+					// MENUBAR-baked tabs + CB). Active tab gets a gold border
+					// and a faint highlight tint.
+					drawOgrsUnifiedTabs();
 					this.drawUi(0);
 					this.getSurface().loggedIn = false;
 					this.drawChatMessageTabs(var1 - 8);
@@ -7630,10 +7616,9 @@ public final class mudclient implements Runnable {
 					this.drawUiTabCombat(mustDrawMenu);
 				}
 
-				// OGRS — always-visible COMBAT_TAB icon (combat styles +
-				// magic autocast picker) and run-toggle icon. Both render
-				// in the tab-strip row regardless of which tab is open.
-				drawOgrsCombatTabIcon();
+				// OGRS — always-visible run-toggle icon. The CB tab body
+				// is drawn by drawOgrsUnifiedTabs in the world-render
+				// phase along with the rest of the tab trim.
 				drawOgrsRunIcon();
 
 				if (!this.topMouseMenuVisible && !this.optionsMenuShow) {
@@ -14111,22 +14096,48 @@ public final class mudclient implements Runnable {
 		}
 	}
 
-	/** Always-visible COMBAT_TAB icon. Drawn to the left of OPTIONS in
-	 *  the tab strip, matching the rest of the row vertically. Click
-	 *  toggles the COMBAT panel open/closed. */
-	private void drawOgrsCombatTabIcon() {
-		final int tabX = this.getSurface().width2 - 233;
+	/** OGRS unified tab strip. The 6 MENUBAR-baked tabs (Inv / Map /
+	 *  Skills / Magic / Friends / Options) keep their existing icons,
+	 *  drawn by the MENUBAR sprite blit that precedes this call. We
+	 *  overlay a uniform 32x32 frame around each tab so they all share
+	 *  the same trim, and add the CB tab on the left (which has its
+	 *  own dark fill + "CB" label since it's not in MENUBAR). Active
+	 *  tab gets a gold border + faint highlight. */
+	private void drawOgrsUnifiedTabs() {
 		final int tabY = Config.C_CUSTOM_UI ? getUITabsY() : 3;
-		final int tabW = 32;
-		final int tabH = 32;
-		final boolean active = (this.showUiTab == Config.COMBAT_TAB);
-		final int bg = active ? 0x4B3F1A : 0x2D2C24;
-		this.getSurface().drawBoxAlpha(tabX, tabY, tabW, tabH, bg, 230);
-		this.getSurface().drawBoxBorder(tabX, tabW, tabY, tabH, 0x000000);
-		this.getSurface().drawBoxBorder(tabX + 1, tabW - 2, tabY + 1, tabH - 2, 0x706452);
-		// Two crossed sword glyphs implied by a simple X with hilt blobs.
-		// Draw "CB" centered (Combat). Cheap to read at a glance.
-		this.getSurface().drawColoredStringCentered(tabX + tabW / 2, "CB", 0xD4A64A, 1, 3, tabY + 18);
+		// {label-or-null (CB only), showUiTab value, distance-from-right-edge}.
+		final Object[][] tabs = {
+			{ null,  Config.INVENTORY_TAB,           Integer.valueOf(35)  },
+			{ null,  Config.MINIMAP_AND_COMPASS_TAB, Integer.valueOf(68)  },
+			{ null,  Config.SKILLS_AND_QUESTS_TAB,   Integer.valueOf(101) },
+			{ null,  Config.MAGIC_AND_PRAYER_TAB,    Integer.valueOf(134) },
+			{ null,  Config.FRIENDS_TAB,             Integer.valueOf(167) },
+			{ null,  Config.OPTIONS_TAB,             Integer.valueOf(200) },
+			{ "CB",  Config.COMBAT_TAB,              Integer.valueOf(233) },
+		};
+		for (Object[] t : tabs) {
+			final String label = (String) t[0];
+			final int tabId = (Integer) t[1];
+			final int rightEdge = (Integer) t[2];
+			final int tabX = this.getSurface().width2 - rightEdge;
+			final boolean active = (this.showUiTab == tabId);
+			// CB tab needs its own dark fill (MENUBAR doesn't cover it).
+			if (label != null) {
+				final int bg = active ? 0x4B3F1A : 0x2D2C24;
+				this.getSurface().drawBoxAlpha(tabX, tabY, 32, 32, bg, 230);
+				this.getSurface().drawColoredStringCentered(
+					tabX + 16, label, 0xD4A64A, 1, 3, tabY + 19);
+			} else if (active) {
+				// Subtle gold-tinted vignette on the active MENUBAR tab —
+				// transparent enough that the underlying icon stays
+				// readable.
+				this.getSurface().drawBoxAlpha(tabX + 2, tabY + 2, 28, 28, 0x4B3F1A, 80);
+			}
+			// Trim border — beige inner, dark outer. Active tabs get a
+			// gold accent so the player can tell at a glance.
+			this.getSurface().drawBoxBorder(tabX, 32, tabY, 32, 0x000000);
+			this.getSurface().drawBoxBorder(tabX + 1, 30, tabY + 1, 30, active ? 0xD4A64A : 0x706452);
+		}
 	}
 
 	// OGRS §3D — direction picker for arrow + flame projectiles -----------
