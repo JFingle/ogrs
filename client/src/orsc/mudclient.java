@@ -8846,33 +8846,94 @@ public final class mudclient implements Runnable {
 					this.panelMagic.clearList(this.controlMagicPanel);
 					spellIndex = 0;
 
-					int var13;
-					for (magicLevel = 0; magicLevel < EntityHandler.spellCount(); ++magicLevel) {
-						var11 = "@yel@";
-
-						for (Entry<?, ?> e : EntityHandler.getSpellDef(magicLevel).getRunesRequired()) {
-							var13 = (Integer) e.getKey();
-							if (!this.hasRunes(var13, (Integer) e.getValue())) {
-								var11 = "@whi@";
-								break;
-							}
-						}
-
-						var12 = this.playerStatCurrent[6];
-						if (EntityHandler.getSpellDef(magicLevel).getReqLevel() > var12) {
-							var11 = "@bla@";
-						}
-
-						this.panelMagic
-							.setListEntry(this.controlMagicPanel, spellIndex++,
-								var11 + "Level " + EntityHandler.getSpellDef(magicLevel).getReqLevel() + ": "
-									+ EntityHandler.getSpellDef(magicLevel).getName(),
-								0, null, null);
+					// OGRS — build the displayed spell list based on the
+					// current page. On the main page we collapse all
+					// enchant spells under a single "Enchantments ▶" row
+					// that navigates to a sub-page; the sub-page shows
+					// just the enchant tiers plus a "← Back" row.
+					final int spellCount = EntityHandler.spellCount();
+					final boolean[] isEnchant = new boolean[spellCount];
+					for (int s = 0; s < spellCount; s++) {
+						final String n = EntityHandler.getSpellDef(s).getName().toLowerCase();
+						isEnchant[s] = n.contains("enchant");
 					}
+					final int[] mapping = new int[spellCount + 2];
+					int mapLen = 0;
+					if (ogrsSpellbookPage == 0) {
+						boolean addedNavRow = false;
+						for (int s = 0; s < spellCount; s++) {
+							if (isEnchant[s]) {
+								if (!addedNavRow) {
+									mapping[mapLen++] = OGRS_SPELL_ROW_TO_ENCHANTS;
+									addedNavRow = true;
+								}
+								continue;
+							}
+							mapping[mapLen++] = s;
+						}
+						if (!addedNavRow) {
+							mapping[mapLen++] = OGRS_SPELL_ROW_TO_ENCHANTS;
+						}
+					} else {
+						mapping[mapLen++] = OGRS_SPELL_ROW_BACK;
+						for (int s = 0; s < spellCount; s++) {
+							if (isEnchant[s]) mapping[mapLen++] = s;
+						}
+					}
+
+					int var13;
+					for (int row = 0; row < mapLen; row++) {
+						final int mapped = mapping[row];
+						String entry;
+						if (mapped == OGRS_SPELL_ROW_TO_ENCHANTS) {
+							entry = "@yel@Enchantments »";
+						} else if (mapped == OGRS_SPELL_ROW_BACK) {
+							entry = "@whi@« Back to spell list";
+						} else {
+							var11 = "@yel@";
+							for (Entry<?, ?> e : EntityHandler.getSpellDef(mapped).getRunesRequired()) {
+								var13 = (Integer) e.getKey();
+								if (!this.hasRunes(var13, (Integer) e.getValue())) {
+									var11 = "@whi@";
+									break;
+								}
+							}
+							var12 = this.playerStatCurrent[6];
+							if (EntityHandler.getSpellDef(mapped).getReqLevel() > var12) {
+								var11 = "@bla@";
+							}
+							entry = var11 + "Level " + EntityHandler.getSpellDef(mapped).getReqLevel()
+								+ ": " + EntityHandler.getSpellDef(mapped).getName();
+						}
+						this.panelMagic.setListEntry(this.controlMagicPanel, spellIndex++,
+							entry, 0, null, null);
+					}
+					// Cache the mapping (slice) so the click handler below
+					// translates row -> spell idx without re-deriving.
+					final int[] mapCopy = new int[mapLen];
+					System.arraycopy(mapping, 0, mapCopy, 0, mapLen);
+					this.ogrsDisplayedSpellMap = mapCopy;
 
 					this.panelMagic.drawPanel();
 					magicLevel = this.panelMagic.getControlSelectedListIndex(this.controlMagicPanel);
-					if (magicLevel != -1) {
+					// Translate row -> spell index. -1 = nothing selected;
+					// special markers handled below the description block.
+					int mappedSelection = -1;
+					if (magicLevel >= 0 && magicLevel < this.ogrsDisplayedSpellMap.length) {
+						mappedSelection = this.ogrsDisplayedSpellMap[magicLevel];
+					}
+					if (mappedSelection == OGRS_SPELL_ROW_TO_ENCHANTS
+						|| mappedSelection == OGRS_SPELL_ROW_BACK) {
+						// Navigation row selected — flip the page on the
+						// next click and clear the selection so we don't
+						// re-trigger the same row each frame.
+						this.ogrsSpellbookPage = (mappedSelection == OGRS_SPELL_ROW_TO_ENCHANTS) ? 1 : 0;
+						this.panelMagic.resetListToIndex(this.controlMagicPanel, 0);
+						magicLevel = -1;
+					} else {
+						magicLevel = mappedSelection;
+					}
+					if (magicLevel >= 0) {
 						this.getSurface().drawString(
 							"Level " + EntityHandler.getSpellDef(magicLevel).getReqLevel() + ": "
 								+ EntityHandler.getSpellDef(magicLevel).getName(),
@@ -9002,6 +9063,13 @@ public final class mudclient implements Runnable {
 
 						if (this.mouseButtonClick == 1 && this.magicOrPrayerList == 0) {
 							spellIndex = this.panelMagic.getControlSelectedListIndex(this.controlMagicPanel);
+							// OGRS — translate display row -> real spell idx via
+							// the sub-page mapping. Navigation rows are -1 below.
+							if (spellIndex >= 0 && spellIndex < this.ogrsDisplayedSpellMap.length) {
+								final int mapped = this.ogrsDisplayedSpellMap[spellIndex];
+								spellIndex = (mapped == OGRS_SPELL_ROW_TO_ENCHANTS
+									|| mapped == OGRS_SPELL_ROW_BACK) ? -1 : mapped;
+							}
 							if (spellIndex != -1) {
 								magicLevel = this.playerStatCurrent[6];
 								if (magicLevel < EntityHandler.getSpellDef(spellIndex).getReqLevel()) {
@@ -14052,6 +14120,17 @@ public final class mudclient implements Runnable {
 	private int ogrsAutocastPickIdx = -1;
 	// True when the combat tab is showing the spell picker overlay.
 	private boolean ogrsAutocastPickerOpen = false;
+
+	// OGRS spellbook sub-page (sparky 2026-05-20: "make one enchantment
+	// icon on the spell list, that will lead the player into the
+	// enchantment spells"). 0 = main page, 1 = enchant tier sub-page.
+	// ogrsDisplayedSpellMap maps each visible row in panelMagic to the
+	// underlying EntityHandler spell index, or to a special navigation
+	// marker (OGRS_SPELL_ROW_TO_ENCHANTS, OGRS_SPELL_ROW_BACK).
+	private int ogrsSpellbookPage = 0;
+	private int[] ogrsDisplayedSpellMap = new int[0];
+	private static final int OGRS_SPELL_ROW_TO_ENCHANTS = -100;
+	private static final int OGRS_SPELL_ROW_BACK        = -101;
 
 	private void drawUiTabCombat(boolean mustTrackMouse) {
 		// OGRS 2026-05-20: wrap the whole tab in try/catch so any silent
