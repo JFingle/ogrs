@@ -8915,24 +8915,33 @@ public final class mudclient implements Runnable {
 					this.ogrsDisplayedSpellMap = mapCopy;
 
 					this.panelMagic.drawPanel();
+					// Page navigation: ONLY on a real click (panel.isClicked
+					// consumes once per click). Sparky 2026-05-20: "when you
+					// scroll to enchantments it opens them" — the hover-based
+					// selection used to flip the page when the user just
+					// scrolled past the nav row.
+					if (this.panelMagic.isClicked(this.controlMagicPanel)) {
+						int clickedRow = this.panelMagic.getControlClickedListIndex(this.controlMagicPanel);
+						if (clickedRow >= 0 && clickedRow < this.ogrsDisplayedSpellMap.length) {
+							int clickedMapped = this.ogrsDisplayedSpellMap[clickedRow];
+							if (clickedMapped == OGRS_SPELL_ROW_TO_ENCHANTS) {
+								this.ogrsSpellbookPage = 1;
+								this.panelMagic.resetListToIndex(this.controlMagicPanel, 0);
+							} else if (clickedMapped == OGRS_SPELL_ROW_BACK) {
+								this.ogrsSpellbookPage = 0;
+								this.panelMagic.resetListToIndex(this.controlMagicPanel, 0);
+							}
+						}
+					}
+					// Description still uses the hover selection (so you
+					// can preview a spell without selecting it for cast).
 					magicLevel = this.panelMagic.getControlSelectedListIndex(this.controlMagicPanel);
-					// Translate row -> spell index. -1 = nothing selected;
-					// special markers handled below the description block.
 					int mappedSelection = -1;
 					if (magicLevel >= 0 && magicLevel < this.ogrsDisplayedSpellMap.length) {
 						mappedSelection = this.ogrsDisplayedSpellMap[magicLevel];
 					}
-					if (mappedSelection == OGRS_SPELL_ROW_TO_ENCHANTS
-						|| mappedSelection == OGRS_SPELL_ROW_BACK) {
-						// Navigation row selected — flip the page on the
-						// next click and clear the selection so we don't
-						// re-trigger the same row each frame.
-						this.ogrsSpellbookPage = (mappedSelection == OGRS_SPELL_ROW_TO_ENCHANTS) ? 1 : 0;
-						this.panelMagic.resetListToIndex(this.controlMagicPanel, 0);
-						magicLevel = -1;
-					} else {
-						magicLevel = mappedSelection;
-					}
+					magicLevel = (mappedSelection == OGRS_SPELL_ROW_TO_ENCHANTS
+						|| mappedSelection == OGRS_SPELL_ROW_BACK) ? -1 : mappedSelection;
 					if (magicLevel >= 0) {
 						this.getSurface().drawString(
 							"Level " + EntityHandler.getSpellDef(magicLevel).getReqLevel() + ": "
