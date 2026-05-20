@@ -54,6 +54,7 @@ public final class OgrsAutocast {
 		if (!player.isAutocastEnabled()) return false;
 		final Spells spellEnum = spellFromId(player.getAutocastSpellId());
 		if (spellEnum == null) return false;
+		if (!isAutocastEligible(spellEnum)) return false;
 		final SpellDef spell = player.getWorld().getServer().getEntityHandler().getSpellDef(spellEnum);
 		if (spell == null) return false;
 		if (player.getSkills().getMaxStat(Skill.MAGIC.id()) < spell.getReqLevel()) return false;
@@ -61,6 +62,61 @@ public final class OgrsAutocast {
 		final int sType = spell.getSpellType();
 		if (sType != 1 && sType != 2 && sType != 3) return false;
 		return true;
+	}
+
+	/**
+	 * Allow-list of spells that may be autocast. Sparky 2026-05-20:
+	 *   "most combat spells should be available, weaken and those are
+	 *    kind of not used as much... they arent autocast tho, same with
+	 *    teleports, those arent autocast."
+	 *
+	 * Eligible:
+	 *   - Elemental combat strikes/bolts/blasts/waves (Wind/Water/Earth/Fire)
+	 *   - God spells (Saradomin Strike, Claws of Guthix, Flames of Zamorak)
+	 *   - Special offensive bolts (Crumble Undead, Iban Blast, Chill/Shock/
+	 *     Elemental Bolt)
+	 *
+	 * NOT eligible: teleports, debuffs (Confuse/Weaken/Vulnerability/
+	 * Enfeeble/Stun/Fear/Curse), utility (alch/telegrab/superheat/bones-
+	 * to-X), buffs (Thick Skin/Burst of Strength/Rock Skin/Camouflage),
+	 * charge orbs, enchants. Enchant autocast is on sparky's wishlist
+	 * but needs a different code path (targets inventory, not mobs).
+	 */
+	public static boolean isAutocastEligible(final Spells s) {
+		if (s == null) return false;
+		switch (s) {
+			// Elemental combat (modern + retro variants).
+			case WIND_STRIKE:
+			case WATER_STRIKE:
+			case EARTH_STRIKE:
+			case FIRE_STRIKE:
+			case WIND_BOLT:
+			case WATER_BOLT:
+			case EARTH_BOLT:
+			case FIRE_BOLT:
+			case WIND_BLAST:
+			case WATER_BLAST:
+			case EARTH_BLAST:
+			case FIRE_BLAST:
+			case WIND_WAVE:
+			case WATER_WAVE:
+			case EARTH_WAVE:
+			case FIRE_WAVE:
+			case WIND_BOLT_R:
+			// God spells.
+			case SARADOMIN_STRIKE:
+			case CLAWS_OF_GUTHIX:
+			case FLAMES_OF_ZAMORAK:
+			// Other offensive.
+			case CRUMBLE_UNDEAD:
+			case IBAN_BLAST:
+			case CHILL_BOLT:
+			case SHOCK_BOLT:
+			case ELEMENTAL_BOLT:
+				return true;
+			default:
+				return false;
+		}
 	}
 
 	/**
@@ -74,6 +130,10 @@ public final class OgrsAutocast {
 
 		final Spells spellEnum = spellFromId(player.getAutocastSpellId());
 		if (spellEnum == null) return false;
+		if (!isAutocastEligible(spellEnum)) {
+			player.setAutocastSpellId(-1);
+			return false;
+		}
 
 		final SpellDef spell = player.getWorld().getServer().getEntityHandler().getSpellDef(spellEnum);
 		if (spell == null) return false;

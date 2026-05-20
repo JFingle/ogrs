@@ -54,6 +54,11 @@ public class AutocastCommand implements CommandTrigger {
 				+ "'. Try @whi@::autocast list@red@ for valid names, or @whi@::autocast off@red@.");
 			return;
 		}
+		if (!com.openrsc.server.content.OgrsAutocast.isAutocastEligible(match)) {
+			player.message("@red@" + prettyName(match)
+				+ " can't be autocast. Only combat offensive spells (Strike/Bolt/Blast/Wave + Iban/Crumble/God spells) are autocastable; teleports, debuffs, buffs, and utility spells aren't.");
+			return;
+		}
 
 		player.setAutocastSpellId(match.ordinal());
 		player.message("@gre@Autocast: " + prettyName(match)

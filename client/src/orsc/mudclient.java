@@ -13999,24 +13999,51 @@ public final class mudclient implements Runnable {
 	 * the server, which flips state and pushes a fresh SEND_RUN_ENERGY
 	 * packet back. The click is consumed so it doesn't fall through.
 	 */
-	// OGRS — COMBAT_TAB: unified melee style + autocast picker ------------
+	// OGRS — COMBAT_TAB: unified melee style + magic autocast picker -----
 	//
-	// Sparky 2026-05-19: "it can be a combat tab, then you can select your
-	// melee, range and magic style there and it doesnt popup on the screen
-	// impeeding vision". This is the picker UI; chat command (::autocast
-	// + the popup-style combat menu) remain available as fallbacks.
+	// Sparky 2026-05-20: the autocast section in the combat tab is now a
+	// "Set Auto Cast" button that opens a full picker overlay listing
+	// every autocastable spell as a tile with its projectile icon. Greyed-
+	// out tiles for spells the player can't currently cast (level or
+	// runes). Click a tile to set autocast; the overlay closes.
 	//
-	// Quick-pick spells exposed in the autocast section. Names match the
-	// AutocastCommand parser; click sends `autocast <name>` via the
-	// existing chat-command pipeline.
-	private static final String[][] OGRS_AUTOCAST_PICKS = {
-		{"Wind Strike",  "wind_strike"},
-		{"Water Strike", "water_strike"},
-		{"Earth Strike", "earth_strike"},
-		{"Fire Strike",  "fire_strike"},
-		{"Confuse",      "confuse"},
-		{"Weaken",       "weaken"},
+	// The list mirrors the server-side OgrsAutocast.isAutocastEligible
+	// allow-list. Format: {display name, ::autocast arg, projectile
+	// sprite ID, magic level requirement}.
+	private static final Object[][] OGRS_AUTOCAST_SPELLS = {
+		// Elemental Strikes / Bolts / Blasts / Waves (modern progression).
+		{"Wind Strike",       "wind_strike",     3160,  1},
+		{"Water Strike",      "water_strike",    3161,  5},
+		{"Earth Strike",      "earth_strike",    3165,  9},
+		{"Fire Strike",       "fire_strike",     3178, 13},
+		{"Wind Bolt",         "wind_bolt",       3160, 17},
+		{"Water Bolt",        "water_bolt",      3161, 23},
+		{"Earth Bolt",        "earth_bolt",      3165, 29},
+		{"Fire Bolt",         "fire_bolt",       3178, 35},
+		{"Wind Blast",        "wind_blast",      3160, 41},
+		{"Water Blast",       "water_blast",     3161, 47},
+		{"Crumble Undead",    "crumble_undead",  3172, 39},
+		{"Earth Blast",       "earth_blast",     3165, 53},
+		{"Fire Blast",        "fire_blast",      3178, 59},
+		{"Saradomin Strike",  "saradomin_strike",3160, 60},
+		{"Wind Wave",         "wind_wave",       3160, 62},
+		{"Water Wave",        "water_wave",      3161, 65},
+		{"Claws Of Guthix",   "claws_of_guthix", 3163, 60},
+		{"Flames Of Zamorak", "flames_of_zamorak",3164,60},
+		{"Earth Wave",        "earth_wave",      3165, 70},
+		{"Iban Blast",        "iban_blast",      3177, 50},
+		{"Fire Wave",         "fire_wave",       3178, 75},
+		// Special bolts.
+		{"Chill Bolt",        "chill_bolt",      3174,  3},
+		{"Shock Bolt",        "shock_bolt",      3175,  7},
+		{"Elemental Bolt",    "elemental_bolt",  3176, 11},
 	};
+
+	// Current autocast (client-side mirror). Index into OGRS_AUTOCAST_SPELLS,
+	// or -1 for off. Updated locally when the player clicks a tile.
+	private int ogrsAutocastPickIdx = -1;
+	// True when the combat tab is showing the spell picker overlay.
+	private boolean ogrsAutocastPickerOpen = false;
 
 	private void drawUiTabCombat(boolean mustTrackMouse) {
 		final int maxY = getUITabsY();
@@ -14029,9 +14056,15 @@ public final class mudclient implements Runnable {
 		this.getSurface().drawBoxAlpha(panelX, panelY, panelW, panelH, 0x2D2C24, 230);
 		this.getSurface().drawBoxBorder(panelX, panelW, panelY, panelH, 0x000000);
 		this.getSurface().drawBoxBorder(panelX + 1, panelW - 2, panelY + 1, panelH - 2, 0x706452);
+
+		if (ogrsAutocastPickerOpen) {
+			drawOgrsAutocastPicker(panelX, panelY, panelW, panelH);
+			return;
+		}
+
 		this.getSurface().drawColoredStringCentered(panelX + panelW / 2, "COMBAT", 0xFFFFFF, 1, 3, panelY + 14);
 
-		// --- Melee style buttons (top half) ---
+		// --- Melee style buttons ---
 		final String[] meleeLabels = {
 			"Controlled (+1 all)",
 			"Aggressive (+3 STR)",
@@ -14061,38 +14094,134 @@ public final class mudclient implements Runnable {
 			}
 		}
 
-		// --- Magic autocast picker (bottom half) ---
+		// --- Magic autocast section ---
 		rowY += meleeLabels.length * (btnH + 2) + 12;
 		this.getSurface().drawString("Magic autocast:", panelX + 8, rowY, 0xC0C0C0, 1);
 		rowY += 6;
-		// 2-column grid of quick-pick spells.
-		final int colW = (panelW - 18) / 2;
-		final int qBtnH = 16;
-		for (int i = 0; i < OGRS_AUTOCAST_PICKS.length; i++) {
-			final int col = i % 2;
-			final int row = i / 2;
-			final int bx = panelX + 6 + col * (colW + 2);
-			final int by = rowY + row * (qBtnH + 2);
-			this.getSurface().drawBoxAlpha(bx, by, colW, qBtnH, 0x1A1814, 255);
-			this.getSurface().drawBoxBorder(bx, colW, by, qBtnH, 0x504640);
-			this.getSurface().drawString(OGRS_AUTOCAST_PICKS[i][0], bx + 4, by + 12, 0xFFFFFF, 0);
-			if (this.mouseButtonClick == 1
-				&& this.mouseX >= bx && this.mouseX < bx + colW
-				&& this.mouseY >= by && this.mouseY < by + qBtnH) {
-				this.sendCommandString("autocast " + OGRS_AUTOCAST_PICKS[i][1]);
-				this.mouseButtonClick = 0;
-			}
-		}
-		// Off button — full-width.
-		rowY += ((OGRS_AUTOCAST_PICKS.length + 1) / 2) * (qBtnH + 2) + 4;
-		this.getSurface().drawBoxAlpha(panelX + 6, rowY, panelW - 12, qBtnH, 0x3A1A1A, 255);
-		this.getSurface().drawBoxBorder(panelX + 6, panelW - 12, rowY, qBtnH, 0x7E1F1C);
-		this.getSurface().drawColoredStringCentered(panelX + panelW / 2, "OFF", 0xFF8080, 0, 0, rowY + 12);
+		// Current state row.
+		this.getSurface().drawBoxAlpha(panelX + 6, rowY, panelW - 12, btnH, 0x1A1814, 255);
+		this.getSurface().drawBoxBorder(panelX + 6, panelW - 12, rowY, btnH, 0x504640);
+		final String currentLabel = (ogrsAutocastPickIdx >= 0)
+			? (String) OGRS_AUTOCAST_SPELLS[ogrsAutocastPickIdx][0]
+			: "OFF";
+		final int currentColor = (ogrsAutocastPickIdx >= 0) ? 0xD4A64A : 0xFF8080;
+		this.getSurface().drawString("Current: " + currentLabel, panelX + 12, rowY + 14, currentColor, 1);
+		rowY += btnH + 4;
+		// "Set Auto Cast" button — opens the picker overlay.
+		this.getSurface().drawBoxAlpha(panelX + 6, rowY, panelW - 12, btnH, 0x2A3A4A, 255);
+		this.getSurface().drawBoxBorder(panelX + 6, panelW - 12, rowY, btnH, 0x6A8FAD);
+		this.getSurface().drawColoredStringCentered(panelX + panelW / 2, "Set Auto Cast", 0xFFFFFF, 1, 1, rowY + 14);
 		if (this.mouseButtonClick == 1
 			&& this.mouseX >= panelX + 6 && this.mouseX < panelX + panelW - 6
-			&& this.mouseY >= rowY && this.mouseY < rowY + qBtnH) {
+			&& this.mouseY >= rowY && this.mouseY < rowY + btnH) {
+			ogrsAutocastPickerOpen = true;
+			this.mouseButtonClick = 0;
+		}
+		rowY += btnH + 4;
+		// OFF button — full width, red trim.
+		this.getSurface().drawBoxAlpha(panelX + 6, rowY, panelW - 12, btnH, 0x3A1A1A, 255);
+		this.getSurface().drawBoxBorder(panelX + 6, panelW - 12, rowY, btnH, 0x7E1F1C);
+		this.getSurface().drawColoredStringCentered(panelX + panelW / 2, "Turn Auto Cast OFF", 0xFF8080, 1, 1, rowY + 14);
+		if (this.mouseButtonClick == 1
+			&& this.mouseX >= panelX + 6 && this.mouseX < panelX + panelW - 6
+			&& this.mouseY >= rowY && this.mouseY < rowY + btnH) {
+			ogrsAutocastPickIdx = -1;
 			this.sendCommandString("autocast off");
 			this.mouseButtonClick = 0;
+		}
+	}
+
+	/** Picker overlay shown inside the combat tab when "Set Auto Cast"
+	 *  is clicked. 4-column grid of 38x38 spell tiles. Each tile shows
+	 *  the spell's projectile sprite + name + level requirement. Tiles
+	 *  the player can't currently cast (level too low, or no runes) are
+	 *  dimmed but still selectable — selecting a spell you can't cast
+	 *  yet just queues it for when you can. */
+	private void drawOgrsAutocastPicker(int panelX, int panelY, int panelW, int panelH) {
+		this.getSurface().drawColoredStringCentered(panelX + panelW / 2, "PICK A SPELL", 0xFFFFFF, 1, 3, panelY + 14);
+		// Back button — top-right of panel.
+		final int backW = 36;
+		final int backH = 14;
+		final int backX = panelX + panelW - backW - 4;
+		final int backY = panelY + 4;
+		this.getSurface().drawBoxAlpha(backX, backY, backW, backH, 0x1A1814, 255);
+		this.getSurface().drawBoxBorder(backX, backW, backY, backH, 0x706452);
+		this.getSurface().drawColoredStringCentered(backX + backW / 2, "Back", 0xFFFFFF, 0, 0, backY + 10);
+		if (this.mouseButtonClick == 1
+			&& this.mouseX >= backX && this.mouseX < backX + backW
+			&& this.mouseY >= backY && this.mouseY < backY + backH) {
+			ogrsAutocastPickerOpen = false;
+			this.mouseButtonClick = 0;
+			return;
+		}
+
+		// Tile grid. 4 columns, ~38 px each, with a 32x32 sprite area.
+		final int cols = 4;
+		final int tileW = (panelW - 12) / cols;
+		final int tileH = 38;
+		final int gridX = panelX + 6;
+		final int gridY = panelY + 22;
+		final int playerMagicLevel = this.playerStatCurrent[6];
+
+		for (int i = 0; i < OGRS_AUTOCAST_SPELLS.length; i++) {
+			final int col = i % cols;
+			final int row = i / cols;
+			final int tx = gridX + col * tileW;
+			final int ty = gridY + row * tileH;
+			final String name = (String) OGRS_AUTOCAST_SPELLS[i][0];
+			final String cmd  = (String) OGRS_AUTOCAST_SPELLS[i][1];
+			final int spriteId = (Integer) OGRS_AUTOCAST_SPELLS[i][2];
+			final int reqLvl   = (Integer) OGRS_AUTOCAST_SPELLS[i][3];
+			final boolean canCast = playerMagicLevel >= reqLvl;
+			final boolean isCurrent = (i == ogrsAutocastPickIdx);
+
+			final int bg = isCurrent ? 0x4B3F1A : 0x1A1814;
+			this.getSurface().drawBoxAlpha(tx, ty, tileW - 2, tileH - 2, bg, 255);
+			this.getSurface().drawBoxBorder(tx, tileW - 2, ty, tileH - 2,
+				isCurrent ? 0xD4A64A : (canCast ? 0x706452 : 0x303030));
+
+			// Sprite — use the surface sprite with the row x col centered.
+			if (spriteId >= 0 && spriteId < this.getSurface().sprites.length
+				&& this.getSurface().sprites[spriteId] != null) {
+				final int spriteCenterX = tx + (tileW - 2) / 2 - 12;
+				final int spriteCenterY = ty + 1;
+				this.getSurface().drawSprite(this.getSurface().sprites[spriteId],
+					spriteCenterX, spriteCenterY, 24, 24, 0);
+			}
+			// Level requirement bottom strip.
+			final int lvlColor = canCast ? 0x80FF80 : 0xFF8080;
+			this.getSurface().drawColoredStringCentered(tx + (tileW - 2) / 2,
+				"L" + reqLvl, lvlColor, 0, 0, ty + tileH - 4);
+
+			if (this.mouseButtonClick == 1
+				&& this.mouseX >= tx && this.mouseX < tx + tileW - 2
+				&& this.mouseY >= ty && this.mouseY < ty + tileH - 2) {
+				ogrsAutocastPickIdx = i;
+				this.sendCommandString("autocast " + cmd);
+				ogrsAutocastPickerOpen = false;
+				this.mouseButtonClick = 0;
+				return;
+			}
+		}
+
+		// Hover tooltip: show the spell name + req level for the spell
+		// the cursor's over. Helps since 4 tiles per row leaves tile
+		// labels too cramped for a name + level.
+		for (int i = 0; i < OGRS_AUTOCAST_SPELLS.length; i++) {
+			final int col = i % cols;
+			final int row = i / cols;
+			final int tx = gridX + col * tileW;
+			final int ty = gridY + row * tileH;
+			if (this.mouseX >= tx && this.mouseX < tx + tileW - 2
+				&& this.mouseY >= ty && this.mouseY < ty + tileH - 2) {
+				final String name = (String) OGRS_AUTOCAST_SPELLS[i][0];
+				final int reqLvl  = (Integer) OGRS_AUTOCAST_SPELLS[i][3];
+				final boolean canCast = playerMagicLevel >= reqLvl;
+				this.getSurface().drawColoredStringCentered(panelX + panelW / 2,
+					name + " (lvl " + reqLvl + (canCast ? "" : " - need higher magic") + ")",
+					canCast ? 0xFFFFFF : 0xFF8080, 0, 0, panelY + panelH - 8);
+				break;
+			}
 		}
 	}
 
@@ -14125,8 +14254,20 @@ public final class mudclient implements Runnable {
 			if (label != null) {
 				final int bg = active ? 0x4B3F1A : 0x2D2C24;
 				this.getSurface().drawBoxAlpha(tabX, tabY, 32, 32, bg, 230);
-				this.getSurface().drawColoredStringCentered(
-					tabX + 16, label, 0xD4A64A, 1, 3, tabY + 19);
+				// Use the SKULL projectile sprite (3164) as a placeholder
+				// combat glyph — purple/dark, reads as combat at a glance.
+				// A proper crossed-swords icon is on the art-agent wishlist.
+				final int cbSpriteId = 3164;
+				if (cbSpriteId < this.getSurface().sprites.length
+					&& this.getSurface().sprites[cbSpriteId] != null) {
+					this.getSurface().drawSprite(
+						this.getSurface().sprites[cbSpriteId],
+						tabX + 1, tabY + 1, 30, 30, 0);
+				} else {
+					// Fallback if the sprite didn't load.
+					this.getSurface().drawColoredStringCentered(
+						tabX + 16, label, 0xD4A64A, 1, 3, tabY + 19);
+				}
 			} else if (active) {
 				// Subtle gold-tinted vignette on the active MENUBAR tab —
 				// transparent enough that the underlying icon stays
