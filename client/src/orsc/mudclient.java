@@ -14008,35 +14008,35 @@ public final class mudclient implements Runnable {
 	// runes). Click a tile to set autocast; the overlay closes.
 	//
 	// The list mirrors the server-side OgrsAutocast.isAutocastEligible
-	// allow-list. Format: {display name, ::autocast arg, projectile
-	// sprite ID, magic level requirement}.
+	// allow-list. Format: {display name, short label (<=8 chars),
+	// ::autocast arg, projectile sprite ID, magic level requirement}.
+	// Short labels render on the tile; full name shows in the hover
+	// footer.
 	private static final Object[][] OGRS_AUTOCAST_SPELLS = {
-		// Elemental Strikes / Bolts / Blasts / Waves (modern progression).
-		{"Wind Strike",       "wind_strike",     3160,  1},
-		{"Water Strike",      "water_strike",    3161,  5},
-		{"Earth Strike",      "earth_strike",    3165,  9},
-		{"Fire Strike",       "fire_strike",     3178, 13},
-		{"Wind Bolt",         "wind_bolt",       3160, 17},
-		{"Water Bolt",        "water_bolt",      3161, 23},
-		{"Earth Bolt",        "earth_bolt",      3165, 29},
-		{"Fire Bolt",         "fire_bolt",       3178, 35},
-		{"Wind Blast",        "wind_blast",      3160, 41},
-		{"Water Blast",       "water_blast",     3161, 47},
-		{"Crumble Undead",    "crumble_undead",  3172, 39},
-		{"Earth Blast",       "earth_blast",     3165, 53},
-		{"Fire Blast",        "fire_blast",      3178, 59},
-		{"Saradomin Strike",  "saradomin_strike",3160, 60},
-		{"Wind Wave",         "wind_wave",       3160, 62},
-		{"Water Wave",        "water_wave",      3161, 65},
-		{"Claws Of Guthix",   "claws_of_guthix", 3163, 60},
-		{"Flames Of Zamorak", "flames_of_zamorak",3164,60},
-		{"Earth Wave",        "earth_wave",      3165, 70},
-		{"Iban Blast",        "iban_blast",      3177, 50},
-		{"Fire Wave",         "fire_wave",       3178, 75},
-		// Special bolts.
-		{"Chill Bolt",        "chill_bolt",      3174,  3},
-		{"Shock Bolt",        "shock_bolt",      3175,  7},
-		{"Elemental Bolt",    "elemental_bolt",  3176, 11},
+		{"Wind Strike",       "Wind Stk", "wind_strike",     3160,  1},
+		{"Water Strike",      "Watr Stk", "water_strike",    3161,  5},
+		{"Earth Strike",      "Erth Stk", "earth_strike",    3165,  9},
+		{"Fire Strike",       "Fire Stk", "fire_strike",     3178, 13},
+		{"Wind Bolt",         "Wind Bl",  "wind_bolt",       3160, 17},
+		{"Water Bolt",        "Watr Bl",  "water_bolt",      3161, 23},
+		{"Earth Bolt",        "Erth Bl",  "earth_bolt",      3165, 29},
+		{"Fire Bolt",         "Fire Bl",  "fire_bolt",       3178, 35},
+		{"Wind Blast",        "Wind Bs",  "wind_blast",      3160, 41},
+		{"Water Blast",       "Watr Bs",  "water_blast",     3161, 47},
+		{"Crumble Undead",    "Crumble",  "crumble_undead",  3172, 39},
+		{"Earth Blast",       "Erth Bs",  "earth_blast",     3165, 53},
+		{"Fire Blast",        "Fire Bs",  "fire_blast",      3178, 59},
+		{"Saradomin Strike",  "Sara Stk", "saradomin_strike",3160, 60},
+		{"Wind Wave",         "Wind Wv",  "wind_wave",       3160, 62},
+		{"Water Wave",        "Watr Wv",  "water_wave",      3161, 65},
+		{"Claws Of Guthix",   "Guth Clw", "claws_of_guthix", 3163, 60},
+		{"Flames Of Zamorak", "Zam Flms", "flames_of_zamorak",3164,60},
+		{"Earth Wave",        "Erth Wv",  "earth_wave",      3165, 70},
+		{"Iban Blast",        "Iban Bl",  "iban_blast",      3177, 50},
+		{"Fire Wave",         "Fire Wv",  "fire_wave",       3178, 75},
+		{"Chill Bolt",        "Chill",    "chill_bolt",      3174,  3},
+		{"Shock Bolt",        "Shock",    "shock_bolt",      3175,  7},
+		{"Elemental Bolt",    "Elem Bl",  "elemental_bolt",  3176, 11},
 	};
 
 	// Current autocast (client-side mirror). Index into OGRS_AUTOCAST_SPELLS,
@@ -14149,12 +14149,11 @@ public final class mudclient implements Runnable {
 	}
 
 	/** Picker overlay shown inside the combat tab when "Set Auto Cast"
-	 *  is clicked. 3-column grid of 60-wide x 56-tall spell tiles, each
-	 *  with a 40x40 sprite + level. Greyed tiles for spells the player
-	 *  can't cast yet (magic level too low). Click selects + closes. */
+	 *  is clicked. 4 cols x 6 rows fits all 24 autocast-eligible spells
+	 *  without scrolling. Each tile: 32x32 sprite + short label + level
+	 *  stripe. Greyed tiles for spells the player can't cast yet. */
 	private void drawOgrsAutocastPicker(int panelX, int panelY, int panelW, int panelH) {
 		this.getSurface().drawColoredStringCentered(panelX + panelW / 2, "PICK A SPELL", 0xFFFFFF, 1, 3, panelY + 14);
-		// Back button — top-right of panel.
 		final int backW = 44;
 		final int backH = 16;
 		final int backX = panelX + panelW - backW - 4;
@@ -14170,12 +14169,13 @@ public final class mudclient implements Runnable {
 			return;
 		}
 
-		// 3-column grid; tile is sprite-on-top (40x40) + level on bottom.
-		final int cols = 3;
-		final int tilePad = 4;
-		final int tileW = (panelW - 8 - (cols - 1) * tilePad) / cols;
-		final int tileH = 56;
-		final int gridX = panelX + 4;
+		// 4x6 grid; tile = 32x32 sprite + short label + level. Centered
+		// horizontally inside the 196-wide panel with 4-px outer margin.
+		final int cols = 4;
+		final int tilePad = 2;
+		final int tileW = 45;            // 4*45 + 3*2 = 186, fits in 196 with 5 px each side
+		final int tileH = 54;            // 6*54 = 324 fits inside 380 panel
+		final int gridX = panelX + (panelW - (cols * tileW + (cols - 1) * tilePad)) / 2;
 		final int gridY = panelY + 24;
 		final int playerMagicLevel = this.playerStatCurrent[6];
 		int hoveredIdx = -1;
@@ -14185,30 +14185,26 @@ public final class mudclient implements Runnable {
 			final int row = i / cols;
 			final int tx = gridX + col * (tileW + tilePad);
 			final int ty = gridY + row * (tileH + tilePad);
-			final String cmd  = (String) OGRS_AUTOCAST_SPELLS[i][1];
-			final int spriteId = (Integer) OGRS_AUTOCAST_SPELLS[i][2];
-			final int reqLvl   = (Integer) OGRS_AUTOCAST_SPELLS[i][3];
+			final String shortLabel = (String) OGRS_AUTOCAST_SPELLS[i][1];
+			final String cmd        = (String) OGRS_AUTOCAST_SPELLS[i][2];
+			final int spriteId      = (Integer) OGRS_AUTOCAST_SPELLS[i][3];
+			final int reqLvl        = (Integer) OGRS_AUTOCAST_SPELLS[i][4];
 			final boolean canCast = playerMagicLevel >= reqLvl;
 			final boolean isCurrent = (i == ogrsAutocastPickIdx);
 			final boolean hovered = (this.mouseX >= tx && this.mouseX < tx + tileW
 				&& this.mouseY >= ty && this.mouseY < ty + tileH);
 			if (hovered) hoveredIdx = i;
 
-			// Tile background — dark by default; gold tint when selected.
 			final int bg = isCurrent ? 0x4B3F1A : (hovered ? 0x2A2820 : 0x1A1814);
 			this.getSurface().drawBoxAlpha(tx, ty, tileW, tileH, bg, 255);
-			// Double-border for a refined trim look: dark outer + beige
-			// inner. Selected tile gets a gold inner instead.
 			this.getSurface().drawBoxBorder(tx, tileW, ty, tileH, 0x000000);
 			this.getSurface().drawBoxBorder(tx + 1, tileW - 2, ty + 1, tileH - 2,
 				isCurrent ? 0xD4A64A : (canCast ? 0x706452 : 0x303030));
 
-			// Sprite — drawSpriteClipping is more robust than scaled
-			// drawSprite for the synthesized 30x30 art and it does the
-			// dim/grey effect with the optional color transform.
+			// Sprite — 32x32 centered horizontally in the tile, top-aligned.
 			if (spriteId >= 0 && spriteId < this.getSurface().sprites.length
 				&& this.getSurface().sprites[spriteId] != null) {
-				final int spriteSize = 40;
+				final int spriteSize = 32;
 				final int spriteX = tx + (tileW - spriteSize) / 2;
 				final int spriteY = ty + 2;
 				try {
@@ -14216,16 +14212,19 @@ public final class mudclient implements Runnable {
 						this.getSurface().drawSpriteClipping(this.getSurface().sprites[spriteId],
 							spriteX, spriteY, spriteSize, spriteSize, 0, 0, 0, false, 0, 1);
 					} else {
-						// Grey out: 50% alpha tint
 						this.getSurface().drawSpriteClipping(this.getSurface().sprites[spriteId],
 							spriteX, spriteY, spriteSize, spriteSize, 0, 0, 0, false, 0, 1, 0x40808080);
 					}
-				} catch (Exception ignore) { /* sprite missing — skip */ }
+				} catch (Exception ignore) { /* skip on sprite error */ }
 			}
-			// Level requirement strip at the bottom.
+			// Short name (font 0, small) just under the sprite.
+			final int nameColor = canCast ? 0xFFFFFF : 0xA08080;
+			this.getSurface().drawColoredStringCentered(tx + tileW / 2,
+				shortLabel, nameColor, 0, 0, ty + 40);
+			// Level stripe at the bottom of the tile.
 			final int lvlColor = canCast ? 0x80FF80 : 0xFF8080;
 			this.getSurface().drawColoredStringCentered(tx + tileW / 2,
-				"Lv " + reqLvl, lvlColor, 1, 1, ty + tileH - 4);
+				"Lv " + reqLvl, lvlColor, 0, 0, ty + tileH - 3);
 
 			if (this.mouseButtonClick == 1 && hovered) {
 				ogrsAutocastPickIdx = i;
@@ -14236,14 +14235,14 @@ public final class mudclient implements Runnable {
 			}
 		}
 
-		// Footer: spell name on hover, or current selection summary.
-		final int footerY = panelY + panelH - 14;
+		// Footer: full spell name on hover or current selection summary.
+		final int footerY = panelY + panelH - 12;
 		if (hoveredIdx >= 0) {
-			final String name = (String) OGRS_AUTOCAST_SPELLS[hoveredIdx][0];
-			final int reqLvl  = (Integer) OGRS_AUTOCAST_SPELLS[hoveredIdx][3];
+			final String fullName = (String) OGRS_AUTOCAST_SPELLS[hoveredIdx][0];
+			final int reqLvl  = (Integer) OGRS_AUTOCAST_SPELLS[hoveredIdx][4];
 			final boolean canCast = playerMagicLevel >= reqLvl;
 			this.getSurface().drawColoredStringCentered(panelX + panelW / 2,
-				name + (canCast ? "" : " (need lvl " + reqLvl + " magic)"),
+				fullName + (canCast ? "" : " - lvl " + reqLvl),
 				canCast ? 0xFFFFFF : 0xFF8080, 1, 1, footerY);
 		} else if (ogrsAutocastPickIdx >= 0) {
 			this.getSurface().drawColoredStringCentered(panelX + panelW / 2,
@@ -14417,15 +14416,16 @@ public final class mudclient implements Runnable {
 		this.getSurface().drawBoxAlpha(iconX, iconY, iconW, iconH, bg, 220);
 		this.getSurface().drawBoxBorder(iconX, iconW, iconY, iconH, 0x000000);
 		this.getSurface().drawBoxBorder(iconX + 1, iconW - 2, iconY + 1, iconH - 2, 0x706452);
-		// "RUN" label up top with breathing room above + below.
+		// "RUN" label centered in the top portion.
 		final String runLabel = "RUN";
-		final int runLabelW = this.getSurface().stringWidth(0, runLabel);
+		final int runLabelW = this.getSurface().stringWidth(1, runLabel);
 		this.getSurface().drawString(runLabel,
-			iconX + (iconW - runLabelW) / 2, iconY + 11, 0xFFFFFF, 0);
-		// Energy bar in the bottom third, ~10px tall with the percent
-		// overlaid in white. Bar + label no longer touch.
-		final int barH = 10;
-		final int barY = iconY + iconH - barH - 4;
+			iconX + (iconW - runLabelW) / 2, iconY + 12, 0xFFFFFF, 1);
+		// Bigger energy bar in the bottom half, clean — fill width +
+		// color signal the percent at a glance, so we drop the overlay
+		// number that previously crowded the bar. (sparky 2026-05-20)
+		final int barH = 12;
+		final int barY = iconY + iconH - barH - 3;
 		final int barX = iconX + 3;
 		final int barW = iconW - 6;
 		this.getSurface().drawBoxAlpha(barX, barY, barW, barH, 0x000000, 255);
@@ -14436,11 +14436,6 @@ public final class mudclient implements Runnable {
 		if (fillW > 0) {
 			this.getSurface().drawBoxAlpha(barX, barY, fillW, barH, barColour, 255);
 		}
-		// Percent text overlaid on the bar.
-		final String pct = ogrsRunEnergyPercent + "%";
-		final int pctW = this.getSurface().stringWidth(0, pct);
-		this.getSurface().drawString(pct,
-			iconX + (iconW - pctW) / 2, barY + barH - 1, 0xFFFFFF, 0);
 		// Click handler — uses the icon's actual Y range so mobile (where
 		// the icon sits near the bottom of the screen) still gets a hit.
 		if (this.mouseButtonClick != 0

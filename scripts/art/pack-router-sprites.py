@@ -140,14 +140,22 @@ def read_header(blob: bytes) -> dict:
 
 
 def synth_header(w: int, h: int, *, anchor_center: bool) -> dict:
-    """Synthesize a header for a brand-new sprite slot. Center-anchored
-    projectiles draw at xShift=w/2, yShift=h/2; impacts use the same
-    center anchor so they wrap the target tile."""
+    """Synthesize a header for a brand-new sprite slot.
+
+    Sparky 2026-05-20: the original anchor_center=True path produced
+    x_shift=15/y_shift=15 for our 30x30 sprites. The engine's
+    drawSpriteClipping/drawSprite both consult those shifts and pixel-
+    offset the draw by ~19 px for that combination — sprites rendered
+    off-center in the autocast picker and at unexpected screen positions
+    during projectile flight. Setting shifts to zero (with
+    requires_shift still true to match the originals' flag) keeps the
+    flight-time positioning math behaved and the UI-tile draws centered.
+    """
     return {
         "width": w, "height": h,
         "requires_shift": 1,
-        "x_shift": w // 2 if anchor_center else 1,
-        "y_shift": h // 2 if anchor_center else 1,
+        "x_shift": 0,
+        "y_shift": 0,
         "something1": 32,
         "something2": 32,
     }

@@ -12,8 +12,11 @@ import com.openrsc.server.external.SpellDef;
 import com.openrsc.server.model.entity.KillType;
 import com.openrsc.server.model.entity.Mob;
 import com.openrsc.server.model.entity.player.Player;
+import com.openrsc.server.model.container.Item;
 import com.openrsc.server.net.rsc.handlers.SpellHandler;
 import com.openrsc.server.util.OgrsProjectileTypes;
+
+import java.util.Map;
 
 /**
  * OGRS — Magic autocast helper.
@@ -159,12 +162,21 @@ public final class OgrsAutocast {
 		final int sType = spell.getSpellType();
 		if (sType != 1 && sType != 2 && sType != 3) return false;
 
-		// Drain runes (staff substitution handled inside checkAndRemoveRunes).
-		if (!SpellHandler.checkAndRemoveRunes(player, spell)) {
-			// No runes — keep autocast set so a refill resumes it, but
-			// fall through to melee this round.
+		// OGRS — pre-check runes WITHOUT going through
+		// SpellHandler.checkAndRemoveRunes, which calls setSuspiciousPlayer
+		// when runes are missing and triggers anti-cheat (immediate channel
+		// close == "client froze" from the player's POV). Autocast is a
+		// loop on a timer — it'll legitimately try and fail every few
+		// ticks if runes run out, which is normal play, not cheating.
+		if (!hasAllRunesForSpell(player, spell)) {
+			// Quiet skip — leave autocast enabled so the player resumes
+			// once they refill, and fall through to melee this round.
 			return false;
 		}
+		// Drain runes now that we've confirmed they're present. The
+		// substituted runes (equipped element staff covers the matching
+		// rune) are skipped just like the standard path.
+		drainRunesForSpell(player, spell);
 
 		// Damage roll using the spell's modern-magic max.
 		double max = player.getWorld().getServer().getConstants()
@@ -242,6 +254,75 @@ public final class OgrsAutocast {
 		}
 
 		// Spell isn't elemental and no generic staff equipped → ineligible.
+		return false;
+	}
+
+	/**
+	 * Non-mutating, anti-cheat-safe rune check. Returns true iff the
+	 * player has every rune the spell requires in their inventory,
+	 * with the same element-staff substitution rule as the standard
+	 * cast path (equipped Staff of Air / Battlestaff of Air covers the
+	 * Air-Rune requirement, etc.).
+	 *
+	 * Crucially, this does NOT call SpellHandler.checkSpellRunes, which
+	 * marks the player as suspicious when runes are missing. Autocast
+	 * legitimately polls per-tick, so a missing-rune frame is normal
+	 * play, not an attempted exploit.
+	 */
+	private static boolean hasAllRunesForSpell(final Player player, final SpellDef spell) {
+		final com.openrsc.server.model.container.Equipment eq =
+			player.getCarriedItems().getEquipment();
+		for (Map.Entry<Integer, Integer> e : spell.getRunesRequired()) {
+			final int runeId = e.getKey();
+			final int needed = e.getValue();
+			if (isRuneCoveredByEquippedStaff(eq, runeId)) continue;
+			if (player.getCarriedItems().getInventory().countId(runeId) < needed) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/** Drain runes for the spell. Caller must have first verified
+	 *  {@link #hasAllRunesForSpell} returns true — otherwise this is a
+	 *  no-op for the missing ones (player won't be flagged either way).
+	 *  Element-staff-covered runes aren't drained. */
+	private static void drainRunesForSpell(final Player player, final SpellDef spell) {
+		final com.openrsc.server.model.container.Equipment eq =
+			player.getCarriedItems().getEquipment();
+		for (Map.Entry<Integer, Integer> e : spell.getRunesRequired()) {
+			final int runeId = e.getKey();
+			final int needed = e.getValue();
+			if (isRuneCoveredByEquippedStaff(eq, runeId)) continue;
+			player.getCarriedItems().remove(new Item(runeId, needed));
+		}
+	}
+
+	/** Mirrors SpellHandler's static staff-rune substitution table:
+	 *  the 4 element staves (each in 3 tiers) provide their matching
+	 *  rune for free as long as one is equipped. */
+	private static boolean isRuneCoveredByEquippedStaff(
+			final com.openrsc.server.model.container.Equipment eq, final int runeId) {
+		if (runeId == ItemId.AIR_RUNE.id()) {
+			return eq.hasEquipped(ItemId.STAFF_OF_AIR.id())
+				|| eq.hasEquipped(ItemId.BATTLESTAFF_OF_AIR.id())
+				|| eq.hasEquipped(ItemId.ENCHANTED_BATTLESTAFF_OF_AIR.id());
+		}
+		if (runeId == ItemId.WATER_RUNE.id()) {
+			return eq.hasEquipped(ItemId.STAFF_OF_WATER.id())
+				|| eq.hasEquipped(ItemId.BATTLESTAFF_OF_WATER.id())
+				|| eq.hasEquipped(ItemId.ENCHANTED_BATTLESTAFF_OF_WATER.id());
+		}
+		if (runeId == ItemId.EARTH_RUNE.id()) {
+			return eq.hasEquipped(ItemId.STAFF_OF_EARTH.id())
+				|| eq.hasEquipped(ItemId.BATTLESTAFF_OF_EARTH.id())
+				|| eq.hasEquipped(ItemId.ENCHANTED_BATTLESTAFF_OF_EARTH.id());
+		}
+		if (runeId == ItemId.FIRE_RUNE.id()) {
+			return eq.hasEquipped(ItemId.STAFF_OF_FIRE.id())
+				|| eq.hasEquipped(ItemId.BATTLESTAFF_OF_FIRE.id())
+				|| eq.hasEquipped(ItemId.ENCHANTED_BATTLESTAFF_OF_FIRE.id());
+		}
 		return false;
 	}
 }
