@@ -14220,9 +14220,10 @@ public final class mudclient implements Runnable {
 		// tab strip — top-right in authentic mode, bottom-right (above
 		// the tabs) in custom/mobile mode.
 		final int iconW = 32;
-		final int iconH = 22;
+		final int iconH = 32;
 		// 233 px clears the 6 standard tab icons (33 px each, ~198 px) plus
-		// a small gap. Same horizontal slot regardless of UI mode.
+		// a small gap. Same horizontal slot regardless of UI mode. Matches
+		// the COMBAT_TAB icon's height so the row reads as one strip.
 		final int iconX = this.getSurface().width2 - 233 - 33;
 		final int iconY;
 		if (Config.C_CUSTOM_UI) {
@@ -14237,17 +14238,17 @@ public final class mudclient implements Runnable {
 		this.getSurface().drawBoxAlpha(iconX, iconY, iconW, iconH, bg, 220);
 		this.getSurface().drawBoxBorder(iconX, iconW, iconY, iconH, 0x000000);
 		this.getSurface().drawBoxBorder(iconX + 1, iconW - 2, iconY + 1, iconH - 2, 0x706452);
-		// "RUN" label in the top half.
+		// "RUN" label up top with breathing room above + below.
 		final String runLabel = "RUN";
 		final int runLabelW = this.getSurface().stringWidth(0, runLabel);
 		this.getSurface().drawString(runLabel,
-			iconX + (iconW - runLabelW) / 2, iconY + 9, 0xFFFFFF, 0);
-		// Bigger energy bar in the bottom half — full width minus 2px
-		// padding, 9px tall, with the percent overlaid in white.
-		final int barH = 9;
-		final int barY = iconY + iconH - barH - 2;
-		final int barX = iconX + 2;
-		final int barW = iconW - 4;
+			iconX + (iconW - runLabelW) / 2, iconY + 11, 0xFFFFFF, 0);
+		// Energy bar in the bottom third, ~10px tall with the percent
+		// overlaid in white. Bar + label no longer touch.
+		final int barH = 10;
+		final int barY = iconY + iconH - barH - 4;
+		final int barX = iconX + 3;
+		final int barW = iconW - 6;
 		this.getSurface().drawBoxAlpha(barX, barY, barW, barH, 0x000000, 255);
 		final int fillW = Math.max(0, Math.min(barW, barW * ogrsRunEnergyPercent / 100));
 		final int barColour = ogrsRunEnergyPercent > 60 ? 0x4FB04F
@@ -14439,8 +14440,13 @@ public final class mudclient implements Runnable {
 				this.showUiTab = 0;
 			}
 
-			// OGRS — COMBAT_TAB auto-close when click lands outside its panel.
-			if (this.showUiTab == Config.COMBAT_TAB && (this.getSurface().width2 - 199 > this.mouseX || this.mouseY > 290)) {
+			// OGRS — COMBAT_TAB auto-close when click lands outside its panel
+			// AND outside the icon (the icon sits at width2-233..-201, which
+			// is to the LEFT of the panel left edge, so the standard
+			// width2-199 threshold used by other tabs auto-closes on its
+			// own icon — same-frame open-then-close bug). Use the icon's
+			// own X as the close threshold.
+			if (this.showUiTab == Config.COMBAT_TAB && (this.getSurface().width2 - 233 > this.mouseX || this.mouseY > 290)) {
 				this.showUiTab = 0;
 			}
 
