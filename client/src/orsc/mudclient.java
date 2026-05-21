@@ -8819,12 +8819,20 @@ public final class mudclient implements Runnable {
 
 			this.getSurface().drawBoxAlpha(magicPanelX, magicPanelYStart, magicPanelWidth / 2, 24, var7, 128);
 			this.getSurface().drawBoxAlpha(magicPanelWidth / 2 + magicPanelX, magicPanelYStart, magicPanelWidth / 2, 24, var8, 128);
-			this.getSurface().drawBoxAlpha(magicPanelX, magicPanelYStart + 24, magicPanelWidth, 90, GenUtil.buildColor(220, 220, 220), 128);
-			this.getSurface().drawBoxAlpha(magicPanelX, 114 + magicPanelYStart, magicPanelWidth, 68, GenUtil.buildColor(160, 160, 160),
-				128);
+			// OGRS — when the magic list is in grid mode the bottom-half box
+			// + divider line cut through tiles. Draw one unified background
+			// instead. Prayer side keeps the original split layout.
+			if (this.magicOrPrayerList == 0) {
+				this.getSurface().drawBoxAlpha(magicPanelX, magicPanelYStart + 24,
+					magicPanelWidth, 158, GenUtil.buildColor(160, 160, 160), 128);
+			} else {
+				this.getSurface().drawBoxAlpha(magicPanelX, magicPanelYStart + 24, magicPanelWidth, 90, GenUtil.buildColor(220, 220, 220), 128);
+				this.getSurface().drawBoxAlpha(magicPanelX, 114 + magicPanelYStart, magicPanelWidth, 68, GenUtil.buildColor(160, 160, 160),
+					128);
+				this.getSurface().drawLineHoriz(magicPanelX, magicPanelYStart + 113, magicPanelWidth, 0);
+			}
 			this.getSurface().drawLineHoriz(magicPanelX, 24 + magicPanelYStart, magicPanelWidth, 0);
 			this.getSurface().drawLineVert(magicPanelX + magicPanelWidth / 2, 0 + magicPanelYStart, 0, 24);
-			this.getSurface().drawLineHoriz(magicPanelX, magicPanelYStart + 113, magicPanelWidth, 0);
 			if (var2 == -74) {
 				this.getSurface().drawColoredStringCentered(magicPanelWidth / 4 + magicPanelX, "Magic", 0, var2 + 74, 4, 16 + magicPanelYStart);
 				this.getSurface().drawColoredStringCentered(magicPanelX + magicPanelWidth / 4 + magicPanelWidth / 2, "Prayers", 0, 0, 4, 16 + magicPanelYStart);
