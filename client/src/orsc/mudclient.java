@@ -8842,7 +8842,15 @@ public final class mudclient implements Runnable {
 				String lastSpellNameColor = "@yel@";
 
 				// 0 is magic list
+				// OGRS 2026-05-20: text-list rendering replaced by an OSRS-
+				// style icon grid with filter row (drawOgrsSpellGrid). The
+				// old block below is gated off — kept inline as reference
+				// for the panel layout / Android cast-last-spell box.
 				if (this.magicOrPrayerList == 0) {
+					drawOgrsSpellGrid(magicPanelX, magicPanelWidth,
+						magicPanelYStart + 24, 158);
+				}
+				if (false && this.magicOrPrayerList == 0) {
 					this.panelMagic.clearList(this.controlMagicPanel);
 					spellIndex = 0;
 
@@ -14153,6 +14161,16 @@ public final class mudclient implements Runnable {
 	private static final int OGRS_SPELL_ROW_TO_ENCHANTS = -100;
 	private static final int OGRS_SPELL_ROW_BACK        = -101;
 
+	// OGRS OSRS-style icon-grid spellbook (sparky 2026-05-20: "having a
+	// larger spell sheet with all of our icons on it, with a way to
+	// filter them at the bottom"). Filter index 0..6 with the labels in
+	// OGRS_SPELL_FILTERS. ogrsSpellbookGridScroll = row offset.
+	private int ogrsSpellbookFilter = 0;
+	private int ogrsSpellbookGridScroll = 0;
+	private static final String[] OGRS_SPELL_FILTERS = {
+		"All", "Combat", "Tele", "Ench", "Util", "Buff", "Debuff"
+	};
+
 	private void drawUiTabCombat(boolean mustTrackMouse) {
 		// OGRS 2026-05-20: wrap the whole tab in try/catch so any silent
 		// rendering exception bubbles up to the log instead of freezing
@@ -14429,6 +14447,234 @@ public final class mudclient implements Runnable {
 			// gold accent so the player can tell at a glance.
 			this.getSurface().drawBoxBorder(tabX, 32, tabY, 32, 0x000000);
 			this.getSurface().drawBoxBorder(tabX + 1, 30, tabY + 1, 30, active ? 0xD4A64A : 0x706452);
+		}
+	}
+
+	/** Spell -> category for the spellbook grid filter. Categories:
+	 *  0 = all (passes anything), 1 = combat, 2 = teleport, 3 = enchant,
+	 *  4 = utility, 5 = buff, 6 = debuff. Match by spell-name substring
+	 *  so we don't need a server round-trip. */
+	private static int ogrsSpellCategory(String name) {
+		final String n = name.toLowerCase();
+		if (n.contains("enchant")) return 3;
+		if (n.contains("teleport") || n.contains("home tele")) return 2;
+		if (n.contains("strike") || n.contains("bolt") || n.contains("blast")
+			|| n.contains("wave") || n.contains("crumble") || n.contains("iban")
+			|| n.contains("saradomin strike") || n.contains("claws of guthix")
+			|| n.contains("flames of zamorak")) return 1;
+		if (n.contains("confuse") || n.contains("weaken") || n.contains("vulnerability")
+			|| n.contains("enfeeble") || n.contains("stun") || n.contains("fear")
+			|| n.contains("curse")) return 6;
+		if (n.contains("thick skin") || n.contains("rock skin")
+			|| n.contains("burst of strength") || n.contains("camouflage")) return 5;
+		if (n.contains("alch") || n.contains("telekinetic") || n.contains("telegrab")
+			|| n.contains("bones to") || n.contains("superheat")
+			|| n.contains("charge")) return 4;
+		return 1; // unknown -> treat as combat (visible in default "All" + "Combat")
+	}
+
+	/** Sprite ID for a spell tile. Mirrors OgrsProjectileTypes.forSpellName
+	 *  (server-side router) so each spell shows the same icon you see in
+	 *  flight. */
+	private static int ogrsSpellTileSpriteId(String name) {
+		final String n = name.toLowerCase();
+		// Specific spells first (most specific match wins).
+		if (n.contains("crumble"))         return spriteProjectile + 12;
+		if (n.contains("fear"))            return spriteProjectile + 13;
+		if (n.contains("vulnerability"))   return spriteProjectile + 9;
+		if (n.contains("enfeeble"))        return spriteProjectile + 10;
+		if (n.contains("stun"))            return spriteProjectile + 11;
+		if (n.contains("confuse"))         return spriteProjectile + 7;
+		if (n.contains("weaken"))          return spriteProjectile + 8;
+		if (n.contains("chill"))           return spriteProjectile + 14;
+		if (n.contains("shock"))           return spriteProjectile + 15;
+		if (n.contains("iban"))            return spriteProjectile + 17;
+		if (n.contains("elemental"))       return spriteProjectile + 16;
+		if (n.contains("thick skin"))      return spriteProjectile + 19;
+		if (n.contains("burst of strength")) return spriteProjectile + 20;
+		if (n.contains("rock skin"))       return spriteProjectile + 21;
+		if (n.contains("camouflage"))      return spriteProjectile + 22;
+		if (n.contains("low level alchemy") || n.contains("low alch")) return spriteProjectile + 23;
+		if (n.contains("high level alchemy") || n.contains("high alch")) return spriteProjectile + 24;
+		if (n.contains("telekinetic") || n.contains("telegrab")) return spriteProjectile + 25;
+		if (n.contains("bones to banana"))  return spriteProjectile + 26;
+		if (n.contains("bones to bread"))   return spriteProjectile + 27;
+		if (n.contains("superheat"))        return spriteProjectile + 28;
+		if (n.contains("charge air"))       return spriteProjectile + 30;
+		if (n.contains("charge water"))     return spriteProjectile + 31;
+		if (n.contains("charge earth"))     return spriteProjectile + 32;
+		if (n.contains("charge fire"))      return spriteProjectile + 33;
+		if (n.contains("charge"))           return spriteProjectile + 29;
+		if (n.contains("varrock"))          return spriteProjectile + 34;
+		if (n.contains("lumbridge"))        return spriteProjectile + 35;
+		if (n.contains("falador"))          return spriteProjectile + 36;
+		if (n.contains("camelot"))          return spriteProjectile + 37;
+		if (n.contains("ardougne"))         return spriteProjectile + 38;
+		if (n.contains("watchtower"))       return spriteProjectile + 39;
+		if (n.contains("enchant lvl-1") || n.contains("enchant lvl 1")) return spriteProjectile + 40;
+		if (n.contains("enchant lvl-2") || n.contains("enchant lvl 2")) return spriteProjectile + 41;
+		if (n.contains("enchant lvl-3") || n.contains("enchant lvl 3")) return spriteProjectile + 42;
+		if (n.contains("enchant lvl-4") || n.contains("enchant lvl 4")) return spriteProjectile + 43;
+		if (n.contains("enchant lvl-5") || n.contains("enchant lvl 5")) return spriteProjectile + 44;
+		// Element families.
+		if (n.contains("fire") || n.contains("flame")) return spriteProjectile + 18;
+		if (n.contains("wind") || n.contains("air"))   return spriteProjectile + 0;  // ORB
+		if (n.contains("earth") || n.contains("rock")) return spriteProjectile + 5;  // SPIKEBALL
+		if (n.contains("water") || n.contains("ice"))  return spriteProjectile + 1;  // MAGIC
+		if (n.contains("saradomin strike")) return spriteProjectile + 0;
+		if (n.contains("claws of guthix")) return spriteProjectile + 3;
+		if (n.contains("flames of zamorak")) return spriteProjectile + 4;
+		if (n.contains("bolt"))             return spriteProjectile + 2;  // RANGED
+		return spriteProjectile + 1; // default MAGIC
+	}
+
+	/** Returns true if the player can currently cast a spell (level +
+	 *  runes available, with element-staff substitution). Cheaper than
+	 *  the server's check; used to grey out tiles in the spellbook. */
+	private boolean ogrsCanCastSpell(int spellIdx) {
+		if (this.playerStatCurrent[6] < EntityHandler.getSpellDef(spellIdx).getReqLevel()) return false;
+		for (Entry<?, ?> e : EntityHandler.getSpellDef(spellIdx).getRunesRequired()) {
+			if (!this.hasRunes((Integer) e.getKey(), (Integer) e.getValue())) return false;
+		}
+		return true;
+	}
+
+	/** Draw the icon-grid spellbook (sparky 2026-05-20 OSRS-style request).
+	 *  panelX/panelW define the panel bounds; gridY is the Y of the top
+	 *  of the grid area. Returns nothing — handles its own click flow
+	 *  (selecting a spell via the normal selectedSpell + openInventorySpell
+	 *  path). */
+	private void drawOgrsSpellGrid(int panelX, int panelW, int gridY, int gridContentH) {
+		// Filtered spell index list.
+		final int spellCount = EntityHandler.spellCount();
+		final int[] filtered = new int[spellCount];
+		int filteredLen = 0;
+		for (int s = 0; s < spellCount; s++) {
+			final int cat = ogrsSpellCategory(EntityHandler.getSpellDef(s).getName());
+			if (ogrsSpellbookFilter == 0 || cat == ogrsSpellbookFilter) {
+				filtered[filteredLen++] = s;
+			}
+		}
+
+		// Grid layout: 5 cols, tile 32x32 with 4px gaps, footer 28 for
+		// filter bar. Visible rows = (gridContentH - footer) / tileStride.
+		final int cols = 5;
+		final int tile = 32;
+		final int gap = 4;
+		final int gridLeftPad = (panelW - (cols * tile + (cols - 1) * gap)) / 2;
+		final int gridX = panelX + gridLeftPad;
+		final int filterBarH = 22;
+		final int tilesAreaH = gridContentH - filterBarH - 4;
+		final int rowStride = tile + gap;
+		final int visibleRows = Math.max(1, tilesAreaH / rowStride);
+		final int totalRows = (filteredLen + cols - 1) / cols;
+		final int maxScroll = Math.max(0, totalRows - visibleRows);
+		if (ogrsSpellbookGridScroll > maxScroll) ogrsSpellbookGridScroll = maxScroll;
+		if (ogrsSpellbookGridScroll < 0) ogrsSpellbookGridScroll = 0;
+
+		int hoveredSpell = -1;
+		// Tiles.
+		for (int displayRow = 0; displayRow < visibleRows; displayRow++) {
+			final int realRow = displayRow + ogrsSpellbookGridScroll;
+			for (int col = 0; col < cols; col++) {
+				final int idx = realRow * cols + col;
+				if (idx >= filteredLen) break;
+				final int spellIdx = filtered[idx];
+				final int tx = gridX + col * (tile + gap);
+				final int ty = gridY + displayRow * rowStride;
+				final boolean hovered =
+					this.mouseX >= tx && this.mouseX < tx + tile
+					&& this.mouseY >= ty && this.mouseY < ty + tile;
+				if (hovered) hoveredSpell = spellIdx;
+				final boolean canCast = ogrsCanCastSpell(spellIdx);
+				final boolean isSelected = (this.selectedSpell == spellIdx);
+				// Tile bg + border.
+				final int bg = isSelected ? 0x4B3F1A : (hovered ? 0x2A2820 : 0x1A1814);
+				this.getSurface().drawBoxAlpha(tx, ty, tile, tile, bg, 255);
+				this.getSurface().drawBoxBorder(tx, tile, ty, tile, 0x000000);
+				this.getSurface().drawBoxBorder(tx + 1, tile - 2, ty + 1, tile - 2,
+					isSelected ? 0xD4A64A : (canCast ? 0x706452 : 0x303030));
+				// Icon.
+				final int spriteId = ogrsSpellTileSpriteId(EntityHandler.getSpellDef(spellIdx).getName());
+				if (spriteId >= 0 && spriteId < this.getSurface().sprites.length
+					&& this.getSurface().sprites[spriteId] != null) {
+					try {
+						this.getSurface().drawSpriteClipping(this.getSurface().sprites[spriteId],
+							tx + 1, ty + 1, tile - 2, tile - 2,
+							0, 0, 0, false, 0, 1,
+							canCast ? 0xFFFFFFFF : 0x60808080);
+					} catch (Exception ignore) {}
+				}
+				// Level requirement (small, top-right corner).
+				final int reqLvl = EntityHandler.getSpellDef(spellIdx).getReqLevel();
+				this.getSurface().drawString("" + reqLvl, tx + tile - 10, ty + 8,
+					canCast ? 0x80FF80 : 0xFF8080, 0);
+				if (this.mouseButtonClick == 1 && hovered) {
+					if (!canCast) {
+						this.showMessage(false, null,
+							"Your magic ability is not high enough or you lack runes",
+							MessageType.GAME, 0, null);
+					} else {
+						this.selectedSpell = spellIdx;
+						this.lastSelectedSpell = spellIdx;
+						this.selectedItemInventoryIndex = -1;
+						if (openInventorySpell(spellIdx)) {
+							this.showUiTab = Config.INVENTORY_TAB;
+						}
+					}
+					this.mouseButtonClick = 0;
+				}
+			}
+		}
+
+		// Scroll arrows (right edge, top + bottom). Tiny triangles.
+		final int scrollX = panelX + panelW - 14;
+		final int upY = gridY + 4;
+		final int downY = gridY + tilesAreaH - 14;
+		this.getSurface().drawColoredStringCentered(scrollX, "▲",
+			ogrsSpellbookGridScroll > 0 ? 0xFFFFFF : 0x606060, 1, 1, upY + 8);
+		this.getSurface().drawColoredStringCentered(scrollX, "▼",
+			ogrsSpellbookGridScroll < maxScroll ? 0xFFFFFF : 0x606060, 1, 1, downY + 8);
+		if (this.mouseButtonClick == 1
+			&& this.mouseX >= scrollX - 6 && this.mouseX < scrollX + 6) {
+			if (this.mouseY >= upY && this.mouseY < upY + 14 && ogrsSpellbookGridScroll > 0) {
+				ogrsSpellbookGridScroll--;
+				this.mouseButtonClick = 0;
+			} else if (this.mouseY >= downY && this.mouseY < downY + 14
+				&& ogrsSpellbookGridScroll < maxScroll) {
+				ogrsSpellbookGridScroll++;
+				this.mouseButtonClick = 0;
+			}
+		}
+
+		// Filter bar — 7 buttons across the bottom.
+		final int barY = gridY + tilesAreaH;
+		final int btnW = panelW / OGRS_SPELL_FILTERS.length;
+		for (int f = 0; f < OGRS_SPELL_FILTERS.length; f++) {
+			final int bx = panelX + f * btnW;
+			final boolean active = (ogrsSpellbookFilter == f);
+			final boolean bhover =
+				this.mouseX >= bx && this.mouseX < bx + btnW
+				&& this.mouseY >= barY && this.mouseY < barY + filterBarH;
+			this.getSurface().drawBoxAlpha(bx + 1, barY + 2, btnW - 2, filterBarH - 4,
+				active ? 0x4B3F1A : (bhover ? 0x2A2820 : 0x1A1814), 255);
+			this.getSurface().drawBoxBorder(bx + 1, btnW - 2, barY + 2, filterBarH - 4,
+				active ? 0xD4A64A : 0x706452);
+			this.getSurface().drawColoredStringCentered(bx + btnW / 2,
+				OGRS_SPELL_FILTERS[f], active ? 0xD4A64A : 0xFFFFFF, 0, 0, barY + 14);
+			if (this.mouseButtonClick == 1 && bhover) {
+				ogrsSpellbookFilter = f;
+				ogrsSpellbookGridScroll = 0;
+				this.mouseButtonClick = 0;
+			}
+		}
+
+		// Hover tooltip — show name + level + first rune up top of the grid.
+		if (hoveredSpell >= 0) {
+			final SpellDef def = EntityHandler.getSpellDef(hoveredSpell);
+			this.getSurface().drawColoredStringCentered(panelX + panelW / 2,
+				def.getName() + " (lvl " + def.getReqLevel() + ")",
+				0xFFFFFF, 0, 1, gridY - 2);
 		}
 	}
 
