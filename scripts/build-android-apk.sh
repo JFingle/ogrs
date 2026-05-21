@@ -32,6 +32,26 @@ if [ ! -f "$ANDROID_TREE/local.properties" ]; then
     echo "sdk.dir=/home/sparky/android-sdk" > "$ANDROID_TREE/local.properties"
 fi
 
+# OGRS — bundle our modified game cache into the APK assets so the
+# Android client uses OGRS sprites/models instead of phoning rsc.vet.
+# CacheUpdater.onCreate detects this bundle and extracts to filesDir
+# on first launch, skipping the network update.
+OGRS_CACHE_SRC="$REPO_ROOT/client/Cache"
+ASSETS_DEST="$ANDROID_TREE/Open RSC Android Client/src/main/assets"
+if [ -d "$OGRS_CACHE_SRC/video" ]; then
+    echo "Bundling OGRS cache into Android assets..."
+    rm -rf "$ASSETS_DEST/video" "$ASSETS_DEST/audio"
+    mkdir -p "$ASSETS_DEST/video"
+    cp -r "$OGRS_CACHE_SRC/video/." "$ASSETS_DEST/video/"
+    # Drop the .bak (we don't need the original wolf logo on the phone).
+    rm -f "$ASSETS_DEST/video/Authentic_Sprites.orsc.bak"
+    if [ -d "$OGRS_CACHE_SRC/audio" ]; then
+        mkdir -p "$ASSETS_DEST/audio"
+        cp -r "$OGRS_CACHE_SRC/audio/." "$ASSETS_DEST/audio/" 2>/dev/null || true
+    fi
+    echo "  Bundled $(du -sh "$ASSETS_DEST/video" | cut -f1) of cache."
+fi
+
 echo "Building APK (Java 17 + Android SDK 34)..."
 cd "$ANDROID_TREE"
 chmod +x gradlew
