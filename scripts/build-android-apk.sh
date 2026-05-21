@@ -51,7 +51,45 @@ cp "$APK_OUT" "$DESKTOP_OUT"
 SIZE=$(stat -c%s "$DESKTOP_OUT")
 echo
 echo "Done. APK: $DESKTOP_OUT (${SIZE} bytes)"
-echo "Sideload via:"
+
+# --- Auto-publish to GitHub releases for Obtainium auto-update ---
+#
+# Obtainium on the phone polls https://github.com/JFingle/ogrs/releases
+# and pulls the newest release whose asset name matches a configured
+# regex. Publishing here means every APK build is available to the
+# phone within Obtainium's poll interval (default 15 min).
+#
+# Skips silently if gh isn't installed or not authenticated, so the
+# script still works on a fresh checkout without the publish path.
+if command -v gh >/dev/null 2>&1 && gh auth status >/dev/null 2>&1; then
+    cd "$REPO_ROOT"
+    TAG="mobile-$(date +%Y%m%d-%H%M)"
+    HASH=$(git rev-parse --short HEAD 2>/dev/null || echo "unknown")
+    TITLE="Mobile build $(date +'%Y-%m-%d %H:%M') ($HASH)"
+    LAST_COMMIT=$(git log -1 --pretty=%s 2>/dev/null || echo "")
+    NOTES="Auto-built OGRS Android client.
+
+Commit: $HASH ($LAST_COMMIT)
+
+Obtainium picks up the OGRS-Client.apk asset attached below — no
+manual sideload needed once Obtainium is configured to watch this
+repo."
+    echo
+    echo "Publishing release $TAG..."
+    if gh release create "$TAG" "$APK_OUT" --title "$TITLE" --notes "$NOTES" --latest; then
+        echo "Release published: https://github.com/JFingle/ogrs/releases/tag/$TAG"
+        echo "Obtainium-configured phones will pull it within their poll interval."
+    else
+        echo "WARN: gh release create failed; APK is still local at $DESKTOP_OUT" >&2
+    fi
+else
+    echo
+    echo "(gh not authed -> skipping GitHub release publish; APK is local only.)"
+    echo "To enable phone auto-update via Obtainium, run: gh auth login"
+fi
+
+echo
+echo "Sideload (manual fallback if not using Obtainium):"
 echo "  1) Move OGRS-Client.apk to your Android phone"
 echo "  2) Enable 'Install unknown apps' for the file manager"
 echo "  3) Tap the APK to install"
