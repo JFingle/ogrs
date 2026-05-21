@@ -14639,9 +14639,11 @@ public final class mudclient implements Runnable {
 		final int scrollX = panelX + panelW - 14;
 		final int upY = gridY + 4;
 		final int downY = gridY + tilesAreaH - 14;
-		this.getSurface().drawColoredStringCentered(scrollX, "▲",
+		// ASCII arrows — the engine's font might not have glyphs for the
+		// triangle codepoints on every device.
+		this.getSurface().drawColoredStringCentered(scrollX, "^",
 			ogrsSpellbookGridScroll > 0 ? 0xFFFFFF : 0x606060, 1, 1, upY + 8);
-		this.getSurface().drawColoredStringCentered(scrollX, "▼",
+		this.getSurface().drawColoredStringCentered(scrollX, "v",
 			ogrsSpellbookGridScroll < maxScroll ? 0xFFFFFF : 0x606060, 1, 1, downY + 8);
 		if (this.mouseButtonClick == 1
 			&& this.mouseX >= scrollX - 6 && this.mouseX < scrollX + 6) {
