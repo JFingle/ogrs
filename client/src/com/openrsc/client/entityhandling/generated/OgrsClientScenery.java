@@ -107,6 +107,9 @@ public final class OgrsClientScenery {
 		// id 1324 — from content/scenery/crypt_inner_gate.yaml
 		objects.add(new GameObjectDef("Crypt Gate", "A heavy iron gate. It swings freely for now, but old hinges suggest it could be locked one day.", "Open", "Examine", 1, 1, 1, 0, "metalgateclosed", ++i));
 
+		// id 1325 — from content/scenery/crypt_boss_chest.yaml
+		objects.add(new GameObjectDef("Crypt Lord's Chest", "A heavy iron-bound chest at the back of the tomb. Something within hums faintly with cold.", "Search", "Examine", 1, 1, 1, 0, "ChestClosed", ++i));
+
 		return i;
 	}
 }

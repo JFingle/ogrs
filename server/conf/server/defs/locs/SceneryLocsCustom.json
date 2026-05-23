@@ -494,6 +494,15 @@
       "direction": 2
     },
     {
+      "_n": "OGRS Crypt Lord's Chest \u2014 boss room back wall",
+      "id": 1325,
+      "pos": {
+        "X": 122,
+        "Y": 3743
+      },
+      "direction": 0
+    },
+    {
       "_n": "OGRS Crypt antechamber torch",
       "id": 51,
       "pos": {

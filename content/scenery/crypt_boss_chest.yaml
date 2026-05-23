@@ -1,0 +1,25 @@
+# OGRS scenery: Crypt Boss Chest.
+#
+# One-time payoff for clearing the Lumbridge Crypt. Sits at the back
+# wall of the Crypt Lord's chamber (122, 3743). type=1 (blocking) so
+# the player stands one tile north to Search it.
+#
+# Handled by OgrsCryptBossChest plugin — first-ever Search by a player
+# (cache key absent) hands out a chunky coin + rune drop; every
+# subsequent click reports the chest is empty. Distinct from the
+# Crypt Lord's first-kill Cryptkeeper's Skull (OgrsCryptLordDrop) —
+# the chest is a one-time treasure trophy, the skull is a one-time
+# kill trophy.
+#
+# Reuses upstream `ChestClosed` model.
+
+id: 1325
+name: Crypt Lord's Chest
+description: A heavy iron-bound chest at the back of the tomb. Something within hums faintly with cold.
+command1: "Search"
+command2: "Examine"
+type: 1
+width: 1
+height: 1
+ground_item_var: 0
+model: ChestClosed
