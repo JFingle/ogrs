@@ -95,6 +95,18 @@ public final class OgrsClientScenery {
 		// id 1320 — from content/scenery/crypt_ladder_up.yaml
 		objects.add(new GameObjectDef("Crypt Ladder", "A rough wooden ladder lashed to the wall. It leads up to a hatch.", "Climb-up", "Examine", 0, 1, 1, 0, "ladder", ++i));
 
+		// id 1321 — from content/scenery/crypt_steps_down.yaml
+		objects.add(new GameObjectDef("Crypt Steps", "Worn stone steps lead deeper into the crypt. Faint groans drift up from below.", "Walk-down", "Examine", 0, 1, 1, 0, "ladderdown", ++i));
+
+		// id 1322 — from content/scenery/crypt_steps_up.yaml
+		objects.add(new GameObjectDef("Crypt Steps", "Worn stone steps lead back up toward the spider chamber.", "Walk-up", "Examine", 0, 1, 1, 0, "ladder", ++i));
+
+		// id 1323 — from content/scenery/sealed_stone_door.yaml
+		objects.add(new GameObjectDef("Sealed Stone Door", "A heavy stone door carved with arachnid sigils. It refuses to budge.", "Use", "Examine", 1, 1, 1, 0, "largedoor", ++i));
+
+		// id 1324 — from content/scenery/crypt_inner_gate.yaml
+		objects.add(new GameObjectDef("Crypt Gate", "A heavy iron gate. It swings freely for now, but old hinges suggest it could be locked one day.", "Open", "Examine", 1, 1, 1, 0, "metalgateclosed", ++i));
+
 		return i;
 	}
 }

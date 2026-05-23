@@ -394,83 +394,787 @@
       }
     },
     {
-      "_n": "OGRS Crypt \u2014 basic Spider",
+      "_n": "OGRS Crypt Antechamber basic Spider #1",
+      "id": 34,
+      "start": {
+        "X": 110,
+        "Y": 3700
+      },
+      "min": {
+        "X": 110,
+        "Y": 3700
+      },
+      "max": {
+        "X": 125,
+        "Y": 3705
+      }
+    },
+    {
+      "_n": "OGRS Crypt Antechamber basic Spider #2",
+      "id": 34,
+      "start": {
+        "X": 111,
+        "Y": 3704
+      },
+      "min": {
+        "X": 110,
+        "Y": 3700
+      },
+      "max": {
+        "X": 125,
+        "Y": 3705
+      }
+    },
+    {
+      "_n": "OGRS Crypt Antechamber basic Spider #3",
+      "id": 34,
+      "start": {
+        "X": 113,
+        "Y": 3702
+      },
+      "min": {
+        "X": 110,
+        "Y": 3700
+      },
+      "max": {
+        "X": 125,
+        "Y": 3705
+      }
+    },
+    {
+      "_n": "OGRS Crypt Antechamber basic Spider #4",
+      "id": 34,
+      "start": {
+        "X": 115,
+        "Y": 3700
+      },
+      "min": {
+        "X": 110,
+        "Y": 3700
+      },
+      "max": {
+        "X": 125,
+        "Y": 3705
+      }
+    },
+    {
+      "_n": "OGRS Crypt Antechamber basic Spider #5",
+      "id": 34,
+      "start": {
+        "X": 116,
+        "Y": 3704
+      },
+      "min": {
+        "X": 110,
+        "Y": 3700
+      },
+      "max": {
+        "X": 125,
+        "Y": 3705
+      }
+    },
+    {
+      "_n": "OGRS Crypt Antechamber basic Spider #6",
       "id": 34,
       "start": {
         "X": 118,
-        "Y": 3802
+        "Y": 3702
+      },
+      "min": {
+        "X": 110,
+        "Y": 3700
+      },
+      "max": {
+        "X": 125,
+        "Y": 3705
+      }
+    },
+    {
+      "_n": "OGRS Crypt Antechamber basic Spider #7",
+      "id": 34,
+      "start": {
+        "X": 120,
+        "Y": 3700
+      },
+      "min": {
+        "X": 110,
+        "Y": 3700
+      },
+      "max": {
+        "X": 125,
+        "Y": 3705
+      }
+    },
+    {
+      "_n": "OGRS Crypt Antechamber basic Spider #8",
+      "id": 34,
+      "start": {
+        "X": 121,
+        "Y": 3704
+      },
+      "min": {
+        "X": 110,
+        "Y": 3700
+      },
+      "max": {
+        "X": 125,
+        "Y": 3705
+      }
+    },
+    {
+      "_n": "OGRS Crypt Spider Den Giant Spider lvl8 #1",
+      "id": 23,
+      "start": {
+        "X": 128,
+        "Y": 3700
+      },
+      "min": {
+        "X": 128,
+        "Y": 3700
+      },
+      "max": {
+        "X": 137,
+        "Y": 3706
+      }
+    },
+    {
+      "_n": "OGRS Crypt Spider Den Giant Spider lvl8 #2",
+      "id": 23,
+      "start": {
+        "X": 129,
+        "Y": 3704
+      },
+      "min": {
+        "X": 128,
+        "Y": 3700
+      },
+      "max": {
+        "X": 137,
+        "Y": 3706
+      }
+    },
+    {
+      "_n": "OGRS Crypt Spider Den Giant Spider lvl8 #3",
+      "id": 23,
+      "start": {
+        "X": 131,
+        "Y": 3701
+      },
+      "min": {
+        "X": 128,
+        "Y": 3700
+      },
+      "max": {
+        "X": 137,
+        "Y": 3706
+      }
+    },
+    {
+      "_n": "OGRS Crypt Spider Den Giant Spider lvl8 #4",
+      "id": 23,
+      "start": {
+        "X": 132,
+        "Y": 3705
+      },
+      "min": {
+        "X": 128,
+        "Y": 3700
+      },
+      "max": {
+        "X": 137,
+        "Y": 3706
+      }
+    },
+    {
+      "_n": "OGRS Crypt Spider Den Giant Spider lvl8 #5",
+      "id": 23,
+      "start": {
+        "X": 134,
+        "Y": 3702
+      },
+      "min": {
+        "X": 128,
+        "Y": 3700
+      },
+      "max": {
+        "X": 137,
+        "Y": 3706
+      }
+    },
+    {
+      "_n": "OGRS Crypt Spider Den Giant Spider lvl8 #6",
+      "id": 23,
+      "start": {
+        "X": 135,
+        "Y": 3706
+      },
+      "min": {
+        "X": 128,
+        "Y": 3700
+      },
+      "max": {
+        "X": 137,
+        "Y": 3706
+      }
+    },
+    {
+      "_n": "OGRS Crypt Red Pit Deadly Red Spider #1",
+      "id": 99,
+      "start": {
+        "X": 112,
+        "Y": 3710
+      },
+      "min": {
+        "X": 112,
+        "Y": 3707
+      },
+      "max": {
+        "X": 118,
+        "Y": 3713
+      }
+    },
+    {
+      "_n": "OGRS Crypt Red Pit Deadly Red Spider #2",
+      "id": 99,
+      "start": {
+        "X": 114,
+        "Y": 3710
+      },
+      "min": {
+        "X": 112,
+        "Y": 3707
+      },
+      "max": {
+        "X": 118,
+        "Y": 3713
+      }
+    },
+    {
+      "_n": "OGRS Crypt Red Pit Deadly Red Spider #3",
+      "id": 99,
+      "start": {
+        "X": 115,
+        "Y": 3710
+      },
+      "min": {
+        "X": 112,
+        "Y": 3707
+      },
+      "max": {
+        "X": 118,
+        "Y": 3713
+      }
+    },
+    {
+      "_n": "OGRS Crypt Red Pit Deadly Red Spider #4",
+      "id": 99,
+      "start": {
+        "X": 116,
+        "Y": 3710
+      },
+      "min": {
+        "X": 112,
+        "Y": 3707
+      },
+      "max": {
+        "X": 118,
+        "Y": 3713
+      }
+    },
+    {
+      "_n": "OGRS Crypt Giant Nest Giant Spider lvl31 #1",
+      "id": 74,
+      "start": {
+        "X": 110,
+        "Y": 3713
+      },
+      "min": {
+        "X": 110,
+        "Y": 3713
+      },
+      "max": {
+        "X": 137,
+        "Y": 3717
+      }
+    },
+    {
+      "_n": "OGRS Crypt Giant Nest Giant Spider lvl31 #2",
+      "id": 74,
+      "start": {
+        "X": 115,
+        "Y": 3714
+      },
+      "min": {
+        "X": 110,
+        "Y": 3713
+      },
+      "max": {
+        "X": 137,
+        "Y": 3717
+      }
+    },
+    {
+      "_n": "OGRS Crypt Giant Nest Giant Spider lvl31 #3",
+      "id": 74,
+      "start": {
+        "X": 121,
+        "Y": 3714
+      },
+      "min": {
+        "X": 110,
+        "Y": 3713
+      },
+      "max": {
+        "X": 137,
+        "Y": 3717
+      }
+    },
+    {
+      "_n": "OGRS Crypt Giant Nest Giant Spider lvl31 #4",
+      "id": 74,
+      "start": {
+        "X": 126,
+        "Y": 3715
+      },
+      "min": {
+        "X": 110,
+        "Y": 3713
+      },
+      "max": {
+        "X": 137,
+        "Y": 3717
+      }
+    },
+    {
+      "_n": "OGRS Crypt Giant Nest Giant Spider lvl31 #5",
+      "id": 74,
+      "start": {
+        "X": 132,
+        "Y": 3715
+      },
+      "min": {
+        "X": 110,
+        "Y": 3713
+      },
+      "max": {
+        "X": 137,
+        "Y": 3717
+      }
+    },
+    {
+      "_n": "OGRS Crypt Ghost Hollow Ghost lvl19 #1",
+      "id": 53,
+      "start": {
+        "X": 117,
+        "Y": 3723
+      },
+      "min": {
+        "X": 117,
+        "Y": 3722
+      },
+      "max": {
+        "X": 127,
+        "Y": 3728
+      }
+    },
+    {
+      "_n": "OGRS Crypt Ghost Hollow Ghost lvl19 #2",
+      "id": 53,
+      "start": {
+        "X": 119,
+        "Y": 3723
+      },
+      "min": {
+        "X": 117,
+        "Y": 3722
+      },
+      "max": {
+        "X": 127,
+        "Y": 3728
+      }
+    },
+    {
+      "_n": "OGRS Crypt Ghost Hollow Ghost lvl19 #3",
+      "id": 53,
+      "start": {
+        "X": 120,
+        "Y": 3727
+      },
+      "min": {
+        "X": 117,
+        "Y": 3722
+      },
+      "max": {
+        "X": 127,
+        "Y": 3728
+      }
+    },
+    {
+      "_n": "OGRS Crypt Ghost Hollow Ghost lvl19 #4",
+      "id": 53,
+      "start": {
+        "X": 122,
+        "Y": 3724
+      },
+      "min": {
+        "X": 117,
+        "Y": 3722
+      },
+      "max": {
+        "X": 127,
+        "Y": 3728
+      }
+    },
+    {
+      "_n": "OGRS Crypt Ghost Hollow Ghost lvl19 #5",
+      "id": 53,
+      "start": {
+        "X": 123,
+        "Y": 3728
+      },
+      "min": {
+        "X": 117,
+        "Y": 3722
+      },
+      "max": {
+        "X": 127,
+        "Y": 3728
+      }
+    },
+    {
+      "_n": "OGRS Crypt Ghost Hollow Ghost lvl19 #6",
+      "id": 53,
+      "start": {
+        "X": 125,
+        "Y": 3725
+      },
+      "min": {
+        "X": 117,
+        "Y": 3722
+      },
+      "max": {
+        "X": 127,
+        "Y": 3728
+      }
+    },
+    {
+      "_n": "OGRS Crypt Zombie Warrens Zombie lvl24 #1",
+      "id": 41,
+      "start": {
+        "X": 108,
+        "Y": 3730
+      },
+      "min": {
+        "X": 108,
+        "Y": 3730
+      },
+      "max": {
+        "X": 137,
+        "Y": 3737
+      }
+    },
+    {
+      "_n": "OGRS Crypt Zombie Warrens Zombie lvl24 #2",
+      "id": 41,
+      "start": {
+        "X": 112,
+        "Y": 3737
+      },
+      "min": {
+        "X": 108,
+        "Y": 3730
+      },
+      "max": {
+        "X": 137,
+        "Y": 3737
+      }
+    },
+    {
+      "_n": "OGRS Crypt Zombie Warrens Zombie lvl24 #3",
+      "id": 41,
+      "start": {
+        "X": 116,
+        "Y": 3730
+      },
+      "min": {
+        "X": 108,
+        "Y": 3730
+      },
+      "max": {
+        "X": 137,
+        "Y": 3737
+      }
+    },
+    {
+      "_n": "OGRS Crypt Zombie Warrens Zombie lvl24 #4",
+      "id": 41,
+      "start": {
+        "X": 119,
+        "Y": 3735
+      },
+      "min": {
+        "X": 108,
+        "Y": 3730
+      },
+      "max": {
+        "X": 137,
+        "Y": 3737
+      }
+    },
+    {
+      "_n": "OGRS Crypt Zombie Warrens Zombie lvl24 #5",
+      "id": 41,
+      "start": {
+        "X": 121,
+        "Y": 3737
+      },
+      "min": {
+        "X": 108,
+        "Y": 3730
+      },
+      "max": {
+        "X": 137,
+        "Y": 3737
+      }
+    },
+    {
+      "_n": "OGRS Crypt Zombie Warrens Zombie lvl24 #6",
+      "id": 41,
+      "start": {
+        "X": 125,
+        "Y": 3733
+      },
+      "min": {
+        "X": 108,
+        "Y": 3730
+      },
+      "max": {
+        "X": 137,
+        "Y": 3737
+      }
+    },
+    {
+      "_n": "OGRS Crypt Zombie Warrens Zombie lvl24 #7",
+      "id": 41,
+      "start": {
+        "X": 128,
+        "Y": 3735
+      },
+      "min": {
+        "X": 108,
+        "Y": 3730
+      },
+      "max": {
+        "X": 137,
+        "Y": 3737
+      }
+    },
+    {
+      "_n": "OGRS Crypt Zombie Warrens Zombie lvl24 #8",
+      "id": 41,
+      "start": {
+        "X": 131,
+        "Y": 3736
+      },
+      "min": {
+        "X": 108,
+        "Y": 3730
+      },
+      "max": {
+        "X": 137,
+        "Y": 3737
+      }
+    },
+    {
+      "_n": "OGRS Crypt Ossuary Skeleton lvl21 #1",
+      "id": 40,
+      "start": {
+        "X": 113,
+        "Y": 3739
+      },
+      "min": {
+        "X": 113,
+        "Y": 3738
+      },
+      "max": {
+        "X": 132,
+        "Y": 3741
+      }
+    },
+    {
+      "_n": "OGRS Crypt Ossuary Skeleton lvl21 #2",
+      "id": 40,
+      "start": {
+        "X": 118,
+        "Y": 3739
+      },
+      "min": {
+        "X": 113,
+        "Y": 3738
+      },
+      "max": {
+        "X": 132,
+        "Y": 3741
+      }
+    },
+    {
+      "_n": "OGRS Crypt Ossuary Skeleton lvl21 #3",
+      "id": 40,
+      "start": {
+        "X": 123,
+        "Y": 3739
+      },
+      "min": {
+        "X": 113,
+        "Y": 3738
+      },
+      "max": {
+        "X": 132,
+        "Y": 3741
+      }
+    },
+    {
+      "_n": "OGRS Crypt Ossuary Skeleton lvl21 #4",
+      "id": 40,
+      "start": {
+        "X": 128,
+        "Y": 3739
+      },
+      "min": {
+        "X": 113,
+        "Y": 3738
+      },
+      "max": {
+        "X": 132,
+        "Y": 3741
+      }
+    },
+    {
+      "_n": "OGRS Crypt Ossuary Skeleton lvl28 #1",
+      "id": 50,
+      "start": {
+        "X": 113,
+        "Y": 3739
+      },
+      "min": {
+        "X": 113,
+        "Y": 3738
+      },
+      "max": {
+        "X": 132,
+        "Y": 3741
+      }
+    },
+    {
+      "_n": "OGRS Crypt Ossuary Skeleton lvl28 #2",
+      "id": 50,
+      "start": {
+        "X": 118,
+        "Y": 3739
+      },
+      "min": {
+        "X": 113,
+        "Y": 3738
+      },
+      "max": {
+        "X": 132,
+        "Y": 3741
+      }
+    },
+    {
+      "_n": "OGRS Crypt Ossuary Skeleton lvl28 #3",
+      "id": 50,
+      "start": {
+        "X": 123,
+        "Y": 3739
+      },
+      "min": {
+        "X": 113,
+        "Y": 3738
+      },
+      "max": {
+        "X": 132,
+        "Y": 3741
+      }
+    },
+    {
+      "_n": "OGRS Crypt Ossuary Skeleton lvl28 #4",
+      "id": 50,
+      "start": {
+        "X": 128,
+        "Y": 3739
+      },
+      "min": {
+        "X": 113,
+        "Y": 3738
+      },
+      "max": {
+        "X": 132,
+        "Y": 3741
+      }
+    },
+    {
+      "_n": "OGRS Crypt Tomb Zombie lvl32 guard #1",
+      "id": 68,
+      "start": {
+        "X": 116,
+        "Y": 3742
       },
       "min": {
         "X": 116,
-        "Y": 3800
+        "Y": 3742
       },
       "max": {
-        "X": 120,
-        "Y": 3804
+        "X": 128,
+        "Y": 3743
       }
     },
     {
-      "_n": "OGRS Crypt \u2014 basic Spider",
-      "id": 34,
+      "_n": "OGRS Crypt Tomb Zombie lvl32 guard #2",
+      "id": 68,
       "start": {
         "X": 122,
-        "Y": 3803
+        "Y": 3743
       },
       "min": {
-        "X": 120,
-        "Y": 3801
+        "X": 116,
+        "Y": 3742
       },
       "max": {
-        "X": 124,
-        "Y": 3805
+        "X": 128,
+        "Y": 3743
       }
     },
     {
-      "_n": "OGRS Crypt \u2014 Giant Spider lvl8",
-      "id": 23,
+      "_n": "OGRS Crypt Tomb Crypt Lord (lvl54) #1",
+      "id": 195,
       "start": {
-        "X": 121,
-        "Y": 3805
+        "X": 116,
+        "Y": 3742
       },
       "min": {
-        "X": 119,
-        "Y": 3803
+        "X": 116,
+        "Y": 3742
       },
       "max": {
-        "X": 123,
-        "Y": 3807
+        "X": 128,
+        "Y": 3743
       }
     },
     {
-      "_n": "OGRS Crypt \u2014 Giant Spider lvl31 (deeper)",
+      "_n": "OGRS Crypt Spider Vault Mini-Boss (Giant Spider lvl31) #1",
       "id": 74,
       "start": {
-        "X": 124,
-        "Y": 3808
+        "X": 138,
+        "Y": 3738
       },
       "min": {
-        "X": 122,
-        "Y": 3806
+        "X": 138,
+        "Y": 3738
       },
       "max": {
-        "X": 126,
-        "Y": 3810
-      }
-    },
-    {
-      "_n": "OGRS Crypt \u2014 Deadly Red spider (the prize, careful)",
-      "id": 99,
-      "start": {
-        "X": 127,
-        "Y": 3811
-      },
-      "min": {
-        "X": 125,
-        "Y": 3809
-      },
-      "max": {
-        "X": 129,
-        "Y": 3813
+        "X": 144,
+        "Y": 3742
       }
     }
   ]

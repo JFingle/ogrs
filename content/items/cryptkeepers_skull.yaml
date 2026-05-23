@@ -1,0 +1,25 @@
+# OGRS item: Cryptkeeper's Skull.
+#
+# One-time trophy drop from the Crypt Lord at the back of the
+# Lumbridge Crypt's Burial Chamber (sparky 2026-05-21). Awarded on
+# first-kill only — gated by player cache key "ogrs_crypt_lord_killed".
+# Subsequent kills give the standard boss-tier gold + bones drop.
+#
+# Sprite reuses an upstream skull/bone graphic from the items archive.
+# Stackable so future expansions (e.g. multi-boss crypt runs) can let
+# the player collect a set without inventory bloat.
+
+id: 1608
+name: Cryptkeeper's Skull
+description: A pitted skull, still humming faintly with cold magic. Proof you bested the Crypt Lord.
+command: ""
+stackable: false
+untradeable: true
+members_only: false
+noteable: false
+base_price: 0
+picture_mask: 0x2B2B2B
+wieldable: false
+sprite:
+  id: 173
+  location: "items:173"

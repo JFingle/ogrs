@@ -323,20 +323,551 @@
       "direction": 0
     },
     {
-      "_n": "OGRS Crypt Hatch \u2014 Lumbridge castle interior, north side. Climb-down enters the crypt.",
-      "id": 1319,
+      "_n": "spider_den torch N",
+      "id": 51,
       "pos": {
-        "X": 120,
-        "Y": 645
+        "X": 111,
+        "Y": 3714
       },
       "direction": 0
     },
     {
-      "_n": "OGRS Crypt Ladder \u2014 back to the surface hatch.",
+      "_n": "spider_den torch S",
+      "id": 51,
+      "pos": {
+        "X": 134,
+        "Y": 3714
+      },
+      "direction": 0
+    },
+    {
+      "_n": "spider_den torch E",
+      "id": 51,
+      "pos": {
+        "X": 111,
+        "Y": 3718
+      },
+      "direction": 0
+    },
+    {
+      "_n": "spider_den torch W",
+      "id": 51,
+      "pos": {
+        "X": 134,
+        "Y": 3718
+      },
+      "direction": 0
+    },
+    {
+      "_n": "crypt_entrance torch N",
+      "id": 51,
+      "pos": {
+        "X": 109,
+        "Y": 3723
+      },
+      "direction": 0
+    },
+    {
+      "_n": "crypt_entrance torch S",
+      "id": 51,
+      "pos": {
+        "X": 136,
+        "Y": 3723
+      },
+      "direction": 0
+    },
+    {
+      "_n": "crypt_entrance torch E",
+      "id": 51,
+      "pos": {
+        "X": 109,
+        "Y": 3726
+      },
+      "direction": 0
+    },
+    {
+      "_n": "crypt_entrance torch W",
+      "id": 51,
+      "pos": {
+        "X": 136,
+        "Y": 3726
+      },
+      "direction": 0
+    },
+    {
+      "_n": "burial_chamber torch N",
+      "id": 51,
+      "pos": {
+        "X": 109,
+        "Y": 3731
+      },
+      "direction": 0
+    },
+    {
+      "_n": "burial_chamber torch S",
+      "id": 51,
+      "pos": {
+        "X": 136,
+        "Y": 3731
+      },
+      "direction": 0
+    },
+    {
+      "_n": "burial_chamber torch E",
+      "id": 51,
+      "pos": {
+        "X": 109,
+        "Y": 3734
+      },
+      "direction": 0
+    },
+    {
+      "_n": "burial_chamber torch W",
+      "id": 51,
+      "pos": {
+        "X": 136,
+        "Y": 3734
+      },
+      "direction": 0
+    },
+    {
+      "_n": "Crypt Entrance \u2014 sealed coffin W",
+      "id": 39,
+      "pos": {
+        "X": 110,
+        "Y": 3724
+      },
+      "direction": 0
+    },
+    {
+      "_n": "OGRS Crypt Hatch \u2014 surface",
+      "id": 1319,
+      "pos": {
+        "X": 173,
+        "Y": 638
+      },
+      "direction": 0
+    },
+    {
+      "_n": "OGRS Crypt Ladder \u2014 Antechamber NW",
       "id": 1320,
       "pos": {
+        "X": 113,
+        "Y": 3701
+      },
+      "direction": 0
+    },
+    {
+      "_n": "OGRS Crypt Sealed Stone Door \u2014 Spider Vault gate",
+      "id": 1323,
+      "pos": {
+        "X": 133,
+        "Y": 3740
+      },
+      "direction": 0
+    },
+    {
+      "_n": "OGRS Crypt Inner Gate \u2014 spider/ghost divider",
+      "id": 1324,
+      "pos": {
+        "X": 122,
+        "Y": 3720
+      },
+      "direction": 2
+    },
+    {
+      "_n": "OGRS Crypt Inner Gate \u2014 warrens/ossuary divider",
+      "id": 1324,
+      "pos": {
+        "X": 121,
+        "Y": 3738
+      },
+      "direction": 2
+    },
+    {
+      "_n": "OGRS Crypt Inner Gate \u2014 boss room entrance",
+      "id": 1324,
+      "pos": {
+        "X": 122,
+        "Y": 3742
+      },
+      "direction": 2
+    },
+    {
+      "_n": "OGRS Crypt antechamber torch",
+      "id": 51,
+      "pos": {
+        "X": 110,
+        "Y": 3700
+      },
+      "direction": 0
+    },
+    {
+      "_n": "OGRS Crypt antechamber torch",
+      "id": 51,
+      "pos": {
+        "X": 112,
+        "Y": 3705
+      },
+      "direction": 0
+    },
+    {
+      "_n": "OGRS Crypt antechamber torch",
+      "id": 51,
+      "pos": {
+        "X": 118,
+        "Y": 3700
+      },
+      "direction": 0
+    },
+    {
+      "_n": "OGRS Crypt antechamber torch",
+      "id": 51,
+      "pos": {
+        "X": 121,
+        "Y": 3705
+      },
+      "direction": 0
+    },
+    {
+      "_n": "OGRS Crypt spider_den torch",
+      "id": 51,
+      "pos": {
+        "X": 128,
+        "Y": 3700
+      },
+      "direction": 0
+    },
+    {
+      "_n": "OGRS Crypt spider_den torch",
+      "id": 51,
+      "pos": {
+        "X": 129,
+        "Y": 3706
+      },
+      "direction": 0
+    },
+    {
+      "_n": "OGRS Crypt spider_den torch",
+      "id": 51,
+      "pos": {
+        "X": 133,
+        "Y": 3700
+      },
+      "direction": 0
+    },
+    {
+      "_n": "OGRS Crypt spider_den torch",
+      "id": 51,
+      "pos": {
+        "X": 136,
+        "Y": 3706
+      },
+      "direction": 0
+    },
+    {
+      "_n": "OGRS Crypt red_pit torch",
+      "id": 51,
+      "pos": {
+        "X": 112,
+        "Y": 3710
+      },
+      "direction": 0
+    },
+    {
+      "_n": "OGRS Crypt red_pit torch",
+      "id": 51,
+      "pos": {
+        "X": 115,
+        "Y": 3707
+      },
+      "direction": 0
+    },
+    {
+      "_n": "OGRS Crypt giant_nest torch",
+      "id": 51,
+      "pos": {
+        "X": 110,
+        "Y": 3713
+      },
+      "direction": 0
+    },
+    {
+      "_n": "OGRS Crypt giant_nest torch",
+      "id": 51,
+      "pos": {
+        "X": 115,
+        "Y": 3717
+      },
+      "direction": 0
+    },
+    {
+      "_n": "OGRS Crypt giant_nest torch",
+      "id": 51,
+      "pos": {
+        "X": 119,
+        "Y": 3717
+      },
+      "direction": 0
+    },
+    {
+      "_n": "OGRS Crypt giant_nest torch",
+      "id": 51,
+      "pos": {
+        "X": 127,
+        "Y": 3717
+      },
+      "direction": 0
+    },
+    {
+      "_n": "OGRS Crypt giant_nest torch",
+      "id": 51,
+      "pos": {
+        "X": 131,
+        "Y": 3717
+      },
+      "direction": 0
+    },
+    {
+      "_n": "OGRS Crypt ghost_hollow torch",
+      "id": 51,
+      "pos": {
+        "X": 117,
+        "Y": 3723
+      },
+      "direction": 0
+    },
+    {
+      "_n": "OGRS Crypt ghost_hollow torch",
+      "id": 51,
+      "pos": {
+        "X": 118,
+        "Y": 3727
+      },
+      "direction": 0
+    },
+    {
+      "_n": "OGRS Crypt ghost_hollow torch",
+      "id": 51,
+      "pos": {
+        "X": 123,
+        "Y": 3728
+      },
+      "direction": 0
+    },
+    {
+      "_n": "OGRS Crypt ghost_hollow torch",
+      "id": 51,
+      "pos": {
+        "X": 126,
+        "Y": 3727
+      },
+      "direction": 0
+    },
+    {
+      "_n": "OGRS Crypt zombie_warrens torch",
+      "id": 51,
+      "pos": {
+        "X": 108,
+        "Y": 3730
+      },
+      "direction": 0
+    },
+    {
+      "_n": "OGRS Crypt zombie_warrens torch",
+      "id": 51,
+      "pos": {
+        "X": 113,
+        "Y": 3735
+      },
+      "direction": 0
+    },
+    {
+      "_n": "OGRS Crypt zombie_warrens torch",
+      "id": 51,
+      "pos": {
+        "X": 118,
+        "Y": 3735
+      },
+      "direction": 0
+    },
+    {
+      "_n": "OGRS Crypt zombie_warrens torch",
+      "id": 51,
+      "pos": {
+        "X": 122,
+        "Y": 3735
+      },
+      "direction": 0
+    },
+    {
+      "_n": "OGRS Crypt zombie_warrens torch",
+      "id": 51,
+      "pos": {
+        "X": 127,
+        "Y": 3733
+      },
+      "direction": 0
+    },
+    {
+      "_n": "OGRS Crypt zombie_warrens torch",
+      "id": 51,
+      "pos": {
+        "X": 132,
+        "Y": 3735
+      },
+      "direction": 0
+    },
+    {
+      "_n": "OGRS Crypt ossuary torch",
+      "id": 51,
+      "pos": {
+        "X": 113,
+        "Y": 3739
+      },
+      "direction": 0
+    },
+    {
+      "_n": "OGRS Crypt ossuary torch",
+      "id": 51,
+      "pos": {
+        "X": 115,
+        "Y": 3738
+      },
+      "direction": 0
+    },
+    {
+      "_n": "OGRS Crypt ossuary torch",
+      "id": 51,
+      "pos": {
+        "X": 119,
+        "Y": 3738
+      },
+      "direction": 0
+    },
+    {
+      "_n": "OGRS Crypt ossuary torch",
+      "id": 51,
+      "pos": {
+        "X": 124,
+        "Y": 3739
+      },
+      "direction": 0
+    },
+    {
+      "_n": "OGRS Crypt ossuary torch",
+      "id": 51,
+      "pos": {
+        "X": 129,
+        "Y": 3739
+      },
+      "direction": 0
+    },
+    {
+      "_n": "OGRS Crypt tomb torch",
+      "id": 51,
+      "pos": {
+        "X": 116,
+        "Y": 3742
+      },
+      "direction": 0
+    },
+    {
+      "_n": "OGRS Crypt tomb torch",
+      "id": 51,
+      "pos": {
+        "X": 118,
+        "Y": 3743
+      },
+      "direction": 0
+    },
+    {
+      "_n": "OGRS Crypt tomb torch",
+      "id": 51,
+      "pos": {
+        "X": 121,
+        "Y": 3743
+      },
+      "direction": 0
+    },
+    {
+      "_n": "OGRS Crypt tomb torch",
+      "id": 51,
+      "pos": {
+        "X": 124,
+        "Y": 3743
+      },
+      "direction": 0
+    },
+    {
+      "_n": "OGRS Crypt Ghost Hollow \u2014 sealed coffin",
+      "id": 39,
+      "pos": {
+        "X": 118,
+        "Y": 3724
+      },
+      "direction": 0
+    },
+    {
+      "_n": "OGRS Crypt Zombie Warrens \u2014 coffin W",
+      "id": 39,
+      "pos": {
+        "X": 112,
+        "Y": 3735
+      },
+      "direction": 0
+    },
+    {
+      "_n": "OGRS Crypt Zombie Warrens \u2014 coffin E",
+      "id": 39,
+      "pos": {
+        "X": 132,
+        "Y": 3735
+      },
+      "direction": 0
+    },
+    {
+      "_n": "OGRS Crypt Ossuary \u2014 coffin",
+      "id": 39,
+      "pos": {
+        "X": 117,
+        "Y": 3740
+      },
+      "direction": 0
+    },
+    {
+      "_n": "OGRS Crypt Tomb \u2014 altar W",
+      "id": 39,
+      "pos": {
+        "X": 117,
+        "Y": 3742
+      },
+      "direction": 0
+    },
+    {
+      "_n": "OGRS Crypt Tomb \u2014 altar E",
+      "id": 39,
+      "pos": {
+        "X": 125,
+        "Y": 3742
+      },
+      "direction": 0
+    },
+    {
+      "_n": "OGRS Crypt Tomb \u2014 candles W",
+      "id": 25,
+      "pos": {
         "X": 120,
-        "Y": 3800
+        "Y": 3743
+      },
+      "direction": 0
+    },
+    {
+      "_n": "OGRS Crypt Tomb \u2014 candles E",
+      "id": 25,
+      "pos": {
+        "X": 124,
+        "Y": 3743
       },
       "direction": 0
     }

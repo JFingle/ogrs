@@ -38,6 +38,42 @@ public class WorldLoader {
 		this.worldPopulator = new WorldPopulator(getWorld());
 	}
 
+	/** OGRS — cache of (x<<32)|y keys for crypt walkable tiles. Loaded lazily
+	 *  from conf/server/defs/locs/OgrsCryptWalkable.json which is regenerated
+	 *  by tools/gen_crypt_v4.py. Lets the WorldLoader synth handle irregular
+	 *  chamber shapes without listing rectangles in code. */
+	private static volatile java.util.Set<Long> ogrsCryptWalkableCache;
+
+	private static java.util.Set<Long> ogrsLoadCryptWalkable() {
+		java.util.Set<Long> cached = ogrsCryptWalkableCache;
+		if (cached != null) return cached;
+		final java.util.Set<Long> set = new java.util.HashSet<>();
+		try (java.io.InputStream in = new java.io.FileInputStream(
+				"./conf/server/defs/locs/OgrsCryptWalkable.json")) {
+			java.io.ByteArrayOutputStream b = new java.io.ByteArrayOutputStream();
+			byte[] buf = new byte[8192];
+			int n;
+			while ((n = in.read(buf)) > 0) b.write(buf, 0, n);
+			String src = b.toString("UTF-8");
+			// Cheap parse: [[x,y],[x,y],...] — no nested objects.
+			int i = 0;
+			while ((i = src.indexOf('[', i + 1)) >= 0) {
+				int comma = src.indexOf(',', i);
+				int close = src.indexOf(']', i);
+				if (comma < 0 || close < 0 || comma > close) continue;
+				try {
+					int x = Integer.parseInt(src.substring(i + 1, comma).trim());
+					int y = Integer.parseInt(src.substring(comma + 1, close).trim());
+					set.add((((long) x) << 32) | (y & 0xffffffffL));
+				} catch (NumberFormatException ignore) { }
+			}
+		} catch (Exception e) {
+			LOGGER.warn("OGRS: failed to load OgrsCryptWalkable.json: " + e.getMessage());
+		}
+		ogrsCryptWalkableCache = set;
+		return set;
+	}
+
 	private static boolean projectileClipAllowed(final int wallID) {
 		for (final int allowedWallIdType : ALLOWED_WALL_ID_TYPES) {
 			if (allowedWallIdType == wallID) {
@@ -83,8 +119,58 @@ public class WorldLoader {
 				heiFile = memberHei;
 		}
 
-		if (jmFile == null && datFile == null)
-			return null;
+		// OGRS — plane-3 sectors that house the Lumbridge Crypt. v4 layout
+		// spans h3x50y55 (main dungeon) and h3x51y55 (Spider Vault east
+		// edge — X=144). Neither has authored .jm/.dat in maps64.jag, so
+		// the upstream loader returns null. We synthesize a sector with
+		// cave-floor for chamber tiles + void elsewhere.
+		final boolean isOgrsCryptSector = (height == 3
+			&& ((sectionX == 50 && sectionY == 55)
+			 || (sectionX == 51 && sectionY == 55)));
+
+		if (jmFile == null && datFile == null) {
+			if (!isOgrsCryptSector) return null;
+			// Load the walkable tile set from the generator's JSON output.
+			// This lets us use irregular room shapes (L, octagon, diamond,
+			// pillar-bearing halls) without enumerating rectangles in Java.
+			java.util.Set<Long> ogrsWalkable = ogrsLoadCryptWalkable();
+			// OGRS crypt sector synthesis. ROOT CAUSE of "no floor" issue:
+			// overlay=8 maps to TileDef[7].colour=12345678, which is the
+			// Scene.TRANSPARENT sentinel — the client's renderer skips
+			// face insertion for transparent tiles, so no floor renders.
+			// Swamp cave works in spite of this because its tiles have
+			// wall data baked in that triggers a fallback edge-blend
+			// rendering path. We can't use that for a clean chamber.
+			//
+			// Solution: overlay=5 (TileDef[4]) — colour=-16913 (cave moss
+			// green), walkable, tileValue=2. This is the most common cave
+			// dirt-floor overlay in plane-3 across the whole RSC world
+			// (6851 tiles in authentic data, used in deep caves). Renders
+			// as proper dirt/cavern floor texture. Outside-chamber tiles
+			// keep overlay=8 (TRANSPARENT, blocked) so the sector edges
+			// stay invisible void.
+			Sector synth = new Sector();
+			final int sectorWorldX = sectionX * Constants.REGION_SIZE - 2304;
+			final int sectorWorldY = sectionY * Constants.REGION_SIZE - 1776 + (height * 944);
+			for (int x = 0; x < Constants.REGION_SIZE; x++) {
+				for (int y = 0; y < Constants.REGION_SIZE; y++) {
+					Tile t = new Tile();
+					final int wx = sectorWorldX + x;
+					final int wy = sectorWorldY + y;
+					boolean inChamber = ogrsWalkable != null
+						&& ogrsWalkable.contains((((long) wx) << 32) | (wy & 0xffffffffL));
+					t.groundElevation = 0;
+					t.groundTexture = inChamber ? (byte) 70 : 0;
+					t.groundOverlay = inChamber ? (byte) 5 : (byte) 8;
+					t.roofTexture = 0;
+					t.horizontalWall = 0;
+					t.verticalWall = 0;
+					t.diagonalWalls = 0;
+					synth.setTile(x, y, t);
+				}
+			}
+			return synth;
+		}
 
 		if (datFile != null) {
 			if (altFormat) {
@@ -203,6 +289,10 @@ public class WorldLoader {
 				}
 			}
 		} else {
+			// Plane-3 sectors with no .dat file default to decoration=8
+			// (dark blocked rock). The OGRS crypt sector is handled
+			// separately via early-return at the top of this method; here
+			// we keep the authentic upstream behaviour intact.
 			for (int tile = 0; tile < 2304; tile++) {
 				wallsNorthSouth[tile] = 0;
 				wallsEastWest[tile] = 0;

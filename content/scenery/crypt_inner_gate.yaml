@@ -1,0 +1,22 @@
+# OGRS scenery: Crypt Inner Gate.
+#
+# Visual divider between the spider section (Giant Nest) and the burial
+# section (Ghost Hollow). type=0 makes it non-blocking — player walks
+# straight through for now. The "Open" command + key-check plugin can
+# be wired up later when sparky wants to gate this transition.
+#
+# Reuses upstream `metalgateclosed` model — reads as a heavy iron gate
+# closed across the corridor.
+
+id: 1324
+name: Crypt Gate
+description: A heavy iron gate. It swings freely for now, but old hinges suggest it could be locked one day.
+command1: "Open"
+command2: "Examine"
+# type=1 = blocking. Player must click Open to pass; the
+# OgrsCryptGate plugin handles the teleport-across logic.
+type: 1
+width: 1
+height: 1
+ground_item_var: 0
+model: metalgateclosed

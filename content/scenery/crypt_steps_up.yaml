@@ -1,0 +1,19 @@
+# OGRS scenery: Crypt Steps Up.
+# Return passage from the Burial Chamber back to the spider antechamber
+# (sparky 2026-05-21 — Lumbridge Crypt v2). Click "Walk-up" → teleports
+# the player back to the matching steps-down tile in the spider chamber.
+# Handled by OgrsLumbridgeCrypt plugin.
+# Reuses upstream `cave bridge stairs` model.
+
+id: 1322
+name: Crypt Steps
+description: Worn stone steps lead back up toward the spider chamber.
+command1: "Walk-up"
+command2: "Examine"
+type: 0
+width: 1
+height: 1
+ground_item_var: 0
+# Use ladder — same model as the surface ladder pair. "cave bridge
+# stairs" rendered wrong in playtest.
+model: ladder

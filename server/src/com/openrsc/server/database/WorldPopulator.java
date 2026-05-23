@@ -198,6 +198,14 @@ public final class WorldPopulator {
 						//loadGameObjLocs(getWorld().getServer().getConfig().CONFIG_DIR + "/defs/locs/BoundaryLocsExpansion.json", type);
 					}
 				}
+				// OGRS additive boundary spawns — always loaded. Mirrors the
+				// SceneryLocsCustom.json pattern. Used to wall in OGRS-built
+				// dungeons (Lumbridge Crypt, etc) without touching the
+				// upstream authentic BoundaryLocs.json.
+				final String ogrsBoundaryFile = getWorld().getServer().getConfig().CONFIG_DIR + "/defs/locs/BoundaryLocsCustom.json";
+				if (new java.io.File(ogrsBoundaryFile).exists()) {
+					loadGameObjLocs(ogrsBoundaryFile, type);
+				}
 				return;
 			}
 			case Scenery: {

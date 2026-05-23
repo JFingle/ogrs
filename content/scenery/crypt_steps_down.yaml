@@ -1,0 +1,21 @@
+# OGRS scenery: Crypt Steps Down.
+# Inner-crypt descent from the spider antechamber down to the Burial
+# Chamber (sparky 2026-05-21 — Lumbridge Crypt v2). Click "Walk-down"
+# → teleports the player into the burial chamber at the matching
+# steps-up tile. Handled by OgrsLumbridgeCrypt plugin.
+# Reuses upstream `cave bridge stairs` model — same look as the
+# "Stone steps" used by Karamja/Brimhaven dungeon descents.
+
+id: 1321
+name: Crypt Steps
+description: Worn stone steps lead deeper into the crypt. Faint groans drift up from below.
+command1: "Walk-down"
+command2: "Examine"
+type: 0
+width: 1
+height: 1
+ground_item_var: 0
+# Use ladderdown — same model as the surface hatch, so the visual is
+# recognizable. "cave bridge stairs" rendered as a tree-stump-looking
+# object in playtest (sparky 2026-05-22).
+model: ladderdown

@@ -1,0 +1,20 @@
+# OGRS scenery: Sealed Stone Door.
+#
+# Blocks the corridor between the Ossuary and the Spider Vault. type=1
+# means it occupies the tile and blocks passage. Use the Crypt Spider
+# Key (item 1609) on this door — handled by OgrsCryptSpiderVault plugin
+# — to consume the key and teleport into the Vault.
+#
+# Reuses upstream `largedoor` model — reads as a heavy stone slab,
+# fits the crypt aesthetic.
+
+id: 1323
+name: Sealed Stone Door
+description: A heavy stone door carved with arachnid sigils. It refuses to budge.
+command1: "Use"
+command2: "Examine"
+type: 1
+width: 1
+height: 1
+ground_item_var: 0
+model: largedoor

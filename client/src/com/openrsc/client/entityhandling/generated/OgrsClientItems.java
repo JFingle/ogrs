@@ -67,6 +67,12 @@ public final class OgrsClientItems {
 		// id 1607 — from content/items/iron_dagger_spiderbane.yaml
 		items.add(new ItemDef("Iron dagger of spiderbane", "Iron blade etched with eight-legged runes. Aches to taste arachnid.", "", 280, 28, "items:28", false, true, 49, 0x2A4A2A, false, false, true, i++));
 
+		// id 1608 — from content/items/cryptkeepers_skull.yaml
+		items.add(new ItemDef("Cryptkeeper's Skull", "A pitted skull, still humming faintly with cold magic. Proof you bested the Crypt Lord.", "", 0, 173, "items:173", false, false, 0, 0x2B2B2B, false, true, false, i++));
+
+		// id 1609 — from content/items/crypt_spider_key.yaml
+		items.add(new ItemDef("Crypt Spider Key", "A heavy iron key, etched with eight-legged sigils. Will crumble on use.", "", 0, 79, "items:79", false, false, 0, 0x4A3A1A, false, true, false, i++));
+
 		return i;
 	}
 }
