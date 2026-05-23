@@ -1672,12 +1672,17 @@ public enum ItemId {
 	OGRS_SPIDER_EGG(1606),
 	// Slayer -bane weapons (#36). YAML pipeline now carries weapon stats;
 	// damage hook in content/OgrsSlayerBane.
-	OGRS_IRON_DAGGER_SPIDERBANE(1607);
+	OGRS_IRON_DAGGER_SPIDERBANE(1607),
+	// Lumbridge Crypt (#11) — boss trophy + key item.
+	OGRS_CRYPTKEEPERS_SKULL(1608),
+	OGRS_CRYPT_SPIDER_KEY(1609),
+	// Slayer enchanted gem (#12) — portable task-progress readout.
+	OGRS_SLAYER_GEM(1610);
 
 	private int itemId;
 
 	public static final int maxAuthentic = 1289;
-	public static final int maxCustom = 1607;
+	public static final int maxCustom = 1610;
 
 	private static final Map<Integer, ItemId> byId = new HashMap<Integer, ItemId>();
 	private static final Map<String, ItemId> byName = new HashMap<String, ItemId>();

@@ -31,6 +31,9 @@ public final class SlayerShop extends AbstractShop {
 	public static final int OWNER_NPC_ID = OgrsNpcId.GRIZZLED_TRAVELER.id();
 
 	private final Item[] stock = new Item[]{
+		// Slayer enchanted gem (#12) — portable task-progress readout.
+		// Single-copy stock so the price stays meaningful; restocks slowly.
+		new Item(ItemId.OGRS_SLAYER_GEM.id(), 1),
 		new Item(ItemId.BRONZE_DAGGER.id(), 5),
 		new Item(ItemId.BRONZE_SHORT_SWORD.id(), 5),
 		new Item(ItemId.IRON_SHORT_SWORD.id(), 3),

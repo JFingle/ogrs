@@ -1,0 +1,27 @@
+# OGRS item: Slayer Enchanted Gem.
+#
+# Portable task-progress readout. Rub the gem from inventory to hear the
+# Grizzled Traveler's voice report your current task, the count remaining,
+# and your Slayer level — without trekking back to the master between
+# kills. Bought from the Slayer master for slayer points (TBD); also
+# given on first task as a starter convenience.
+#
+# Untradeable so the gem stays personal to the player who earned it.
+# Sprite reuses upstream items:160 (uncut sapphire) with a dark amethyst
+# tint to read as "enchanted". A dedicated faceted-gem sprite is a
+# nice-to-have future sprite-hunt task.
+
+id: 1610
+name: Slayer Enchanted Gem
+description: A small faceted gem, humming faintly. Rub it to hear your slayer master's voice.
+command: "Rub"
+stackable: false
+untradeable: true
+members_only: false
+noteable: false
+base_price: 500
+picture_mask: 0x4A1A6E
+wieldable: false
+sprite:
+  id: 160
+  location: "items:160"
