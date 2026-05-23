@@ -1,6 +1,7 @@
 package com.openrsc.server.plugins.custom.npcs.lumbridge;
 
 import com.openrsc.server.constants.ItemId;
+import com.openrsc.server.constants.OgrsNpcId;
 import com.openrsc.server.model.Shop;
 import com.openrsc.server.model.container.Item;
 import com.openrsc.server.model.entity.npc.Npc;
@@ -15,7 +16,7 @@ import com.openrsc.server.plugins.AbstractShop;
  */
 public final class CalebSmithSupplies extends AbstractShop {
 	public static final String NAME = "Garth's Smithing Supplies";
-	public static final int OWNER_NPC_ID = 839;
+	public static final int OWNER_NPC_ID = OgrsNpcId.GARTH.id();
 
 	private final Item[] stock = new Item[]{
 		new Item(ItemId.HAMMER.id(), 5),

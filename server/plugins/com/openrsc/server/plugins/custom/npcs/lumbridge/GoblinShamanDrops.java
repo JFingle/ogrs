@@ -1,6 +1,7 @@
 package com.openrsc.server.plugins.custom.npcs.lumbridge;
 
 import com.openrsc.server.constants.ItemId;
+import com.openrsc.server.constants.OgrsNpcId;
 import com.openrsc.server.model.entity.npc.Npc;
 import com.openrsc.server.model.entity.player.Player;
 import com.openrsc.server.net.rsc.ActionSender;
@@ -21,7 +22,7 @@ import static com.openrsc.server.plugins.Functions.give;
  */
 public final class GoblinShamanDrops implements KillNpcTrigger {
 
-	private static final int GOBLIN_SHAMAN_NPC_ID = 842;
+	private static final int GOBLIN_SHAMAN_NPC_ID = OgrsNpcId.GOBLIN_SHAMAN.id();
 	private static final int STAFF_DROP_PERCENT = 50;
 
 	@Override

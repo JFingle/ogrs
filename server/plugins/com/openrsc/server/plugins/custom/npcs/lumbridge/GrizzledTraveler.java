@@ -1,5 +1,6 @@
 package com.openrsc.server.plugins.custom.npcs.lumbridge;
 
+import com.openrsc.server.constants.OgrsNpcId;
 import com.openrsc.server.model.Shop;
 import com.openrsc.server.model.entity.npc.Npc;
 import com.openrsc.server.model.entity.player.Player;
@@ -24,12 +25,11 @@ import static com.openrsc.server.plugins.Functions.*;
  */
 public class GrizzledTraveler implements TalkNpcTrigger {
 
-	private static final int OGRS_GRIZZLED_TRAVELER_ID = 836;
 	private static final int COMPLETION_BONUS_XP = 50;
 
 	@Override
 	public boolean blockTalkNpc(final Player player, final Npc n) {
-		return n.getID() == OGRS_GRIZZLED_TRAVELER_ID;
+		return n.getID() == OgrsNpcId.GRIZZLED_TRAVELER.id();
 	}
 
 	@Override

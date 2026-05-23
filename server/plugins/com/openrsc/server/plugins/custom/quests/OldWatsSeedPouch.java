@@ -1,6 +1,7 @@
 package com.openrsc.server.plugins.custom.quests;
 
 import com.openrsc.server.constants.ItemId;
+import com.openrsc.server.constants.OgrsNpcId;
 import com.openrsc.server.model.container.Item;
 import com.openrsc.server.model.entity.npc.Npc;
 import com.openrsc.server.model.entity.player.Player;
@@ -49,9 +50,9 @@ import static com.openrsc.server.plugins.Functions.say;
  */
 public final class OldWatsSeedPouch extends AbstractOgrsQuest implements TalkNpcTrigger, KillNpcTrigger {
 
-	private static final int OLD_WAT_NPC_ID = 837;
-	private static final int GOBLIN_NPC_ID = 62;
-	private static final int GOBLIN_SHAMAN_NPC_ID = 842;
+	private static final int OLD_WAT_NPC_ID = OgrsNpcId.OLD_WAT.id();
+	private static final int GOBLIN_NPC_ID = 62;  // upstream NpcId.GOBLIN_LVL13 family
+	private static final int GOBLIN_SHAMAN_NPC_ID = OgrsNpcId.GOBLIN_SHAMAN.id();
 
 	/** 30% drop on rank-and-file goblin kill while in stage 1. */
 	private static final int POUCH_DROP_PERCENT = 30;

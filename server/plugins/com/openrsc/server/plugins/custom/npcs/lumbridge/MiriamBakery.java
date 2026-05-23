@@ -1,6 +1,7 @@
 package com.openrsc.server.plugins.custom.npcs.lumbridge;
 
 import com.openrsc.server.constants.ItemId;
+import com.openrsc.server.constants.OgrsNpcId;
 import com.openrsc.server.model.Shop;
 import com.openrsc.server.model.container.Item;
 import com.openrsc.server.model.entity.npc.Npc;
@@ -14,7 +15,7 @@ import com.openrsc.server.plugins.AbstractShop;
  */
 public final class MiriamBakery extends AbstractShop {
 	public static final String NAME = "Edith's Bakery";
-	public static final int OWNER_NPC_ID = 838;
+	public static final int OWNER_NPC_ID = OgrsNpcId.EDITH.id();
 
 	private final Item[] stock = new Item[]{
 		new Item(ItemId.BREAD.id(), 10),

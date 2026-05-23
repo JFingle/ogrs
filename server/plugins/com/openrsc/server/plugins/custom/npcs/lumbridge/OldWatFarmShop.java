@@ -1,6 +1,7 @@
 package com.openrsc.server.plugins.custom.npcs.lumbridge;
 
 import com.openrsc.server.constants.ItemId;
+import com.openrsc.server.constants.OgrsNpcId;
 import com.openrsc.server.model.Shop;
 import com.openrsc.server.model.container.Item;
 import com.openrsc.server.model.entity.npc.Npc;
@@ -24,7 +25,7 @@ import com.openrsc.server.plugins.AbstractShop;
 public final class OldWatFarmShop extends AbstractShop {
 
 	public static final String NAME = "Old Wat's Farming Supplies";
-	public static final int OWNER_NPC_ID = 837;
+	public static final int OWNER_NPC_ID = OgrsNpcId.OLD_WAT.id();
 
 	private final Item[] stock = new Item[]{
 		// OGRS farming kit (content/items/*.yaml).

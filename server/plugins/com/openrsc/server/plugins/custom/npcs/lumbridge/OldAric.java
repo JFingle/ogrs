@@ -1,5 +1,6 @@
 package com.openrsc.server.plugins.custom.npcs.lumbridge;
 
+import com.openrsc.server.constants.OgrsNpcId;
 import com.openrsc.server.constants.Skill;
 import com.openrsc.server.model.entity.npc.Npc;
 import com.openrsc.server.model.entity.player.Player;
@@ -29,7 +30,7 @@ import static com.openrsc.server.plugins.Functions.*;
  */
 public class OldAric implements TalkNpcTrigger {
 
-	private static final int NPC_ID = 843;
+	private static final int NPC_ID = OgrsNpcId.OLD_ARIC.id();
 
 	// Skill levels below these thresholds get specifically suggested.
 	// Tuning rationale: "still using a bronze axe" / "still on tier-1

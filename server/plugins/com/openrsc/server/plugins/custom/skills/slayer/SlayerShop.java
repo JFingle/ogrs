@@ -2,6 +2,7 @@ package com.openrsc.server.plugins.custom.skills.slayer;
 
 import com.openrsc.server.constants.ItemId;
 import com.openrsc.server.constants.NpcId;
+import com.openrsc.server.constants.OgrsNpcId;
 import com.openrsc.server.model.Shop;
 import com.openrsc.server.model.container.Item;
 import com.openrsc.server.model.entity.npc.Npc;
@@ -27,7 +28,7 @@ import com.openrsc.server.plugins.AbstractShop;
 public final class SlayerShop extends AbstractShop {
 
 	public static final String NAME = "Grizzled Traveler's Supplies";
-	public static final int OWNER_NPC_ID = 836; // Grizzled Traveler
+	public static final int OWNER_NPC_ID = OgrsNpcId.GRIZZLED_TRAVELER.id();
 
 	private final Item[] stock = new Item[]{
 		new Item(ItemId.BRONZE_DAGGER.id(), 5),
