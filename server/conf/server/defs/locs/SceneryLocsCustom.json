@@ -476,24 +476,6 @@
       "direction": 2
     },
     {
-      "_n": "OGRS Crypt Inner Gate \u2014 spider/ghost divider (W side)",
-      "id": 1324,
-      "pos": {
-        "X": 121,
-        "Y": 3720
-      },
-      "direction": 0
-    },
-    {
-      "_n": "OGRS Crypt Inner Gate \u2014 spider/ghost divider (E side)",
-      "id": 1324,
-      "pos": {
-        "X": 123,
-        "Y": 3720
-      },
-      "direction": 0
-    },
-    {
       "_n": "OGRS Crypt Inner Gate \u2014 warrens/ossuary divider",
       "id": 1324,
       "pos": {
