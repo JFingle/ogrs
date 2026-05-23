@@ -5520,40 +5520,62 @@ public final class mudclient implements Runnable {
 					}
 
 					if (isAndroid()) {
-						int uiX = getGameWidth() - 201 - 40;
-						int uiY = 3;
-						int uiWidth = 40;
-						int uiHeight = 32;
-
-						this.getSurface().drawBoxAlpha(uiX, uiY, uiWidth, uiHeight, 0x989898, 160);
-						this.getSurface().drawString("@bla@Key-", uiX + 9, uiY + 14, 0xffffff, 1);
-						this.getSurface().drawString("@bla@board", uiX + 5, uiY + 27, 0xffffff, 1);
-						if (this.mouseButtonClick != 0) {
-							if (this.mouseX >= uiX && this.mouseX <= uiX + uiWidth && this.mouseY >= uiY && this.mouseY <= uiY + uiHeight) {
-								this.mouseButtonClick = 0;
-								if (!osConfig.F_SHOWING_KEYBOARD) {
-									clientPort.drawKeyboard();
-								} else {
-									clientPort.closeKeyboard();
-								}
+						// OGRS — keyboard tab restyled to match the unified
+						// tab strip (32x32, gold trim, follows tabY). Slotted
+						// left of the run icon so it doesn't overlap COMBAT_TAB.
+						// Spacing per sparky's feedback: 6 px gap between
+						// COMBAT_TAB → run icon → keyboard tab so the icons
+						// don't sit flush against each other.
+						//   inv|map|skills|magic|friends|opts (W-201..W-3)
+						//   CB                                (W-233..W-201)
+						//   RUN  (gap 6)                      (W-271..W-239)
+						//   KEY  (gap 6)                      (W-309..W-277)
+						final int kbW = 32;
+						final int kbH = 32;
+						final int kbX = this.getSurface().width2 - 309;
+						final int kbY = Config.C_CUSTOM_UI ? getUITabsY() : 3;
+						final boolean kbActive = osConfig.F_SHOWING_KEYBOARD;
+						final boolean kbHover =
+							this.mouseX >= kbX && this.mouseX < kbX + kbW
+							&& this.mouseY >= kbY && this.mouseY < kbY + kbH;
+						final int kbBg = kbActive ? 0x4B3F1A : (kbHover ? 0x3A331A : 0x2D2C24);
+						this.getSurface().drawBoxAlpha(kbX, kbY, kbW, kbH, kbBg, 230);
+						this.getSurface().drawBoxBorder(kbX, kbW, kbY, kbH, 0x000000);
+						this.getSurface().drawBoxBorder(kbX + 1, kbW - 2, kbY + 1, kbH - 2,
+							kbActive ? 0xD4A64A : 0x706452);
+						this.getSurface().drawColoredStringCentered(
+							kbX + kbW / 2, "KEY", 0xFFFFFF, 1, 3, kbY + 14);
+						this.getSurface().drawColoredStringCentered(
+							kbX + kbW / 2, "BD", 0xFFFFFF, 1, 3, kbY + 26);
+						if (this.mouseButtonClick != 0 && kbHover) {
+							this.mouseButtonClick = 0;
+							if (!osConfig.F_SHOWING_KEYBOARD) {
+								clientPort.drawKeyboard();
+							} else {
+								clientPort.closeKeyboard();
 							}
 						}
 
+						// Battery + connectivity widgets sit to the LEFT of the
+						// keyboard tab. The old hard-coded uiX offset (which
+						// pointed at the keyboard's old position) is replaced
+						// with kbX so the widget row scrolls with the keyboard.
+						final int statusAnchorX = kbX;
 						if (osConfig.C_STATUS_BAR == 0) { // icons + text
-							this.getSurface().drawSprite(clientPort.getBattery(0), uiX - 50, 10);
-							this.getSurface().drawColoredStringCentered(uiX - 40, clientPort.getBatteryPercent() + "%", 0xffffff, 0, 2, 10);
-							this.getSurface().drawSprite(clientPort.getConnectivity(0), uiX - 30, 10);
+							this.getSurface().drawSprite(clientPort.getBattery(0), statusAnchorX - 50, 10);
+							this.getSurface().drawColoredStringCentered(statusAnchorX - 40, clientPort.getBatteryPercent() + "%", 0xffffff, 0, 2, 10);
+							this.getSurface().drawSprite(clientPort.getConnectivity(0), statusAnchorX - 30, 10);
 						} else if (osConfig.C_STATUS_BAR == 1) { // icons only
-							this.getSurface().drawSprite(clientPort.getBattery(0), uiX - 50, 10);
-							this.getSurface().drawSprite(clientPort.getConnectivity(0), uiX - 30, 10);
+							this.getSurface().drawSprite(clientPort.getBattery(0), statusAnchorX - 50, 10);
+							this.getSurface().drawSprite(clientPort.getConnectivity(0), statusAnchorX - 30, 10);
 						} else if (osConfig.C_STATUS_BAR == 2) { // text only
-							this.getSurface().drawColoredStringCentered(uiX - 50, "BAT:", 0xffff00, 0, 2, 15);
-							this.getSurface().drawColoredStringCentered(uiX - 50, clientPort.getBatteryPercent() + "%", 0xffffff, 0, 2, 30);
+							this.getSurface().drawColoredStringCentered(statusAnchorX - 50, "BAT:", 0xffff00, 0, 2, 15);
+							this.getSurface().drawColoredStringCentered(statusAnchorX - 50, clientPort.getBatteryPercent() + "%", 0xffffff, 0, 2, 30);
 							if (clientPort.getBatteryCharging()) {
-								this.getSurface().drawColoredStringCentered(uiX - 50, "(C)", 0xffffff, 0, 2, 45);
+								this.getSurface().drawColoredStringCentered(statusAnchorX - 50, "(C)", 0xffffff, 0, 2, 45);
 							}
-							this.getSurface().drawColoredStringCentered(uiX - 20, "NET:", 0xffff00, 0, 2, 15);
-							this.getSurface().drawColoredStringCentered(uiX - 20, clientPort.getConnectivityText(), 0xffffff, 0, 2, 30);
+							this.getSurface().drawColoredStringCentered(statusAnchorX - 20, "NET:", 0xffff00, 0, 2, 15);
+							this.getSurface().drawColoredStringCentered(statusAnchorX - 20, clientPort.getConnectivityText(), 0xffffff, 0, 2, 30);
 						}
 
 
@@ -14564,15 +14586,36 @@ public final class mudclient implements Runnable {
 			}
 		}
 
-		// Grid layout: 5 cols, tile 32x32 with 4px gaps, footer 28 for
-		// filter bar. Visible rows = (gridContentH - footer) / tileStride.
+		// Sort by required level ascending (ties broken by spell index for
+		// stability). XML load order mixes utility into combat tiers and
+		// reads jumbled — level-sorted reads as a clear progression.
+		final int[] sortKey = new int[filteredLen];
+		for (int i = 0; i < filteredLen; i++) {
+			sortKey[i] = EntityHandler.getSpellDef(filtered[i]).getReqLevel() * 1000 + filtered[i];
+		}
+		for (int i = 1; i < filteredLen; i++) {
+			int k = sortKey[i], v = filtered[i], j = i;
+			while (j > 0 && sortKey[j - 1] > k) {
+				sortKey[j] = sortKey[j - 1];
+				filtered[j] = filtered[j - 1];
+				j--;
+			}
+			sortKey[j] = k;
+			filtered[j] = v;
+		}
+
+		// Grid layout: 5 cols, tile 32x32 with 4px gaps. Below the tiles
+		// we reserve a chunky scroll-button strip (Up | Down) — the old
+		// tiny ^/v arrows were nearly invisible, especially on mobile.
+		// Footer = scroll strip + gap + filter bar.
 		final int cols = 5;
 		final int tile = 32;
 		final int gap = 4;
 		final int gridLeftPad = (panelW - (cols * tile + (cols - 1) * gap)) / 2;
 		final int gridX = panelX + gridLeftPad;
 		final int filterBarH = 22;
-		final int tilesAreaH = gridContentH - filterBarH - 4;
+		final int scrollStripH = 16;
+		final int tilesAreaH = gridContentH - filterBarH - scrollStripH - gap * 2;
 		final int rowStride = tile + gap;
 		final int visibleRows = Math.max(1, tilesAreaH / rowStride);
 		final int totalRows = (filteredLen + cols - 1) / cols;
@@ -14635,30 +14678,44 @@ public final class mudclient implements Runnable {
 			}
 		}
 
-		// Scroll arrows (right edge, top + bottom). Tiny triangles.
-		final int scrollX = panelX + panelW - 14;
-		final int upY = gridY + 4;
-		final int downY = gridY + tilesAreaH - 14;
-		// ASCII arrows — the engine's font might not have glyphs for the
-		// triangle codepoints on every device.
-		this.getSurface().drawColoredStringCentered(scrollX, "^",
-			ogrsSpellbookGridScroll > 0 ? 0xFFFFFF : 0x606060, 1, 1, upY + 8);
-		this.getSurface().drawColoredStringCentered(scrollX, "v",
-			ogrsSpellbookGridScroll < maxScroll ? 0xFFFFFF : 0x606060, 1, 1, downY + 8);
-		if (this.mouseButtonClick == 1
-			&& this.mouseX >= scrollX - 6 && this.mouseX < scrollX + 6) {
-			if (this.mouseY >= upY && this.mouseY < upY + 14 && ogrsSpellbookGridScroll > 0) {
+		// Chunky scroll-button strip: Up | Down split across the full
+		// panel width, sat just above the filter bar. Big tap targets so
+		// mobile + desktop both find them instantly. Disabled buttons
+		// (already at top/bottom) render greyed.
+		final int stripY = gridY + tilesAreaH + gap;
+		final int halfW = panelW / 2;
+		final boolean canScrollUp   = ogrsSpellbookGridScroll > 0;
+		final boolean canScrollDown = ogrsSpellbookGridScroll < maxScroll;
+		final boolean hovUp = this.mouseX >= panelX + 1 && this.mouseX < panelX + halfW - 1
+			&& this.mouseY >= stripY && this.mouseY < stripY + scrollStripH;
+		final boolean hovDn = this.mouseX >= panelX + halfW + 1 && this.mouseX < panelX + panelW - 1
+			&& this.mouseY >= stripY && this.mouseY < stripY + scrollStripH;
+		final int upBg = !canScrollUp ? 0x100C08 : (hovUp ? 0x3A331A : 0x1A1814);
+		final int dnBg = !canScrollDown ? 0x100C08 : (hovDn ? 0x3A331A : 0x1A1814);
+		this.getSurface().drawBoxAlpha(panelX + 1, stripY, halfW - 2, scrollStripH, upBg, 255);
+		this.getSurface().drawBoxBorder(panelX + 1, halfW - 2, stripY, scrollStripH,
+			canScrollUp ? 0xD4A64A : 0x404040);
+		this.getSurface().drawBoxAlpha(panelX + halfW + 1, stripY, halfW - 2, scrollStripH, dnBg, 255);
+		this.getSurface().drawBoxBorder(panelX + halfW + 1, halfW - 2, stripY, scrollStripH,
+			canScrollDown ? 0xD4A64A : 0x404040);
+		this.getSurface().drawColoredStringCentered(panelX + halfW / 2,
+			"^  Up",
+			canScrollUp ? 0xFFFFFF : 0x606060, 0, 1, stripY + 11);
+		this.getSurface().drawColoredStringCentered(panelX + halfW + halfW / 2,
+			"Down  v",
+			canScrollDown ? 0xFFFFFF : 0x606060, 0, 1, stripY + 11);
+		if (this.mouseButtonClick == 1) {
+			if (hovUp && canScrollUp) {
 				ogrsSpellbookGridScroll--;
 				this.mouseButtonClick = 0;
-			} else if (this.mouseY >= downY && this.mouseY < downY + 14
-				&& ogrsSpellbookGridScroll < maxScroll) {
+			} else if (hovDn && canScrollDown) {
 				ogrsSpellbookGridScroll++;
 				this.mouseButtonClick = 0;
 			}
 		}
 
-		// Filter bar — 7 buttons across the bottom.
-		final int barY = gridY + tilesAreaH;
+		// Filter bar — 7 buttons across the bottom, below the scroll strip.
+		final int barY = stripY + scrollStripH + gap;
 		final int btnW = panelW / OGRS_SPELL_FILTERS.length;
 		for (int f = 0; f < OGRS_SPELL_FILTERS.length; f++) {
 			final int bx = panelX + f * btnW;
@@ -14852,10 +14909,11 @@ public final class mudclient implements Runnable {
 		// the tabs) in custom/mobile mode.
 		final int iconW = 32;
 		final int iconH = 32;
-		// 233 px clears the 6 standard tab icons (33 px each, ~198 px) plus
-		// a small gap. Same horizontal slot regardless of UI mode. Matches
-		// the COMBAT_TAB icon's height so the row reads as one strip.
-		final int iconX = this.getSurface().width2 - 233 - 33;
+		// 233 px clears the 6 standard tab icons + COMBAT_TAB. We add a
+		// wider gap (38) instead of the strip's 33 so the run icon visibly
+		// separates from the tab cluster — sparky asked for spacing
+		// between the icons rather than the flush 1-px gap pattern.
+		final int iconX = this.getSurface().width2 - 233 - 38;
 		final int iconY;
 		if (Config.C_CUSTOM_UI) {
 			// Sit just above the bottom tab strip so a thumb tapping the

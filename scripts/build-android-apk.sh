@@ -32,24 +32,24 @@ if [ ! -f "$ANDROID_TREE/local.properties" ]; then
     echo "sdk.dir=/home/sparky/android-sdk" > "$ANDROID_TREE/local.properties"
 fi
 
-# OGRS — bundle our modified game cache into the APK assets so the
-# Android client uses OGRS sprites/models instead of phoning rsc.vet.
-# CacheUpdater.onCreate detects this bundle and extracts to filesDir
-# on first launch, skipping the network update.
-OGRS_CACHE_SRC="$REPO_ROOT/client/Cache"
+# OGRS — targeted landscape overlay: bundle JUST Authentic_Landscape.orsc
+# (sparky 2026-05-21). The full-cache bundle attempt earlier hung the
+# phone on "Unpacking Library", so we ship only this one file as an
+# overlay. CacheUpdater downloads everything from rsc.vet normally, then
+# overwrites Authentic_Landscape.orsc with the bundled OGRS version so
+# our crypt sector patch reaches the phone client.
 ASSETS_DEST="$ANDROID_TREE/Open RSC Android Client/src/main/assets"
-if [ -d "$OGRS_CACHE_SRC/video" ]; then
-    echo "Bundling OGRS cache into Android assets..."
+# Clean any prior big bundle.
+if [ -d "$ASSETS_DEST/video" ] || [ -d "$ASSETS_DEST/audio" ]; then
+    echo "Removing stale bundled cache from Android assets..."
     rm -rf "$ASSETS_DEST/video" "$ASSETS_DEST/audio"
-    mkdir -p "$ASSETS_DEST/video"
-    cp -r "$OGRS_CACHE_SRC/video/." "$ASSETS_DEST/video/"
-    # Drop the .bak (we don't need the original wolf logo on the phone).
-    rm -f "$ASSETS_DEST/video/Authentic_Sprites.orsc.bak"
-    if [ -d "$OGRS_CACHE_SRC/audio" ]; then
-        mkdir -p "$ASSETS_DEST/audio"
-        cp -r "$OGRS_CACHE_SRC/audio/." "$ASSETS_DEST/audio/" 2>/dev/null || true
-    fi
-    echo "  Bundled $(du -sh "$ASSETS_DEST/video" | cut -f1) of cache."
+fi
+# Bundle just the landscape archive.
+LANDSCAPE_SRC="$REPO_ROOT/client/Cache/video/Authentic_Landscape.orsc"
+if [ -f "$LANDSCAPE_SRC" ]; then
+    mkdir -p "$ASSETS_DEST/ogrs-overlay"
+    cp "$LANDSCAPE_SRC" "$ASSETS_DEST/ogrs-overlay/Authentic_Landscape.orsc"
+    echo "  Bundled landscape overlay: $(du -sh "$LANDSCAPE_SRC" | cut -f1)"
 fi
 
 echo "Building APK (Java 17 + Android SDK 34)..."
