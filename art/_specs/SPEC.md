@@ -1,6 +1,21 @@
-# OGRS Sprite Spec — Projectile Pack
+# OGRS Sprite Spec — Projectile + Impact Pack
 
-## Canvas
+Two sprite categories with two canvas sizes:
+
+| Category | Canvas | Frames | What it is |
+|---|---|---|---|
+| **Projectile** | 30 × 30 | 4 | What flies through the air from caster → target |
+| **Impact effect** | 48 × 48 | 4 | What plays on the target square AFTER the projectile lands — wraps + dissipates around the model |
+
+Impact effects are authored as 4-frame sequences with a strict shape arc:
+1. **frame_00** — small at impact point (just landed)
+2. **frame_01** — expanding outward (energy spreading)
+3. **frame_02** — peak: wraps around target silhouette (max size)
+4. **frame_03** — dissipating (fading wisps, ember remnants)
+
+The 48×48 canvas is large enough to engulf a player/NPC sprite. The engine pass that wires up impact rendering (different sprite slot from projectiles) is **not blocking** authoring — sprites can sit staged.
+
+## Canvas (projectile — 30 × 30)
 
 | Property | Value |
 |---|---|

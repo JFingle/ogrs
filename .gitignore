@@ -79,3 +79,7 @@ content/zones/_generated/
 **/*.key
 !**/public.key
 scripts/duckdns/duckdns.conf
+
+# Local landscape/sprite backups — never commit; regenerate from source data
+client/Cache/video/*.bak
+client/Cache/video/*.crypt-backup
