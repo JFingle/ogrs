@@ -26,7 +26,8 @@ public enum OgrsNpcId {
 	MARIGOLD(840),
 	WENDEL(841),
 	GOBLIN_SHAMAN(842),
-	OLD_ARIC(843);
+	OLD_ARIC(843),
+	CRYPT_SPIDER_MATRON(844);
 
 	private final int npcId;
 	private static final Map<Integer, OgrsNpcId> byId = new HashMap<>();

@@ -53,6 +53,10 @@ public final class OgrsClientNpcs {
 		sprites = new int[]{6, 1, 2, -1, -1, -1, -1, -1, -1, -1, -1, -1};
 		npcs.add(new NPCDef("Old Aric", "A weathered elder, leaning on a staff. His eyes carry the look of someone who has walked further than most.", "", "Examine", 1, 1, 10, 1, false, sprites, 0xFFFFFF, 0xE8E0D0, 0xA9A29A, 0xE6C8A0, 160, 220, 6, 6, 5, i++));
 
+		// id 844 — from content/npcs/crypt_spider_matron.yaml
+		sprites = new int[]{166, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
+		npcs.add(new NPCDef("Crypt Spider Matron", "A massive, venom-soaked spider with eight burning eyes. The crypt's true keeper.", "", 130, 120, 200, 110, true, sprites, 0x000000, 0x000000, 0x000000, 0x000000, 320, 280, 6, 6, 5, i++));
+
 		return i;
 	}
 }

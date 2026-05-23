@@ -1,0 +1,39 @@
+# OGRS NPC: Crypt Spider Matron.
+#
+# Boss-tier spider at the south end of the spider chamber, before the
+# inner gate to the burial section. Sparky's ask (2026-05-23): "much
+# larger, different color, spit poison if the player is ranged, attack
+# a little quicker, level 130."
+#
+# This v1 ships the visual + the poison-on-hit + the lvl-130 stat block.
+# The "ranged-vs-melee context switch" and "literally faster ticks" are
+# v2 — both need engine-side work (test that NpcDef.ranged actually
+# triggers RangeEventNpc, and find / add a per-NPC attack-cycle field).
+#
+# Visuals:
+#   Sprite 166 — the upstream "Poison Spider" sprite. Visually distinct
+#     from the green/red spiders earlier in the dungeon; reads as
+#     venomous/sickly without needing a new sprite hunt.
+#   Camera 320/280 — about 1.8x the giant lvl31's 180/156; matches
+#     "much larger than any other spider in the dungeon".
+#
+# Combat poison: see OgrsCryptSpiderMatron.java plugin. On every
+# successful hit, calls target.setPoisonDamage(80) — heavier than a
+# poisoned-dagger's 60 so the matron's bite feels meaningfully deadlier.
+#
+# Drops are handled separately (NpcDrops.java) — TBD when sparky says
+# what unique loot the matron should give. For now she drops nothing
+# unique, just the standard skeleton-tier coin/rune from her tile box.
+
+id: 844
+name: Crypt Spider Matron
+description: A massive, venom-soaked spider with eight burning eyes. The crypt's true keeper.
+command: ""                # left-click defaults to attack
+command2: ""
+stats: { attack: 130, strength: 120, defense: 110, hits: 200, combat_level: 130, ranged: true }
+flags: { members_only: false, attackable: true, aggressive: true }
+respawn_time_ticks: 300    # ~3.2 min — boss-tier respawn, not constant
+sprites: [166, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1]
+colors: { hair: 0, top: 0, bottom: 0, skin: 0 }
+camera: { x: 320, y: 280 }
+models: { walk: 6, combat: 6, combat_sprite: 5 }
