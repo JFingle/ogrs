@@ -1,0 +1,21 @@
+# OGRS magic item: Staff of earth.
+# Magic items track from CODER_HANDOFF.md (~/ogrs/art/items/magic/).
+# Sprite reuses upstream slot 103 + picture_mask tint; artist's
+# authored PNG at art/items/magic/.../of_earth.png
+# pending the sprite-packing pass.
+
+id: 1662
+name: Staff of earth
+description: A wizard's staff that supplies unlimited earth runes.
+command: ""
+stackable: false
+untradeable: false
+members_only: false
+noteable: true
+base_price: 250
+picture_mask: 0x000000
+wieldable: true
+wearable_id: 35
+sprite:
+  id: 103
+  location: "items:103"

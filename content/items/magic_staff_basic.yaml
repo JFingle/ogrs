@@ -1,0 +1,21 @@
+# OGRS magic item: Staff.
+# Magic items track from CODER_HANDOFF.md (~/ogrs/art/items/magic/).
+# Sprite reuses upstream slot 100 + picture_mask tint; artist's
+# authored PNG at art/items/magic/.../basic.png
+# pending the sprite-packing pass.
+
+id: 1657
+name: Staff
+description: A simple wooden staff. Modest magic boost.
+command: ""
+stackable: false
+untradeable: false
+members_only: false
+noteable: true
+base_price: 20
+picture_mask: 0x000000
+wieldable: true
+wearable_id: 35
+sprite:
+  id: 100
+  location: "items:100"

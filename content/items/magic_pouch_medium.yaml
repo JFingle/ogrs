@@ -1,0 +1,19 @@
+# OGRS magic item: Medium rune pouch.
+# Magic items track from CODER_HANDOFF.md (~/ogrs/art/items/magic/).
+# Sprite reuses upstream slot 1117 + picture_mask tint; artist's
+# authored PNG at art/items/magic/.../medium.png
+# pending the sprite-packing pass.
+
+id: 1668
+name: Medium rune pouch
+description: Holds up to 12 of any one rune type.
+command: ""
+stackable: false
+untradeable: true
+members_only: true
+noteable: true
+base_price: 250
+picture_mask: 0x4A8A1A
+sprite:
+  id: 1117
+  location: "items:1117"

@@ -1,0 +1,19 @@
+# OGRS magic item: Wizard top.
+# Magic items track from CODER_HANDOFF.md (~/ogrs/art/items/magic/).
+# Sprite reuses upstream slot 184 + picture_mask tint; artist's
+# authored PNG at art/items/magic/.../top.png
+# pending the sprite-packing pass.
+
+id: 1646
+name: Wizard top
+description: A long blue wizard's robe. Adorned with stars.
+command: ""
+stackable: false
+untradeable: false
+members_only: false
+noteable: true
+base_price: 40
+picture_mask: 0x000000
+sprite:
+  id: 184
+  location: "items:184"

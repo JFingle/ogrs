@@ -1,0 +1,19 @@
+# OGRS magic item: Magic master cape.
+# Magic items track from CODER_HANDOFF.md (~/ogrs/art/items/magic/).
+# Sprite reuses upstream slot 512 + picture_mask tint; artist's
+# authored PNG at art/items/magic/.../magic_master.png
+# pending the sprite-packing pass.
+
+id: 1665
+name: Magic master cape
+description: A cape worn only by 200M XP Magic masters. Trim shimmers.
+command: ""
+stackable: false
+untradeable: false
+members_only: true
+noteable: true
+base_price: 250000
+picture_mask: 0xDA9100
+sprite:
+  id: 512
+  location: "items:512"

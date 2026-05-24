@@ -1,0 +1,21 @@
+# OGRS magic item: Staff of fire.
+# Magic items track from CODER_HANDOFF.md (~/ogrs/art/items/magic/).
+# Sprite reuses upstream slot 197 + picture_mask tint; artist's
+# authored PNG at art/items/magic/.../of_fire.png
+# pending the sprite-packing pass.
+
+id: 1663
+name: Staff of fire
+description: A wizard's staff that supplies unlimited fire runes.
+command: ""
+stackable: false
+untradeable: false
+members_only: false
+noteable: true
+base_price: 250
+picture_mask: 0x000000
+wieldable: true
+wearable_id: 35
+sprite:
+  id: 197
+  location: "items:197"

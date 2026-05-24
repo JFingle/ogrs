@@ -1,0 +1,19 @@
+# OGRS magic item: Ancient spellbook.
+# Magic items track from CODER_HANDOFF.md (~/ogrs/art/items/magic/).
+# Sprite reuses upstream slot 768 + picture_mask tint; artist's
+# authored PNG at art/items/magic/.../ancient.png
+# pending the sprite-packing pass.
+
+id: 1643
+name: Ancient spellbook
+description: A forbidden book of dark eastern magic. Hits multiple targets.
+command: "Read"
+stackable: false
+untradeable: false
+members_only: true
+noteable: true
+base_price: 250
+picture_mask: 0x3A1A4A
+sprite:
+  id: 768
+  location: "items:768"

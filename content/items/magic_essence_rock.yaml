@@ -1,0 +1,19 @@
+# OGRS magic item: Rune essence rock.
+# Magic items track from CODER_HANDOFF.md (~/ogrs/art/items/magic/).
+# Sprite reuses upstream slot 986 + picture_mask tint; artist's
+# authored PNG at art/items/magic/.../rock.png
+# pending the sprite-packing pass.
+
+id: 1670
+name: Rune essence rock
+description: A glowing rock holding raw runic energy. Mine with a chisel.
+command: ""
+stackable: false
+untradeable: false
+members_only: false
+noteable: false
+base_price: 0
+picture_mask: 0xC0C0E0
+sprite:
+  id: 986
+  location: "items:986"

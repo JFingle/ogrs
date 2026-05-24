@@ -1,0 +1,19 @@
+# OGRS magic item: Magic skill cape.
+# Magic items track from CODER_HANDOFF.md (~/ogrs/art/items/magic/).
+# Sprite reuses upstream slot 512 + picture_mask tint; artist's
+# authored PNG at art/items/magic/.../magic_skill.png
+# pending the sprite-packing pass.
+
+id: 1664
+name: Magic skill cape
+description: A cape worn by those who have mastered Magic to level 99.
+command: ""
+stackable: false
+untradeable: false
+members_only: true
+noteable: true
+base_price: 99000
+picture_mask: 0x1A2A8E
+sprite:
+  id: 512
+  location: "items:512"

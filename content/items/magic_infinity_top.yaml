@@ -1,0 +1,19 @@
+# OGRS magic item: Infinity top.
+# Magic items track from CODER_HANDOFF.md (~/ogrs/art/items/magic/).
+# Sprite reuses upstream slot 184 + picture_mask tint; artist's
+# authored PNG at art/items/magic/.../top.png
+# pending the sprite-packing pass.
+
+id: 1655
+name: Infinity top
+description: Robe of pure magical essence. Worn by master mages.
+command: ""
+stackable: false
+untradeable: false
+members_only: true
+noteable: true
+base_price: 2000
+picture_mask: 0xDA9100
+sprite:
+  id: 184
+  location: "items:184"

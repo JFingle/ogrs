@@ -1,0 +1,19 @@
+# OGRS magic item: Infinity hat.
+# Magic items track from CODER_HANDOFF.md (~/ogrs/art/items/magic/).
+# Sprite reuses upstream slot 185 + picture_mask tint; artist's
+# authored PNG at art/items/magic/.../hat.png
+# pending the sprite-packing pass.
+
+id: 1654
+name: Infinity hat
+description: Hat of pure magical essence. Worn by master mages.
+command: ""
+stackable: false
+untradeable: false
+members_only: true
+noteable: true
+base_price: 1500
+picture_mask: 0xDA9100
+sprite:
+  id: 185
+  location: "items:185"

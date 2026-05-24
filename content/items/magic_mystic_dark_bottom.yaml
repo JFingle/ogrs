@@ -1,0 +1,19 @@
+# OGRS magic item: Mystic dark bottom.
+# Magic items track from CODER_HANDOFF.md (~/ogrs/art/items/magic/).
+# Sprite reuses upstream slot 1234 + picture_mask tint; artist's
+# authored PNG at art/items/magic/.../dark_bottom.png
+# pending the sprite-packing pass.
+
+id: 1653
+name: Mystic dark bottom
+description: Near-black mystic leggings.
+command: ""
+stackable: false
+untradeable: false
+members_only: false
+noteable: true
+base_price: 400
+picture_mask: 0x222244
+sprite:
+  id: 1234
+  location: "items:1234"

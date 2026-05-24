@@ -1,0 +1,19 @@
+# OGRS magic item: Runecraft skill cape.
+# Magic items track from CODER_HANDOFF.md (~/ogrs/art/items/magic/).
+# Sprite reuses upstream slot 513 + picture_mask tint; artist's
+# authored PNG at art/items/magic/.../runecraft_skill.png
+# pending the sprite-packing pass.
+
+id: 1666
+name: Runecraft skill cape
+description: A cape worn by those who have mastered Runecraft to level 99.
+command: ""
+stackable: false
+untradeable: false
+members_only: true
+noteable: true
+base_price: 99000
+picture_mask: 0x4A8A1A
+sprite:
+  id: 513
+  location: "items:513"

@@ -1,0 +1,19 @@
+# OGRS magic item: Mystic blue bottom.
+# Magic items track from CODER_HANDOFF.md (~/ogrs/art/items/magic/).
+# Sprite reuses upstream slot 1234 + picture_mask tint; artist's
+# authored PNG at art/items/magic/.../blue_bottom.png
+# pending the sprite-packing pass.
+
+id: 1650
+name: Mystic blue bottom
+description: Deep mystic blue wizard's leggings. Boosts spell accuracy.
+command: ""
+stackable: false
+untradeable: false
+members_only: false
+noteable: true
+base_price: 300
+picture_mask: 0x1A2A8E
+sprite:
+  id: 1234
+  location: "items:1234"

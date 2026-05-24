@@ -1,0 +1,19 @@
+# OGRS magic item: Yahwist scripture book.
+# Magic items track from CODER_HANDOFF.md (~/ogrs/art/items/magic/).
+# Sprite reuses upstream slot 1238 + picture_mask tint; artist's
+# authored PNG at art/items/magic/.../yahwist.png
+# pending the sprite-packing pass.
+
+id: 1644
+name: Yahwist scripture book
+description: A bound collection of Yahwist prayer-spells. Healing focus.
+command: "Read"
+stackable: false
+untradeable: false
+members_only: true
+noteable: true
+base_price: 500
+picture_mask: 0xE0C040
+sprite:
+  id: 1238
+  location: "items:1238"

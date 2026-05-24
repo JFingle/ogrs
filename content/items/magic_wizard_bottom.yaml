@@ -1,0 +1,19 @@
+# OGRS magic item: Wizard bottom.
+# Magic items track from CODER_HANDOFF.md (~/ogrs/art/items/magic/).
+# Sprite reuses upstream slot 1234 + picture_mask tint; artist's
+# authored PNG at art/items/magic/.../bottom.png
+# pending the sprite-packing pass.
+
+id: 1647
+name: Wizard bottom
+description: Loose blue wizard's leggings.
+command: ""
+stackable: false
+untradeable: false
+members_only: false
+noteable: true
+base_price: 35
+picture_mask: 0x4A4ABF
+sprite:
+  id: 1234
+  location: "items:1234"

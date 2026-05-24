@@ -1,0 +1,19 @@
+# OGRS magic item: Large rune pouch.
+# Magic items track from CODER_HANDOFF.md (~/ogrs/art/items/magic/).
+# Sprite reuses upstream slot 1117 + picture_mask tint; artist's
+# authored PNG at art/items/magic/.../large.png
+# pending the sprite-packing pass.
+
+id: 1669
+name: Large rune pouch
+description: Holds up to 25 of any one rune type.
+command: ""
+stackable: false
+untradeable: true
+members_only: true
+noteable: true
+base_price: 500
+picture_mask: 0x1A2A8E
+sprite:
+  id: 1117
+  location: "items:1117"

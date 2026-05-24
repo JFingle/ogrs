@@ -1,0 +1,19 @@
+# OGRS magic item: Infinity bottom.
+# Magic items track from CODER_HANDOFF.md (~/ogrs/art/items/magic/).
+# Sprite reuses upstream slot 1234 + picture_mask tint; artist's
+# authored PNG at art/items/magic/.../bottom.png
+# pending the sprite-packing pass.
+
+id: 1656
+name: Infinity bottom
+description: Leggings of pure magical essence.
+command: ""
+stackable: false
+untradeable: false
+members_only: true
+noteable: true
+base_price: 1800
+picture_mask: 0xDA9100
+sprite:
+  id: 1234
+  location: "items:1234"

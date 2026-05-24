@@ -169,6 +169,99 @@ public final class OgrsClientItems {
 		// id 1641 — from content/items/prayer_unleavened_bread.yaml
 		items.add(new ItemDef("Unleavened bread", "Flat, hastily-baked bread. Eaten in haste during sacred remembrances.", "Eat", 12, 138, "items:138", false, false, 0, 0xC8A878, false, false, true, i++));
 
+		// id 1642 — from content/items/magic_spellbook_standard.yaml
+		items.add(new ItemDef("Standard spellbook", "The classic Yahwist & Saradomin combined spellbook. Most spells.", "Read", 50, 30, "items:30", false, false, 0, 0x000000, false, false, true, i++));
+
+		// id 1643 — from content/items/magic_spellbook_ancient.yaml
+		items.add(new ItemDef("Ancient spellbook", "A forbidden book of dark eastern magic. Hits multiple targets.", "Read", 250, 768, "items:768", false, false, 0, 0x3A1A4A, true, false, true, i++));
+
+		// id 1644 — from content/items/magic_spellbook_yahwist.yaml
+		items.add(new ItemDef("Yahwist scripture book", "A bound collection of Yahwist prayer-spells. Healing focus.", "Read", 500, 1238, "items:1238", false, false, 0, 0xE0C040, true, false, true, i++));
+
+		// id 1645 — from content/items/magic_wizard_hat.yaml
+		items.add(new ItemDef("Wizard hat", "A pointed blue wizard's hat. Helps with magic.", "", 30, 185, "items:185", false, false, 0, 0x000000, false, false, true, i++));
+
+		// id 1646 — from content/items/magic_wizard_top.yaml
+		items.add(new ItemDef("Wizard top", "A long blue wizard's robe. Adorned with stars.", "", 40, 184, "items:184", false, false, 0, 0x000000, false, false, true, i++));
+
+		// id 1647 — from content/items/magic_wizard_bottom.yaml
+		items.add(new ItemDef("Wizard bottom", "Loose blue wizard's leggings.", "", 35, 1234, "items:1234", false, false, 0, 0x4A4ABF, false, false, true, i++));
+
+		// id 1648 — from content/items/magic_mystic_blue_hat.yaml
+		items.add(new ItemDef("Mystic blue hat", "A finer wizard's hat in deep mystic blue. Boosts spell accuracy.", "", 250, 1264, "items:1264", false, false, 0, 0x000000, false, false, true, i++));
+
+		// id 1649 — from content/items/magic_mystic_blue_top.yaml
+		items.add(new ItemDef("Mystic blue top", "Deep mystic blue wizard's robe. Boosts spell accuracy.", "", 350, 184, "items:184", false, false, 0, 0x1A2A8E, false, false, true, i++));
+
+		// id 1650 — from content/items/magic_mystic_blue_bottom.yaml
+		items.add(new ItemDef("Mystic blue bottom", "Deep mystic blue wizard's leggings. Boosts spell accuracy.", "", 300, 1234, "items:1234", false, false, 0, 0x1A2A8E, false, false, true, i++));
+
+		// id 1651 — from content/items/magic_mystic_dark_hat.yaml
+		items.add(new ItemDef("Mystic dark hat", "A near-black mystic hat. Worn by darker mages.", "", 350, 199, "items:199", false, false, 0, 0x222244, false, false, true, i++));
+
+		// id 1652 — from content/items/magic_mystic_dark_top.yaml
+		items.add(new ItemDef("Mystic dark top", "A near-black mystic robe. Worn by darker mages.", "", 450, 184, "items:184", false, false, 0, 0x222244, false, false, true, i++));
+
+		// id 1653 — from content/items/magic_mystic_dark_bottom.yaml
+		items.add(new ItemDef("Mystic dark bottom", "Near-black mystic leggings.", "", 400, 1234, "items:1234", false, false, 0, 0x222244, false, false, true, i++));
+
+		// id 1654 — from content/items/magic_infinity_hat.yaml
+		items.add(new ItemDef("Infinity hat", "Hat of pure magical essence. Worn by master mages.", "", 1500, 185, "items:185", false, false, 0, 0xDA9100, true, false, true, i++));
+
+		// id 1655 — from content/items/magic_infinity_top.yaml
+		items.add(new ItemDef("Infinity top", "Robe of pure magical essence. Worn by master mages.", "", 2000, 184, "items:184", false, false, 0, 0xDA9100, true, false, true, i++));
+
+		// id 1656 — from content/items/magic_infinity_bottom.yaml
+		items.add(new ItemDef("Infinity bottom", "Leggings of pure magical essence.", "", 1800, 1234, "items:1234", false, false, 0, 0xDA9100, true, false, true, i++));
+
+		// id 1657 — from content/items/magic_staff_basic.yaml
+		items.add(new ItemDef("Staff", "A simple wooden staff. Modest magic boost.", "", 20, 100, "items:100", false, true, 35, 0x000000, false, false, true, i++));
+
+		// id 1658 — from content/items/magic_staff_magic.yaml
+		items.add(new ItemDef("Magic staff", "A purified wooden staff. Notable magic boost.", "", 200, 198, "items:198", false, true, 35, 0x000000, false, false, true, i++));
+
+		// id 1659 — from content/items/magic_battlestaff.yaml
+		items.add(new ItemDef("Battlestaff", "A combat-grade staff that doubles as a melee weapon.", "", 400, 614, "items:614", false, true, 35, 0x000000, false, false, true, i++));
+
+		// id 1660 — from content/items/magic_staff_of_air.yaml
+		items.add(new ItemDef("Staff of air", "A wizard's staff that supplies unlimited air runes.", "", 250, 101, "items:101", false, true, 35, 0x000000, false, false, true, i++));
+
+		// id 1661 — from content/items/magic_staff_of_water.yaml
+		items.add(new ItemDef("Staff of water", "A wizard's staff that supplies unlimited water runes.", "", 250, 102, "items:102", false, true, 35, 0x000000, false, false, true, i++));
+
+		// id 1662 — from content/items/magic_staff_of_earth.yaml
+		items.add(new ItemDef("Staff of earth", "A wizard's staff that supplies unlimited earth runes.", "", 250, 103, "items:103", false, true, 35, 0x000000, false, false, true, i++));
+
+		// id 1663 — from content/items/magic_staff_of_fire.yaml
+		items.add(new ItemDef("Staff of fire", "A wizard's staff that supplies unlimited fire runes.", "", 250, 197, "items:197", false, true, 35, 0x000000, false, false, true, i++));
+
+		// id 1664 — from content/items/magic_cape_magic_skill.yaml
+		items.add(new ItemDef("Magic skill cape", "A cape worn by those who have mastered Magic to level 99.", "", 99000, 512, "items:512", false, false, 0, 0x1A2A8E, true, false, true, i++));
+
+		// id 1665 — from content/items/magic_cape_magic_master.yaml
+		items.add(new ItemDef("Magic master cape", "A cape worn only by 200M XP Magic masters. Trim shimmers.", "", 250000, 512, "items:512", false, false, 0, 0xDA9100, true, false, true, i++));
+
+		// id 1666 — from content/items/magic_cape_runecraft_skill.yaml
+		items.add(new ItemDef("Runecraft skill cape", "A cape worn by those who have mastered Runecraft to level 99.", "", 99000, 513, "items:513", false, false, 0, 0x4A8A1A, true, false, true, i++));
+
+		// id 1667 — from content/items/magic_pouch_small.yaml
+		items.add(new ItemDef("Small rune pouch", "Holds up to 5 of any one rune type. Doesn't take a bank slot.", "", 100, 1117, "items:1117", false, false, 0, 0x9E7B4A, true, true, true, i++));
+
+		// id 1668 — from content/items/magic_pouch_medium.yaml
+		items.add(new ItemDef("Medium rune pouch", "Holds up to 12 of any one rune type.", "", 250, 1117, "items:1117", false, false, 0, 0x4A8A1A, true, true, true, i++));
+
+		// id 1669 — from content/items/magic_pouch_large.yaml
+		items.add(new ItemDef("Large rune pouch", "Holds up to 25 of any one rune type.", "", 500, 1117, "items:1117", false, false, 0, 0x1A2A8E, true, true, true, i++));
+
+		// id 1670 — from content/items/magic_essence_rock.yaml
+		items.add(new ItemDef("Rune essence rock", "A glowing rock holding raw runic energy. Mine with a chisel.", "", 0, 986, "items:986", false, false, 0, 0xC0C0E0, false, false, false, i++));
+
+		// id 1671 — from content/items/magic_essence_mined.yaml
+		items.add(new ItemDef("Rune essence", "A small chunk of raw runic energy. Craft into runes at an altar.", "", 3, 150, "items:150", true, false, 0, 0xE0E0FF, false, false, true, i++));
+
+		// id 1672 — from content/items/magic_pure_essence.yaml
+		items.add(new ItemDef("Pure essence", "A purer form of rune essence. Craftable into all rune types.", "", 8, 150, "items:150", true, false, 0, 0xFFFFFF, true, false, true, i++));
+
 		return i;
 	}
 }

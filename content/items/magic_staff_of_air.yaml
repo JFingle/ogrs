@@ -1,0 +1,21 @@
+# OGRS magic item: Staff of air.
+# Magic items track from CODER_HANDOFF.md (~/ogrs/art/items/magic/).
+# Sprite reuses upstream slot 101 + picture_mask tint; artist's
+# authored PNG at art/items/magic/.../of_air.png
+# pending the sprite-packing pass.
+
+id: 1660
+name: Staff of air
+description: A wizard's staff that supplies unlimited air runes.
+command: ""
+stackable: false
+untradeable: false
+members_only: false
+noteable: true
+base_price: 250
+picture_mask: 0x000000
+wieldable: true
+wearable_id: 35
+sprite:
+  id: 101
+  location: "items:101"

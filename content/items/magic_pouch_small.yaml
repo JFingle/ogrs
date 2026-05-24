@@ -1,0 +1,19 @@
+# OGRS magic item: Small rune pouch.
+# Magic items track from CODER_HANDOFF.md (~/ogrs/art/items/magic/).
+# Sprite reuses upstream slot 1117 + picture_mask tint; artist's
+# authored PNG at art/items/magic/.../small.png
+# pending the sprite-packing pass.
+
+id: 1667
+name: Small rune pouch
+description: Holds up to 5 of any one rune type. Doesn't take a bank slot.
+command: ""
+stackable: false
+untradeable: true
+members_only: true
+noteable: true
+base_price: 100
+picture_mask: 0x9E7B4A
+sprite:
+  id: 1117
+  location: "items:1117"

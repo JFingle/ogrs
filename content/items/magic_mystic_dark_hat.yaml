@@ -1,0 +1,19 @@
+# OGRS magic item: Mystic dark hat.
+# Magic items track from CODER_HANDOFF.md (~/ogrs/art/items/magic/).
+# Sprite reuses upstream slot 199 + picture_mask tint; artist's
+# authored PNG at art/items/magic/.../dark_hat.png
+# pending the sprite-packing pass.
+
+id: 1651
+name: Mystic dark hat
+description: A near-black mystic hat. Worn by darker mages.
+command: ""
+stackable: false
+untradeable: false
+members_only: false
+noteable: true
+base_price: 350
+picture_mask: 0x222244
+sprite:
+  id: 199
+  location: "items:199"

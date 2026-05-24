@@ -1,0 +1,19 @@
+# OGRS magic item: Standard spellbook.
+# Magic items track from CODER_HANDOFF.md (~/ogrs/art/items/magic/).
+# Sprite reuses upstream slot 30 + picture_mask tint; artist's
+# authored PNG at art/items/magic/.../standard.png
+# pending the sprite-packing pass.
+
+id: 1642
+name: Standard spellbook
+description: The classic Yahwist & Saradomin combined spellbook. Most spells.
+command: "Read"
+stackable: false
+untradeable: false
+members_only: false
+noteable: true
+base_price: 50
+picture_mask: 0x000000
+sprite:
+  id: 30
+  location: "items:30"

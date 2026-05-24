@@ -1,0 +1,19 @@
+# OGRS magic item: Wizard hat.
+# Magic items track from CODER_HANDOFF.md (~/ogrs/art/items/magic/).
+# Sprite reuses upstream slot 185 + picture_mask tint; artist's
+# authored PNG at art/items/magic/.../hat.png
+# pending the sprite-packing pass.
+
+id: 1645
+name: Wizard hat
+description: A pointed blue wizard's hat. Helps with magic.
+command: ""
+stackable: false
+untradeable: false
+members_only: false
+noteable: true
+base_price: 30
+picture_mask: 0x000000
+sprite:
+  id: 185
+  location: "items:185"

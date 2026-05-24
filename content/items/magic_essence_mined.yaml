@@ -1,0 +1,19 @@
+# OGRS magic item: Rune essence.
+# Magic items track from CODER_HANDOFF.md (~/ogrs/art/items/magic/).
+# Sprite reuses upstream slot 150 + picture_mask tint; artist's
+# authored PNG at art/items/magic/.../mined.png
+# pending the sprite-packing pass.
+
+id: 1671
+name: Rune essence
+description: A small chunk of raw runic energy. Craft into runes at an altar.
+command: ""
+stackable: true
+untradeable: false
+members_only: false
+noteable: true
+base_price: 3
+picture_mask: 0xE0E0FF
+sprite:
+  id: 150
+  location: "items:150"

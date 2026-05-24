@@ -1,0 +1,21 @@
+# OGRS magic item: Battlestaff.
+# Magic items track from CODER_HANDOFF.md (~/ogrs/art/items/magic/).
+# Sprite reuses upstream slot 614 + picture_mask tint; artist's
+# authored PNG at art/items/magic/.../battlestaff.png
+# pending the sprite-packing pass.
+
+id: 1659
+name: Battlestaff
+description: A combat-grade staff that doubles as a melee weapon.
+command: ""
+stackable: false
+untradeable: false
+members_only: false
+noteable: true
+base_price: 400
+picture_mask: 0x000000
+wieldable: true
+wearable_id: 35
+sprite:
+  id: 614
+  location: "items:614"

@@ -1,0 +1,19 @@
+# OGRS magic item: Pure essence.
+# Magic items track from CODER_HANDOFF.md (~/ogrs/art/items/magic/).
+# Sprite reuses upstream slot 150 + picture_mask tint; artist's
+# authored PNG at art/items/magic/.../essence.png
+# pending the sprite-packing pass.
+
+id: 1672
+name: Pure essence
+description: A purer form of rune essence. Craftable into all rune types.
+command: ""
+stackable: true
+untradeable: false
+members_only: true
+noteable: true
+base_price: 8
+picture_mask: 0xFFFFFF
+sprite:
+  id: 150
+  location: "items:150"

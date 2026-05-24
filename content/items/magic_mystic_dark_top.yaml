@@ -1,0 +1,19 @@
+# OGRS magic item: Mystic dark top.
+# Magic items track from CODER_HANDOFF.md (~/ogrs/art/items/magic/).
+# Sprite reuses upstream slot 184 + picture_mask tint; artist's
+# authored PNG at art/items/magic/.../dark_top.png
+# pending the sprite-packing pass.
+
+id: 1652
+name: Mystic dark top
+description: A near-black mystic robe. Worn by darker mages.
+command: ""
+stackable: false
+untradeable: false
+members_only: false
+noteable: true
+base_price: 450
+picture_mask: 0x222244
+sprite:
+  id: 184
+  location: "items:184"

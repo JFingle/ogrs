@@ -1,0 +1,19 @@
+# OGRS magic item: Mystic blue hat.
+# Magic items track from CODER_HANDOFF.md (~/ogrs/art/items/magic/).
+# Sprite reuses upstream slot 1264 + picture_mask tint; artist's
+# authored PNG at art/items/magic/.../blue_hat.png
+# pending the sprite-packing pass.
+
+id: 1648
+name: Mystic blue hat
+description: A finer wizard's hat in deep mystic blue. Boosts spell accuracy.
+command: ""
+stackable: false
+untradeable: false
+members_only: false
+noteable: true
+base_price: 250
+picture_mask: 0x000000
+sprite:
+  id: 1264
+  location: "items:1264"
