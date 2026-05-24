@@ -11226,93 +11226,87 @@ public final class mudclient implements Runnable {
 				int currentlyHoveredSkill = -1;
 				long totalXp = 0;
 				int currSkill = 0, i = 0;
-				int leftColLength = Config.S_WANT_OPENPK_POINTS ? 3 : (int) Math.floor(skillCount / 2);
-				int rightColLength = skillCount - leftColLength;
 
 				this.getSurface().drawString("Skills", xOffset, heightMargin, textColourHeading, 3);
 
-				//Determine if the mouse is hovering over a skill
-				if (this.mouseX >= xOffset && this.mouseX <= x + 196) {
-					if (this.mouseY >= heightMargin - 13 && this.mouseY <= (heightMargin + 13 * leftColLength) - 2) {
-						int xthing = this.mouseX > (xOffset + width / 2 - 10) ? 1 : 0;
-						int ything = (int) Math.floor((double) (this.mouseY - heightMargin + 13) / 13);
-						currentlyHoveredSkill = (leftColLength + 1) * xthing + ything - 1;
-						if (!(currentlyHoveredSkill >= 0 && currentlyHoveredSkill <= this.getSkillNames().length - 1)) {
-							currentlyHoveredSkill = -1;
-						} else {
-							if (isAndroid() && this.mouseButtonClick == 1 && this.uiTabPlayerInfoSubTab == 0) {
-								if (doubleClick() && S_WANT_SKILL_MENUS) {
-									setSkillGuideChosen(skillNameLong[currentlyHoveredSkill]);
-									skillGuideInterface.setVisible(true);
-									if (!C_CUSTOM_UI)
-										this.showUiTab = 0;
-								}
-							} else if (!isAndroid() && this.mouseButtonClick == 1 && this.uiTabPlayerInfoSubTab == 0 && S_WANT_SKILL_MENUS) {
+				// OGRS — OSRS-style 3-column icon grid (sparky 2026-05-24).
+				// Each cell: icon on the left, "current/base" number pair on
+				// the right. Hover any cell to see that skill's name + XP
+				// info in the bottom panel (existing currentlyHoveredSkill
+				// path unchanged — just the hover hit-test is now grid-based).
+				final int gridCols = 3;
+				final int cellW = 62;
+				final int cellH = 26;
+				final int gridX = xOffset;
+				final int gridY = heightMargin + 13;
+				final int gridRows = (skillCount + gridCols - 1) / gridCols;
+
+				//Determine if the mouse is hovering over a skill cell.
+				if (this.mouseX >= gridX && this.mouseX < gridX + gridCols * cellW
+					&& this.mouseY >= gridY && this.mouseY < gridY + gridRows * cellH) {
+					final int col = (this.mouseX - gridX) / cellW;
+					final int row = (this.mouseY - gridY) / cellH;
+					final int idx = row * gridCols + col;
+					if (idx >= 0 && idx < skillCount) {
+						currentlyHoveredSkill = idx;
+						if (this.mouseButtonClick == 1 && this.uiTabPlayerInfoSubTab == 0) {
+							if (S_WANT_SKILL_MENUS && (isAndroid() ? doubleClick() : true)) {
 								setSkillGuideChosen(skillNameLong[currentlyHoveredSkill]);
 								skillGuideInterface.setVisible(true);
-								if (!C_CUSTOM_UI)
-									this.showUiTab = 0;
+								if (!C_CUSTOM_UI) this.showUiTab = 0;
 							}
-
-							if (isAndroid() && this.mouseButtonClick == 1 && this.uiTabPlayerInfoSubTab == 0 && S_WANT_OPENPK_POINTS) {
+							if (S_WANT_OPENPK_POINTS) {
 								if (combatTimeout == 0) {
-									//setSkillGuideChosen(skillNameLong[currentlyHoveredSkill]);
 									pointInterface.setVisible(true);
-									if (!C_CUSTOM_UI)
-										this.showUiTab = 0;
+									if (!C_CUSTOM_UI) this.showUiTab = 0;
 								} else {
 									this.showMessage(false, null,
-									"You must be out of combat for 10 seconds before changing stats.",
-									MessageType.GAME, 0, null);
-								}
-							} else if (!isAndroid() && this.mouseButtonClick == 1 && this.uiTabPlayerInfoSubTab == 0 && S_WANT_OPENPK_POINTS) {
-								if (combatTimeout == 0) {
-									//setSkillGuideChosen(skillNameLong[currentlyHoveredSkill]);
-									pointInterface.setVisible(true);
-									if (!C_CUSTOM_UI)
-										this.showUiTab = 0;
-								} else {
-										this.showMessage(false, null,
 										"You must be out of combat for 10 seconds before changing stats.",
 										MessageType.GAME, 0, null);
-									}
+								}
 							}
 						}
 					}
 				}
 
+				// Draw each skill cell: icon + current/base numbers.
 				for (currSkill = 0; currSkill < skillCount; currSkill++) {
 					if (Config.S_WANT_OPENPK_POINTS && currSkill > 6) break;
 
-					// OGRS — prefix skill icon (UI track P2). Icon at 12×12,
-					// scaled down from authored 24×24 to fit the row.
+					final int col = currSkill % gridCols;
+					final int row = currSkill / gridCols;
+					final int cellX = gridX + col * cellW;
+					final int cellY = gridY + row * cellH;
+					final boolean hovered = (currentlyHoveredSkill == currSkill);
+
+					// Hover highlight — subtle background tint.
+					if (hovered) {
+						this.getSurface().drawBoxAlpha(cellX, cellY, cellW - 1, cellH - 1, 0xFFD700, 40);
+					}
+
+					// Icon left side (24×24).
 					final int ogrsIconSlot = ogrsSkillIconSlot(this.getSkillNames()[currSkill]);
-					int ogrsTextX = xOffset;
 					if (ogrsIconSlot >= 0 && this.getSurface().sprites[ogrsIconSlot] != null) {
 						this.getSurface().drawSpriteClipping(
 							this.getSurface().sprites[ogrsIconSlot],
-							xOffset, yOffset - 2, 12, 12, 0, 0xffffff, 0, false, 0, 1);
-						ogrsTextX = xOffset + 14;
+							cellX + 1, cellY + 1, 24, 24, 0, 0xffffff, 0, false, 0, 1);
 					}
-					this.getSurface().drawString(this.getSkillNames()[currSkill] + ":@yel@" + this.playerStatCurrent[i]
-						+ "/" + this.playerStatBase[i], ogrsTextX, yOffset, currentlyHoveredSkill == i ? textColourHovered : textColour, 1);
 
-					yOffset += 13;
+					// Current level — top-right of cell (yellow when boosted, white normally).
+					// Base level — bottom-right of cell (yellow). OSRS convention.
+					final int cur = this.playerStatCurrent[i];
+					final int base = this.playerStatBase[i];
+					final int curColor = (cur > base) ? 0x00FF00 : (cur < base ? 0xFF6666 : 0xFFFFFF);
+					this.getSurface().drawString(Integer.toString(cur), cellX + 28, cellY + 10, curColor, 1);
+					this.getSurface().drawString(Integer.toString(base), cellX + 42, cellY + 22, 0xFFFF00, 1);
+					// Separator slash hint (subtle).
+					this.getSurface().drawString("/", cellX + 38, cellY + 16, 0x808080, 0);
 					i++;
-
-					if (i == leftColLength) {
-						//Here we give an extra 10 pixels to the X offset so stats don't overlap.
-						if (Config.S_WANT_OPENPK_POINTS) {
-							xOffset += 10;
-						}
-						xOffset += width / 2 - 10;
-						yOffset = heightMargin;
-					}
 				}
 
-				if (leftColLength != rightColLength) {
-					xOffset = x + 5;
-				}
+				// After-grid bookkeeping for the subsequent Quest Points / Fatigue / Equipment sections.
+				yOffset = gridY + gridRows * cellH + 4;
+				xOffset = x + 5;
 
 				if (!Config.S_WANT_OPENPK_POINTS) {
 					this.getSurface().drawString("Quest Points:@yel@" + this.questPoints, xOffset, yOffset, textColour, 1);
