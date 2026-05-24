@@ -1,0 +1,17 @@
+# OGRS thief tool/drop: Cipher scroll.
+# Track #6 from CODER_HANDOFF.md (art/items/thief_tools_drops/).
+# Sprite reuse + tint pending sprite-packing pass.
+
+id: 1693
+name: Cipher scroll
+description: A scroll covered in seemingly-random symbols. Coded message.
+command: "Read"
+stackable: false
+untradeable: false
+members_only: true
+noteable: true
+base_price: 100
+picture_mask: 0x6A5A3A
+sprite:
+  id: 49
+  location: "items:49"

@@ -1,0 +1,17 @@
+# OGRS thief tool/drop: Safecracking tools.
+# Track #6 from CODER_HANDOFF.md (art/items/thief_tools_drops/).
+# Sprite reuse + tint pending sprite-packing pass.
+
+id: 1675
+name: Safecracking tools
+description: A roll of slim files and turning tools. For the truly committed thief.
+command: ""
+stackable: false
+untradeable: false
+members_only: true
+noteable: true
+base_price: 500
+picture_mask: 0x4A4A5A
+sprite:
+  id: 714
+  location: "items:714"

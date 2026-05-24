@@ -1,0 +1,17 @@
+# OGRS thief tool/drop: Bag of holding.
+# Track #6 from CODER_HANDOFF.md (art/items/thief_tools_drops/).
+# Sprite reuse + tint pending sprite-packing pass.
+
+id: 1677
+name: Bag of holding
+description: A leather bag that holds far more than it should. Magical.
+command: "Open"
+stackable: false
+untradeable: true
+members_only: true
+noteable: true
+base_price: 1500
+picture_mask: 0x7A5A2E
+sprite:
+  id: 1263
+  location: "items:1263"

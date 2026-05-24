@@ -1,0 +1,17 @@
+# OGRS thief tool/drop: Brooch.
+# Track #6 from CODER_HANDOFF.md (art/items/thief_tools_drops/).
+# Sprite reuse + tint pending sprite-packing pass.
+
+id: 1689
+name: Brooch
+description: A decorative golden brooch set with a small gem.
+command: ""
+stackable: false
+untradeable: false
+members_only: false
+noteable: true
+base_price: 120
+picture_mask: 0xCC4444
+sprite:
+  id: 283
+  location: "items:283"

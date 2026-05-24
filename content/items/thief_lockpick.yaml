@@ -1,0 +1,17 @@
+# OGRS thief tool/drop: Lockpick.
+# Track #6 from CODER_HANDOFF.md (art/items/thief_tools_drops/).
+# Sprite reuse + tint pending sprite-packing pass.
+
+id: 1673
+name: Lockpick
+description: A bent steel pin. Used to open locked chests and doors.
+command: ""
+stackable: false
+untradeable: false
+members_only: false
+noteable: true
+base_price: 20
+picture_mask: 0x000000
+sprite:
+  id: 714
+  location: "items:714"

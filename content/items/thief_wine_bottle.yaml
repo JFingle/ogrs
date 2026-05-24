@@ -1,0 +1,17 @@
+# OGRS thief tool/drop: Wine bottle.
+# Track #6 from CODER_HANDOFF.md (art/items/thief_tools_drops/).
+# Sprite reuse + tint pending sprite-packing pass.
+
+id: 1697
+name: Wine bottle
+description: A dusty bottle of red wine. Vintage uncertain.
+command: "Drink"
+stackable: false
+untradeable: false
+members_only: false
+noteable: true
+base_price: 25
+picture_mask: 0x000000
+sprite:
+  id: 142
+  location: "items:142"

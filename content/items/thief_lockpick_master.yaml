@@ -1,0 +1,17 @@
+# OGRS thief tool/drop: Master lockpick.
+# Track #6 from CODER_HANDOFF.md (art/items/thief_tools_drops/).
+# Sprite reuse + tint pending sprite-packing pass.
+
+id: 1674
+name: Master lockpick
+description: A finely-tuned silver lockpick. Higher success on harder locks.
+command: ""
+stackable: false
+untradeable: false
+members_only: true
+noteable: true
+base_price: 200
+picture_mask: 0xC8C8D8
+sprite:
+  id: 714
+  location: "items:714"

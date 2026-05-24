@@ -1,0 +1,17 @@
+# OGRS thief tool/drop: Pocket watch.
+# Track #6 from CODER_HANDOFF.md (art/items/thief_tools_drops/).
+# Sprite reuse + tint pending sprite-packing pass.
+
+id: 1696
+name: Pocket watch
+description: A silver pocket watch on a chain. Ticks softly.
+command: ""
+stackable: false
+untradeable: false
+members_only: true
+noteable: true
+base_price: 180
+picture_mask: 0xC0C0C8
+sprite:
+  id: 1118
+  location: "items:1118"

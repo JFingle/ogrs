@@ -1,0 +1,17 @@
+# OGRS thief tool/drop: Mystery box.
+# Track #6 from CODER_HANDOFF.md (art/items/thief_tools_drops/).
+# Sprite reuse + tint pending sprite-packing pass.
+
+id: 1680
+name: Mystery box
+description: A sealed wooden box. Could be anything inside.
+command: "Open"
+stackable: false
+untradeable: false
+members_only: true
+noteable: true
+base_price: 250
+picture_mask: 0x6A4A2E
+sprite:
+  id: 605
+  location: "items:605"

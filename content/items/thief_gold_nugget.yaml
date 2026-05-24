@@ -1,0 +1,17 @@
+# OGRS thief tool/drop: Gold nugget.
+# Track #6 from CODER_HANDOFF.md (art/items/thief_tools_drops/).
+# Sprite reuse + tint pending sprite-packing pass.
+
+id: 1692
+name: Gold nugget
+description: A small chunk of raw gold. Smelt or sell.
+command: ""
+stackable: false
+untradeable: false
+members_only: false
+noteable: true
+base_price: 35
+picture_mask: 0x000000
+sprite:
+  id: 1118
+  location: "items:1118"

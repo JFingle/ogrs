@@ -1,0 +1,17 @@
+# OGRS thief tool/drop: Doubloons.
+# Track #6 from CODER_HANDOFF.md (art/items/thief_tools_drops/).
+# Sprite reuse + tint pending sprite-packing pass.
+
+id: 1691
+name: Doubloons
+description: Heavy gold pirate coins, foreign make.
+command: ""
+stackable: true
+untradeable: false
+members_only: true
+noteable: true
+base_price: 10
+picture_mask: 0xE0C040
+sprite:
+  id: 10
+  location: "items:10"

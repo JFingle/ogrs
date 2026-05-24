@@ -1,0 +1,17 @@
+# OGRS thief tool/drop: Ornate key.
+# Track #6 from CODER_HANDOFF.md (art/items/thief_tools_drops/).
+# Sprite reuse + tint pending sprite-packing pass.
+
+id: 1684
+name: Ornate key
+description: A gilded key with elaborate teeth. Opens something important.
+command: ""
+stackable: false
+untradeable: false
+members_only: false
+noteable: true
+base_price: 100
+picture_mask: 0xE0C040
+sprite:
+  id: 421
+  location: "items:421"

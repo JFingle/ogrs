@@ -262,6 +262,81 @@ public final class OgrsClientItems {
 		// id 1672 — from content/items/magic_pure_essence.yaml
 		items.add(new ItemDef("Pure essence", "A purer form of rune essence. Craftable into all rune types.", "", 8, 150, "items:150", true, false, 0, 0xFFFFFF, true, false, true, i++));
 
+		// id 1673 — from content/items/thief_lockpick.yaml
+		items.add(new ItemDef("Lockpick", "A bent steel pin. Used to open locked chests and doors.", "", 20, 714, "items:714", false, false, 0, 0x000000, false, false, true, i++));
+
+		// id 1674 — from content/items/thief_lockpick_master.yaml
+		items.add(new ItemDef("Master lockpick", "A finely-tuned silver lockpick. Higher success on harder locks.", "", 200, 714, "items:714", false, false, 0, 0xC8C8D8, true, false, true, i++));
+
+		// id 1675 — from content/items/thief_safecracking_tools.yaml
+		items.add(new ItemDef("Safecracking tools", "A roll of slim files and turning tools. For the truly committed thief.", "", 500, 714, "items:714", false, false, 0, 0x4A4A5A, true, false, true, i++));
+
+		// id 1676 — from content/items/thief_disguise_kit.yaml
+		items.add(new ItemDef("Disguise kit", "Wig, glasses, fake mustache. Vanishes guard suspicion temporarily.", "Use", 350, 381, "items:381", false, false, 0, 0x8A6B4A, true, false, true, i++));
+
+		// id 1677 — from content/items/thief_bag_of_holding.yaml
+		items.add(new ItemDef("Bag of holding", "A leather bag that holds far more than it should. Magical.", "Open", 1500, 1263, "items:1263", false, false, 0, 0x7A5A2E, true, true, true, i++));
+
+		// id 1678 — from content/items/thief_money_purse.yaml
+		items.add(new ItemDef("Money purse", "A leather purse — looks heavy.", "Open", 50, 824, "items:824", false, false, 0, 0x000000, false, false, true, i++));
+
+		// id 1679 — from content/items/thief_silver_coin_pouch.yaml
+		items.add(new ItemDef("Silver coin pouch", "A small velvet pouch containing silver coinage.", "Open", 100, 824, "items:824", false, false, 0, 0xB8B8C8, false, false, true, i++));
+
+		// id 1680 — from content/items/thief_mystery_box.yaml
+		items.add(new ItemDef("Mystery box", "A sealed wooden box. Could be anything inside.", "Open", 250, 605, "items:605", false, false, 0, 0x6A4A2E, true, false, true, i++));
+
+		// id 1681 — from content/items/thief_snuff_box.yaml
+		items.add(new ItemDef("Snuff box", "An ornate enameled box. Worth a few coins on its own.", "Open", 150, 605, "items:605", false, false, 0, 0x3A2A1A, false, false, true, i++));
+
+		// id 1682 — from content/items/thief_iron_key.yaml
+		items.add(new ItemDef("Iron key", "A heavy iron key. Smells of rust.", "", 10, 47, "items:47", false, false, 0, 0x3A3A3A, false, false, true, i++));
+
+		// id 1683 — from content/items/thief_brass_key.yaml
+		items.add(new ItemDef("Brass key", "A brass key — small but well-made.", "", 15, 99, "items:99", false, false, 0, 0x000000, false, false, true, i++));
+
+		// id 1684 — from content/items/thief_ornate_key.yaml
+		items.add(new ItemDef("Ornate key", "A gilded key with elaborate teeth. Opens something important.", "", 100, 421, "items:421", false, false, 0, 0xE0C040, false, false, true, i++));
+
+		// id 1685 — from content/items/thief_stolen_ring.yaml
+		items.add(new ItemDef("Stolen ring", "A simple gold ring — clearly someone else's.", "", 35, 283, "items:283", false, false, 0, 0x000000, false, false, true, i++));
+
+		// id 1686 — from content/items/thief_stolen_necklace.yaml
+		items.add(new ItemDef("Stolen necklace", "A gold chain necklace lifted from a noble's neck.", "", 80, 288, "items:288", false, false, 0, 0x000000, false, false, true, i++));
+
+		// id 1687 — from content/items/thief_signet_ring.yaml
+		items.add(new ItemDef("Signet ring", "A heavy gold signet ring engraved with a sigil. Worth a fortune.", "", 300, 283, "items:283", false, false, 0, 0x1A2A8E, true, false, true, i++));
+
+		// id 1688 — from content/items/thief_locket.yaml
+		items.add(new ItemDef("Locket", "A small heart-shaped locket. Someone's tender keepsake.", "Open", 60, 288, "items:288", false, false, 0, 0xC8407A, false, false, true, i++));
+
+		// id 1689 — from content/items/thief_brooch.yaml
+		items.add(new ItemDef("Brooch", "A decorative golden brooch set with a small gem.", "", 120, 283, "items:283", false, false, 0, 0xCC4444, false, false, true, i++));
+
+		// id 1690 — from content/items/thief_copper_pile.yaml
+		items.add(new ItemDef("Copper pile", "A small stack of copper coins. Not worth much, but it's something.", "", 1, 10, "items:10", true, false, 0, 0xB87333, false, false, true, i++));
+
+		// id 1691 — from content/items/thief_doubloons.yaml
+		items.add(new ItemDef("Doubloons", "Heavy gold pirate coins, foreign make.", "", 10, 10, "items:10", true, false, 0, 0xE0C040, true, false, true, i++));
+
+		// id 1692 — from content/items/thief_gold_nugget.yaml
+		items.add(new ItemDef("Gold nugget", "A small chunk of raw gold. Smelt or sell.", "", 35, 1118, "items:1118", false, false, 0, 0x000000, false, false, true, i++));
+
+		// id 1693 — from content/items/thief_cipher_scroll.yaml
+		items.add(new ItemDef("Cipher scroll", "A scroll covered in seemingly-random symbols. Coded message.", "Read", 100, 49, "items:49", false, false, 0, 0x6A5A3A, true, false, true, i++));
+
+		// id 1694 — from content/items/thief_map_fragment.yaml
+		items.add(new ItemDef("Map fragment", "A torn corner of a map. Edges burnt. Half of a treasure clue.", "Read", 200, 49, "items:49", false, false, 0, 0xC8A878, true, false, true, i++));
+
+		// id 1695 — from content/items/thief_wax_tablet.yaml
+		items.add(new ItemDef("Wax tablet", "A wooden frame holding inscribed beeswax. A merchant's ledger entry.", "Read", 40, 1174, "items:1174", false, false, 0, 0xC8A040, false, false, true, i++));
+
+		// id 1696 — from content/items/thief_pocket_watch.yaml
+		items.add(new ItemDef("Pocket watch", "A silver pocket watch on a chain. Ticks softly.", "", 180, 1118, "items:1118", false, false, 0, 0xC0C0C8, true, false, true, i++));
+
+		// id 1697 — from content/items/thief_wine_bottle.yaml
+		items.add(new ItemDef("Wine bottle", "A dusty bottle of red wine. Vintage uncertain.", "Drink", 25, 142, "items:142", false, false, 0, 0x000000, false, false, true, i++));
+
 		return i;
 	}
 }

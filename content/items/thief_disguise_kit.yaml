@@ -1,0 +1,17 @@
+# OGRS thief tool/drop: Disguise kit.
+# Track #6 from CODER_HANDOFF.md (art/items/thief_tools_drops/).
+# Sprite reuse + tint pending sprite-packing pass.
+
+id: 1676
+name: Disguise kit
+description: Wig, glasses, fake mustache. Vanishes guard suspicion temporarily.
+command: "Use"
+stackable: false
+untradeable: false
+members_only: true
+noteable: true
+base_price: 350
+picture_mask: 0x8A6B4A
+sprite:
+  id: 381
+  location: "items:381"

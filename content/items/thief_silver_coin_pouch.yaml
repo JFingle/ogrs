@@ -1,0 +1,17 @@
+# OGRS thief tool/drop: Silver coin pouch.
+# Track #6 from CODER_HANDOFF.md (art/items/thief_tools_drops/).
+# Sprite reuse + tint pending sprite-packing pass.
+
+id: 1679
+name: Silver coin pouch
+description: A small velvet pouch containing silver coinage.
+command: "Open"
+stackable: false
+untradeable: false
+members_only: false
+noteable: true
+base_price: 100
+picture_mask: 0xB8B8C8
+sprite:
+  id: 824
+  location: "items:824"

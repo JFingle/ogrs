@@ -1,0 +1,17 @@
+# OGRS thief tool/drop: Iron key.
+# Track #6 from CODER_HANDOFF.md (art/items/thief_tools_drops/).
+# Sprite reuse + tint pending sprite-packing pass.
+
+id: 1682
+name: Iron key
+description: A heavy iron key. Smells of rust.
+command: ""
+stackable: false
+untradeable: false
+members_only: false
+noteable: true
+base_price: 10
+picture_mask: 0x3A3A3A
+sprite:
+  id: 47
+  location: "items:47"

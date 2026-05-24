@@ -1,0 +1,17 @@
+# OGRS thief tool/drop: Stolen ring.
+# Track #6 from CODER_HANDOFF.md (art/items/thief_tools_drops/).
+# Sprite reuse + tint pending sprite-packing pass.
+
+id: 1685
+name: Stolen ring
+description: A simple gold ring — clearly someone else's.
+command: ""
+stackable: false
+untradeable: false
+members_only: false
+noteable: true
+base_price: 35
+picture_mask: 0x000000
+sprite:
+  id: 283
+  location: "items:283"

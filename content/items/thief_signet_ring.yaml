@@ -1,0 +1,17 @@
+# OGRS thief tool/drop: Signet ring.
+# Track #6 from CODER_HANDOFF.md (art/items/thief_tools_drops/).
+# Sprite reuse + tint pending sprite-packing pass.
+
+id: 1687
+name: Signet ring
+description: A heavy gold signet ring engraved with a sigil. Worth a fortune.
+command: ""
+stackable: false
+untradeable: false
+members_only: true
+noteable: true
+base_price: 300
+picture_mask: 0x1A2A8E
+sprite:
+  id: 283
+  location: "items:283"

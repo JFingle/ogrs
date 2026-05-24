@@ -1,0 +1,17 @@
+# OGRS thief tool/drop: Locket.
+# Track #6 from CODER_HANDOFF.md (art/items/thief_tools_drops/).
+# Sprite reuse + tint pending sprite-packing pass.
+
+id: 1688
+name: Locket
+description: A small heart-shaped locket. Someone's tender keepsake.
+command: "Open"
+stackable: false
+untradeable: false
+members_only: false
+noteable: true
+base_price: 60
+picture_mask: 0xC8407A
+sprite:
+  id: 288
+  location: "items:288"

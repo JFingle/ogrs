@@ -1,0 +1,17 @@
+# OGRS thief tool/drop: Brass key.
+# Track #6 from CODER_HANDOFF.md (art/items/thief_tools_drops/).
+# Sprite reuse + tint pending sprite-packing pass.
+
+id: 1683
+name: Brass key
+description: A brass key — small but well-made.
+command: ""
+stackable: false
+untradeable: false
+members_only: false
+noteable: true
+base_price: 15
+picture_mask: 0x000000
+sprite:
+  id: 99
+  location: "items:99"

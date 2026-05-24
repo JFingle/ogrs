@@ -1,0 +1,17 @@
+# OGRS thief tool/drop: Wax tablet.
+# Track #6 from CODER_HANDOFF.md (art/items/thief_tools_drops/).
+# Sprite reuse + tint pending sprite-packing pass.
+
+id: 1695
+name: Wax tablet
+description: A wooden frame holding inscribed beeswax. A merchant's ledger entry.
+command: "Read"
+stackable: false
+untradeable: false
+members_only: false
+noteable: true
+base_price: 40
+picture_mask: 0xC8A040
+sprite:
+  id: 1174
+  location: "items:1174"

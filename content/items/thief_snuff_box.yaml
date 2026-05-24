@@ -1,0 +1,17 @@
+# OGRS thief tool/drop: Snuff box.
+# Track #6 from CODER_HANDOFF.md (art/items/thief_tools_drops/).
+# Sprite reuse + tint pending sprite-packing pass.
+
+id: 1681
+name: Snuff box
+description: An ornate enameled box. Worth a few coins on its own.
+command: "Open"
+stackable: false
+untradeable: false
+members_only: false
+noteable: true
+base_price: 150
+picture_mask: 0x3A2A1A
+sprite:
+  id: 605
+  location: "items:605"
