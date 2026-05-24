@@ -467,15 +467,6 @@
       "direction": 0
     },
     {
-      "_n": "OGRS Crypt Inner Gate \u2014 spider/ghost divider",
-      "id": 1324,
-      "pos": {
-        "X": 122,
-        "Y": 3720
-      },
-      "direction": 2
-    },
-    {
       "_n": "OGRS Crypt Inner Gate \u2014 warrens/ossuary divider",
       "id": 1324,
       "pos": {
@@ -494,11 +485,11 @@
       "direction": 2
     },
     {
-      "_n": "OGRS Crypt Lord's Chest \u2014 boss room back wall",
+      "_n": "OGRS Crypt Lord's Chest \u2014 matron room south wall",
       "id": 1325,
       "pos": {
         "X": 122,
-        "Y": 3743
+        "Y": 3728
       },
       "direction": 0
     },
