@@ -14964,44 +14964,42 @@ public final class mudclient implements Runnable {
 		final int iconH = 32;
 		// 233 px clears the 6 standard tab icons + COMBAT_TAB. We add a
 		// wider gap (38) instead of the strip's 33 so the run icon visibly
-		// separates from the tab cluster — sparky asked for spacing
-		// between the icons rather than the flush 1-px gap pattern.
+		// separates from the tab cluster.
 		final int iconX = this.getSurface().width2 - 233 - 38;
 		final int iconY;
 		if (Config.C_CUSTOM_UI) {
-			// Sit just above the bottom tab strip so a thumb tapping the
-			// run icon doesn't accidentally tap a tab below it.
 			iconY = getUITabsY() - iconH - 4;
 		} else {
 			iconY = 3;
 		}
-		// Background — dark when walking, red-tinted when running.
-		final int bg = ogrsRunButtonVisual ? 0x7E1F1C : 0x2D2C24;
-		this.getSurface().drawBoxAlpha(iconX, iconY, iconW, iconH, bg, 220);
-		this.getSurface().drawBoxBorder(iconX, iconW, iconY, iconH, 0x000000);
-		this.getSurface().drawBoxBorder(iconX + 1, iconW - 2, iconY + 1, iconH - 2, 0x706452);
-		// "RUN" label centered in the top portion.
-		final String runLabel = "RUN";
-		final int runLabelW = this.getSurface().stringWidth(1, runLabel);
-		this.getSurface().drawString(runLabel,
-			iconX + (iconW - runLabelW) / 2, iconY + 12, 0xFFFFFF, 1);
-		// Bigger energy bar in the bottom half, clean — fill width +
-		// color signal the percent at a glance, so we drop the overlay
-		// number that previously crowded the bar. (sparky 2026-05-20)
-		final int barH = 12;
-		final int barY = iconY + iconH - barH - 3;
-		final int barX = iconX + 3;
-		final int barW = iconW - 6;
-		this.getSurface().drawBoxAlpha(barX, barY, barW, barH, 0x000000, 255);
-		final int fillW = Math.max(0, Math.min(barW, barW * ogrsRunEnergyPercent / 100));
-		final int barColour = ogrsRunEnergyPercent > 60 ? 0x4FB04F
-		                    : ogrsRunEnergyPercent > 25 ? 0xD4A64A
-		                    :                              0xB02A2A;
-		if (fillW > 0) {
-			this.getSurface().drawBoxAlpha(barX, barY, fillW, barH, barColour, 255);
+		// OGRS UI track P4 — pick the boot sprite based on percent. Full
+		// (>50%), depleting (10-50%, also when actively running), exhausted
+		// (<10%). UI_INTEGRATION.md slots: 3874/3875/3876.
+		final int runSlot;
+		if (ogrsRunEnergyPercent < 10) {
+			runSlot = 3876;        // exhausted (drooping boot)
+		} else if (ogrsRunButtonVisual || ogrsRunEnergyPercent <= 50) {
+			runSlot = 3875;        // depleting / actively running
+		} else {
+			runSlot = 3874;        // rested / full
 		}
-		// Click handler — uses the icon's actual Y range so mobile (where
-		// the icon sits near the bottom of the screen) still gets a hit.
+		final com.openrsc.client.model.Sprite runSprite = this.getSurface().sprites[runSlot];
+		if (runSprite != null) {
+			// Sprite is 32×24 native — centre vertically within the 32×32 click box.
+			this.getSurface().drawSprite(runSprite, iconX, iconY + (iconH - 24) / 2);
+		} else {
+			// Cache mid-rebuild fallback — old colored box behaviour.
+			final int bg = ogrsRunButtonVisual ? 0x7E1F1C : 0x2D2C24;
+			this.getSurface().drawBoxAlpha(iconX, iconY, iconW, iconH, bg, 220);
+			this.getSurface().drawBoxBorder(iconX, iconW, iconY, iconH, 0x000000);
+		}
+		// Live percent overlay — sprite has mockup digits; we replace with the
+		// real number. Drawn centered over the sprite's counter plate area.
+		final String pct = Integer.toString(ogrsRunEnergyPercent);
+		final int pctW = this.getSurface().stringWidth(1, pct);
+		this.getSurface().drawString(pct,
+			iconX + (iconW - pctW) / 2, iconY + iconH - 6, 0xFFFFFF, 1);
+		// Click handler.
 		if (this.mouseButtonClick != 0
 			&& this.mouseX >= iconX && this.mouseX < iconX + iconW
 			&& this.mouseY >= iconY && this.mouseY < iconY + iconH) {
