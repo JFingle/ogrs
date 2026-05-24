@@ -63,6 +63,39 @@ public final class mudclient implements Runnable {
 	public static final int spriteItem = 2150;
 	public static final int spriteProjectile = 3160;
 	public static final int spriteTexture = 3225;
+
+	// OGRS — UI track P2 skill icon slot mapping. Names match the engine's
+	// skill registry (Skill enum + dynamic OGRS additions). 'Herblaw' and
+	// 'Herblore' both map to the same icon since the spec doc uses the
+	// modern name but the engine uses the authentic one. 'Harvesting' and
+	// 'Farming' both map to the OGRS farming icon for the same reason.
+	private static int ogrsSkillIconSlot(final String name) {
+		if (name == null) return -1;
+		switch (name.toLowerCase()) {
+			case "attack":      return 3840;
+			case "strength":    return 3841;
+			case "defense":     case "defence":    return 3842;
+			case "hits":        case "hitpoints":  return 3843;
+			case "ranged":      return 3844;
+			case "prayer":      return 3845;
+			case "magic":       return 3846;
+			case "cooking":     return 3847;
+			case "woodcutting": case "woodcut":    return 3848;
+			case "fletching":   return 3849;
+			case "fishing":     return 3850;
+			case "firemaking":  return 3851;
+			case "crafting":    return 3852;
+			case "smithing":    return 3853;
+			case "mining":      return 3854;
+			case "herblaw":     case "herblore":   return 3855;
+			case "agility":     return 3856;
+			case "thieving":    return 3857;
+			case "slayer":      return 3858;
+			case "harvesting":  case "farming":    return 3859;
+			case "runecraft":   case "runecrafting": return 3860;
+			default:            return -1;
+		}
+	}
 	static final int spriteLogo = 3150;
 	public static KillAnnouncerQueue killQueue = new KillAnnouncerQueue();
 	public static int skillCount;
@@ -11224,8 +11257,18 @@ public final class mudclient implements Runnable {
 				for (currSkill = 0; currSkill < skillCount; currSkill++) {
 					if (Config.S_WANT_OPENPK_POINTS && currSkill > 6) break;
 
+					// OGRS — prefix skill icon (UI track P2). Icon at 12×12,
+					// scaled down from authored 24×24 to fit the row.
+					final int ogrsIconSlot = ogrsSkillIconSlot(this.getSkillNames()[currSkill]);
+					int ogrsTextX = xOffset;
+					if (ogrsIconSlot >= 0 && this.getSurface().sprites[ogrsIconSlot] != null) {
+						this.getSurface().drawSpriteClipping(
+							this.getSurface().sprites[ogrsIconSlot],
+							xOffset, yOffset - 2, 12, 12, 0, 0xffffff, 0, false, 0, 1);
+						ogrsTextX = xOffset + 14;
+					}
 					this.getSurface().drawString(this.getSkillNames()[currSkill] + ":@yel@" + this.playerStatCurrent[i]
-						+ "/" + this.playerStatBase[i], xOffset, yOffset, currentlyHoveredSkill == i ? textColourHovered : textColour, 1);
+						+ "/" + this.playerStatBase[i], ogrsTextX, yOffset, currentlyHoveredSkill == i ? textColourHovered : textColour, 1);
 
 					yOffset += 13;
 					i++;
