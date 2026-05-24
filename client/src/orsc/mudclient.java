@@ -6304,16 +6304,27 @@ public final class mudclient implements Runnable {
 			this.welcomeScreenShown = false;
 			this.getSurface().blackScreen(true);
 			if (this.loginScreenNumber == 0 || this.loginScreenNumber == 2 || this.loginScreenNumber == 3) {
-				// OGRS — login splash from the UI track (sprite 3877, 512x384).
-				// Replaces the prior animated 3-vert banner rotation. Drawn
-				// centered horizontally; Android offsets down to avoid the
-				// notch area, same convention as the old banner.
-				final com.openrsc.client.model.Sprite splash = getSurface().sprites[3877];
-				if (splash != null) {
-					int splashX = (this.getGameWidth() - splash.getWidth()) / 2;
-					if (splashX < 0) splashX = 0;
-					int splashY = isAndroid() ? 140 : 10;
-					this.getSurface().drawSprite(splash, splashX, splashY);
+				// Original 3-vert animated banner (already carries the OGRS
+				// branding from commit 2b7168e). Sparky 2026-05-24: "I kind
+				// of like the old UI splash with the new OGRS layover" — the
+				// existing spriteVerts already have the OGRS banner overlay,
+				// so the rotation IS the OGRS splash.
+				int var2 = this.getFrameCounter() * 2 % 3072;
+				if (var2 < 1024) {
+					this.getSurface().drawSprite(getSurface().spriteVerts[0], 0, isAndroid() ? 140 : 10);
+					if (var2 > 768) {
+						this.getSurface().a(getSurface().spriteVerts[1], 0, 0, var2 - 768, isAndroid() ? 140 : 10);
+					}
+				} else if (var2 < 2048) {
+					this.getSurface().drawSprite(getSurface().spriteVerts[1], 0, isAndroid() ? 140 : 10);
+					if (var2 > 1792) {
+						this.getSurface().a(getSurface().spriteVerts[2], 0, 0, var2 - 1792, isAndroid() ? 140 : 10);
+					}
+				} else {
+					this.getSurface().drawSprite(getSurface().spriteVerts[2], 0, isAndroid() ? 140 : 10);
+					if (var2 > 2816) {
+						this.getSurface().a(getSurface().spriteVerts[0], 0, 0, var2 - 2816, isAndroid() ? 140 : 10);
+					}
 				}
 			}
 

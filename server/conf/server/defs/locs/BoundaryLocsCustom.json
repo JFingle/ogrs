@@ -3644,24 +3644,6 @@
         "Y": 3721
       },
       "direction": 0
-    },
-    {
-      "_n": "OGRS Crypt web flank S wall (W side)",
-      "id": 151,
-      "pos": {
-        "X": 121,
-        "Y": 3721
-      },
-      "direction": 0
-    },
-    {
-      "_n": "OGRS Crypt web flank S wall (E side)",
-      "id": 151,
-      "pos": {
-        "X": 123,
-        "Y": 3721
-      },
-      "direction": 0
     }
   ]
 }
