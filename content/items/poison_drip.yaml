@@ -1,0 +1,25 @@
+# OGRS item: Poison Drip.
+#
+# Spider Boss spec (~/ogrs/art/_specs/SPIDER_BOSS_SPEC.md). Drops from
+# the Crypt Spider Matron — a globule of toxic venom that can be used
+# for crafting / alchemy / future poison-weapon coating.
+#
+# Sprite: reuses upstream items:177 (Poison) — already a green venom
+# blob, no tint needed. Future polish hunt: pack the artist's authored
+# sprite at ~/ogrs/art/items/spider_boss/poison_drip.png into
+# Authentic_Sprites.orsc (needs careful slot allocation — items range
+# overlaps projectile router range).
+
+id: 1611
+name: Poison Drip
+description: A glob of sticky, glistening venom. Looks lethal.
+command: ""
+stackable: true
+untradeable: false
+members_only: false
+noteable: true
+base_price: 25
+picture_mask: 0
+sprite:
+  id: 177
+  location: "items:177"

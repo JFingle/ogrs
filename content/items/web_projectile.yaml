@@ -1,0 +1,26 @@
+# OGRS item: Web Projectile.
+#
+# Spider Boss spec drop — sticky web ball that the matron uses as her
+# ranged attack visual. As a drop, it's a future throwable weapon
+# (slows the target on hit).
+#
+# Sprite: reuses upstream items:200 (silk) — closest visual to a sticky
+# web wad. Artist's authored PNG at
+# ~/ogrs/art/items/spider_boss/web_projectile.png waiting on the
+# sprite-packing pass.
+#
+# Throwable weapon mechanics deferred — for v1 this is loot-only.
+
+id: 1614
+name: Web Projectile
+description: A wad of sticky spider-web. Heavy. Feels like it wants to be thrown.
+command: ""
+stackable: true
+untradeable: false
+members_only: false
+noteable: true
+base_price: 35
+picture_mask: 0xCCCCDD
+sprite:
+  id: 200
+  location: "items:200"

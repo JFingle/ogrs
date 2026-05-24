@@ -1,0 +1,26 @@
+# OGRS item: Antidote Vial.
+#
+# Spider Boss spec — ironic drop from the matron. Drink to cure poison
+# immediately + grant 60s poison immunity. Counter to her own venom.
+#
+# Sprite: reuses upstream items:478 (stat restoration potion) with a
+# bright green tint to read as anti-venom. Artist's authored PNG at
+# ~/ogrs/art/items/spider_boss/antidote_vial.png waiting on the
+# sprite-packing pass.
+#
+# The drink-effect (cure poison + 60s immunity) lives in a separate
+# UseInvTrigger plugin — content/items just declares the item.
+
+id: 1613
+name: Antidote Vial
+description: A small glass vial of bright green liquid. The label reads "DRINK".
+command: "Drink"
+stackable: false
+untradeable: false
+members_only: false
+noteable: true
+base_price: 80
+picture_mask: 0x4AB82E
+sprite:
+  id: 478
+  location: "items:478"

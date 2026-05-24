@@ -74,7 +74,19 @@ public final class OgrsClientItems {
 		items.add(new ItemDef("Crypt Spider Key", "A heavy iron key, etched with eight-legged sigils. Will crumble on use.", "", 0, 79, "items:79", false, false, 0, 0x4A3A1A, false, true, false, i++));
 
 		// id 1610 — from content/items/slayer_enchanted_gem.yaml
-		items.add(new ItemDef("Slayer Enchanted Gem", "A small faceted gem, humming faintly. Rub it to hear your slayer master's voice.", "Rub", 0, 160, "items:160", false, false, 0, 0x4A1A6E, false, true, false, i++));
+		items.add(new ItemDef("Slayer Enchanted Gem", "A small faceted gem, humming faintly. Rub it to hear your slayer master's voice.", "Rub", 500, 160, "items:160", false, false, 0, 0x4A1A6E, false, true, false, i++));
+
+		// id 1611 — from content/items/poison_drip.yaml
+		items.add(new ItemDef("Poison Drip", "A glob of sticky, glistening venom. Looks lethal.", "", 25, 177, "items:177", true, false, 0, 0x000000, false, false, true, i++));
+
+		// id 1612 — from content/items/spider_egg_sac.yaml
+		items.add(new ItemDef("Spider Egg Sac", "A leathery sac swollen with dozens of unhatched spiderlings. Don't squeeze.", "", 100, 219, "items:219", false, false, 0, 0x3A1A4A, false, false, true, i++));
+
+		// id 1613 — from content/items/antidote_vial.yaml
+		items.add(new ItemDef("Antidote Vial", "A small glass vial of bright green liquid. The label reads \"DRINK\".", "Drink", 80, 478, "items:478", false, false, 0, 0x4AB82E, false, false, true, i++));
+
+		// id 1614 — from content/items/web_projectile.yaml
+		items.add(new ItemDef("Web Projectile", "A wad of sticky spider-web. Heavy. Feels like it wants to be thrown.", "", 35, 200, "items:200", true, false, 0, 0xCCCCDD, false, false, true, i++));
 
 		return i;
 	}

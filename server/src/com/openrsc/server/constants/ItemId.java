@@ -1677,12 +1677,20 @@ public enum ItemId {
 	OGRS_CRYPTKEEPERS_SKULL(1608),
 	OGRS_CRYPT_SPIDER_KEY(1609),
 	// Slayer enchanted gem (#12) — portable task-progress readout.
-	OGRS_SLAYER_GEM(1610);
+	OGRS_SLAYER_GEM(1610),
+	// Spider Boss spec items (~/ogrs/art/_specs/SPIDER_BOSS_SPEC.md) —
+	// drops from the Crypt Spider Matron. Sprites currently reuse
+	// upstream slots + picture_mask; artist's authored PNGs at
+	// art/items/spider_boss/ waiting on the sprite-packing pass.
+	OGRS_POISON_DRIP(1611),
+	OGRS_SPIDER_EGG_SAC(1612),
+	OGRS_ANTIDOTE_VIAL(1613),
+	OGRS_WEB_PROJECTILE(1614);
 
 	private int itemId;
 
 	public static final int maxAuthentic = 1289;
-	public static final int maxCustom = 1610;
+	public static final int maxCustom = 1614;
 
 	private static final Map<Integer, ItemId> byId = new HashMap<Integer, ItemId>();
 	private static final Map<String, ItemId> byName = new HashMap<String, ItemId>();

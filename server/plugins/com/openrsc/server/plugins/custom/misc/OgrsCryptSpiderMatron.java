@@ -79,15 +79,20 @@ public final class OgrsCryptSpiderMatron implements AttackNpcTrigger, KillNpcTri
 		final int x = npc.getX(), y = npc.getY();
 		final int tickLifetime = player.getConfig().GAME_TICK * 150;
 
-		// Guaranteed drops — heavy spider-themed loot pile.
-		dropGround(player, ItemId.OGRS_SPIDER_LEG.id(), 3,                              x, y, tickLifetime);
-		dropGround(player, ItemId.OGRS_SPIDER_EGG.id(), 1,                              x, y, tickLifetime);
-		dropGround(player, ItemId.COINS.id(),           DataConversions.random(1000, 2500), x, y, tickLifetime);
-		dropGround(player, ItemId.CHAOS_RUNE.id(),      40,                             x, y, tickLifetime);
-		dropGround(player, ItemId.DEATH_RUNE.id(),      10,                             x, y, tickLifetime);
+		// Guaranteed drops — boss-themed spec pile (per SPIDER_BOSS_SPEC.md):
+		//   spider-leg/egg/coin/rune base + the 3 themed boss items.
+		dropGround(player, ItemId.OGRS_SPIDER_LEG.id(),      3,                                  x, y, tickLifetime);
+		dropGround(player, ItemId.OGRS_SPIDER_EGG.id(),      1,                                  x, y, tickLifetime);
+		dropGround(player, ItemId.OGRS_POISON_DRIP.id(),     DataConversions.random(5, 10),      x, y, tickLifetime);
+		dropGround(player, ItemId.OGRS_SPIDER_EGG_SAC.id(),  1,                                  x, y, tickLifetime);
+		dropGround(player, ItemId.OGRS_ANTIDOTE_VIAL.id(),   1,                                  x, y, tickLifetime);
+		dropGround(player, ItemId.COINS.id(),                DataConversions.random(1000, 2500), x, y, tickLifetime);
+		dropGround(player, ItemId.CHAOS_RUNE.id(),           40,                                 x, y, tickLifetime);
+		dropGround(player, ItemId.DEATH_RUNE.id(),           10,                                 x, y, tickLifetime);
 
-		// Bonus chance drops.
+		// Rare bonus — web projectile (future throwable weapon).
 		if (DataConversions.random(1, 4) == 1) {  // 25%
+			dropGround(player, ItemId.OGRS_WEB_PROJECTILE.id(), 1, x, y, tickLifetime);
 			dropGround(player, ItemId.NATURE_RUNE.id(), 8, x, y, tickLifetime);
 		}
 		if (DataConversions.random(1, 8) == 1) {  // 12.5% — a "matron's hoard" coin bonus
