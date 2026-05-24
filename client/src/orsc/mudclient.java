@@ -64,6 +64,15 @@ public final class mudclient implements Runnable {
 	public static final int spriteProjectile = 3160;
 	public static final int spriteTexture = 3225;
 
+	// OGRS — UI track P3 combat tab icon helper. Null-safe wrapper so
+	// the tab still draws cleanly if the sprite slot is missing.
+	private void ogrsDrawCombatTabIcon(final int slot, final int x, final int y) {
+		if (slot < 0 || slot >= this.getSurface().sprites.length) return;
+		final com.openrsc.client.model.Sprite s = this.getSurface().sprites[slot];
+		if (s == null) return;
+		this.getSurface().drawSpriteClipping(s, x, y, 16, 16, 0, 0xffffff, 0, false, 0, 1);
+	}
+
 	// OGRS — UI track P2 skill icon slot mapping. Names match the engine's
 	// skill registry (Skill enum + dynamic OGRS additions). 'Herblaw' and
 	// 'Herblore' both map to the same icon since the spec doc uses the
@@ -2993,6 +3002,13 @@ public final class mudclient implements Runnable {
 			this.getSurface().drawColoredStringCentered(width / 2 + sx, "Aggressive (+3 " + (isAndroid() ? "STR" : "Strength") + ")", 0, 0, 3, 56 + sy);
 			this.getSurface().drawColoredStringCentered(width / 2 + sx, "Accurate   (+3 " + (isAndroid() ? "ATK" : "Attack") + ")", 0, 0, 3, sy + 76);
 			this.getSurface().drawColoredStringCentered(width / 2 + sx, "Defensive  (+3 " + (isAndroid() ? "DEF" : "Defense") + ")", 0, 0, 3, sy + 96);
+			// OGRS — UI track P3 combat tab icons. 16×16 to the left of
+			// each style label. Controlled = heart (all-skills), Aggressive
+			// = fist (str), Accurate = sword (atk), Defensive = shield (def).
+			ogrsDrawCombatTabIcon(3864, sx + 4, sy + 30);  // Controlled -> hits/all
+			ogrsDrawCombatTabIcon(3862, sx + 4, sy + 50);  // Aggressive -> strength
+			ogrsDrawCombatTabIcon(3861, sx + 4, sy + 70);  // Accurate -> attack
+			ogrsDrawCombatTabIcon(3863, sx + 4, sy + 90);  // Defensive -> defense
 		} catch (RuntimeException var7) {
 			throw GenUtil.makeThrowable(var7, "client.TB(" + "dummy" + ')');
 		}
