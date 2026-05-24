@@ -6255,22 +6255,16 @@ public final class mudclient implements Runnable {
 			this.welcomeScreenShown = false;
 			this.getSurface().blackScreen(true);
 			if (this.loginScreenNumber == 0 || this.loginScreenNumber == 2 || this.loginScreenNumber == 3) {
-				int var2 = this.getFrameCounter() * 2 % 3072;
-				if (var2 < 1024) {
-					this.getSurface().drawSprite(getSurface().spriteVerts[0], 0, isAndroid() ? 140 : 10);
-					if (var2 > 768) {
-						this.getSurface().a(getSurface().spriteVerts[1], 0, 0, var2 - 768, isAndroid() ? 140 : 10);
-					}
-				} else if (var2 < 2048) {
-					this.getSurface().drawSprite(getSurface().spriteVerts[1], 0, isAndroid() ? 140 : 10);
-					if (var2 > 1792) {
-						this.getSurface().a(getSurface().spriteVerts[2], 0, 0, var2 - 1792, isAndroid() ? 140 : 10); // Logo sprite
-					}
-				} else {
-					this.getSurface().drawSprite(getSurface().spriteVerts[2], 0, isAndroid() ? 140 : 10); // Logo sprite
-					if (var2 > 2816) {
-						this.getSurface().a(getSurface().spriteVerts[0], 0, 0, var2 - 2816, isAndroid() ? 140 : 10);
-					}
+				// OGRS — login splash from the UI track (sprite 3877, 512x384).
+				// Replaces the prior animated 3-vert banner rotation. Drawn
+				// centered horizontally; Android offsets down to avoid the
+				// notch area, same convention as the old banner.
+				final com.openrsc.client.model.Sprite splash = getSurface().sprites[3877];
+				if (splash != null) {
+					int splashX = (this.getGameWidth() - splash.getWidth()) / 2;
+					if (splashX < 0) splashX = 0;
+					int splashY = isAndroid() ? 140 : 10;
+					this.getSurface().drawSprite(splash, splashX, splashY);
 				}
 			}
 
@@ -15545,6 +15539,11 @@ public final class mudclient implements Runnable {
 		loadSprite(3740, "media", 16);                     // 3740..3755 directions
 		loadSprite(3760, "media", 20);                     // 3760..3779 debuff swirls
 		loadSprite(3284, "media", 11);
+		// OGRS UI track — 54 sprites packed by scripts/art/pack-ui-sprites.py.
+		// Status / skills / combat / tabs / run-energy / login / dialog / cursors.
+		// Per-sprite slot table in art/_specs/UI_INTEGRATION.md (mirrors the
+		// pack script's SLOTS list).
+		loadSprite(3837, "media", 54);                     // 3837..3890 OGRS UI
 		// loadSprite(spriteLogo, "media", 1);
 
 		int i = EntityHandler.invPictureCount();
