@@ -1,0 +1,18 @@
+# OGRS sacred food: Faith mustard seed.
+# Track from CODER_HANDOFF.md (~/ogrs/art/items/sacred/). Biblical-
+# themed foods that fit OGRS's identity. Sprite reuse + tint pending
+# sprite-packing pass.
+
+id: 1700
+name: Faith mustard seed
+description: A single tiny seed. Said to move mountains if planted by the faithful.
+command: "Plant"
+stackable: true
+untradeable: false
+members_only: true
+noteable: true
+base_price: 100
+picture_mask: 0xE0C040
+sprite:
+  id: 796
+  location: "items:796"

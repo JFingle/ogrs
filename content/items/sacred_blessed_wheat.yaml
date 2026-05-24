@@ -1,0 +1,18 @@
+# OGRS sacred food: Blessed wheat.
+# Track from CODER_HANDOFF.md (~/ogrs/art/items/sacred/). Biblical-
+# themed foods that fit OGRS's identity. Sprite reuse + tint pending
+# sprite-packing pass.
+
+id: 1699
+name: Blessed wheat
+description: Golden stalks of consecrated wheat. Mill for sacred flour.
+command: ""
+stackable: true
+untradeable: false
+members_only: true
+noteable: true
+base_price: 8
+picture_mask: 0xE0C040
+sprite:
+  id: 29
+  location: "items:29"

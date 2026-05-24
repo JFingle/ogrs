@@ -1,0 +1,18 @@
+# OGRS sacred food: Pomegranate.
+# Track from CODER_HANDOFF.md (~/ogrs/art/items/sacred/). Biblical-
+# themed foods that fit OGRS's identity. Sprite reuse + tint pending
+# sprite-packing pass.
+
+id: 1703
+name: Pomegranate
+description: A fist-sized red fruit. The seeds inside are jewel-like and tart.
+command: "Eat"
+stackable: false
+untradeable: false
+members_only: true
+noteable: true
+base_price: 40
+picture_mask: 0xCC1A1A
+sprite:
+  id: 857
+  location: "items:857"

@@ -1,0 +1,18 @@
+# OGRS sacred food: Sacred fig.
+# Track from CODER_HANDOFF.md (~/ogrs/art/items/sacred/). Biblical-
+# themed foods that fit OGRS's identity. Sprite reuse + tint pending
+# sprite-packing pass.
+
+id: 1704
+name: Sacred fig
+description: A purple fig from a tree mentioned in the old stories. Heals 12 HP.
+command: "Eat"
+stackable: false
+untradeable: false
+members_only: true
+noteable: true
+base_price: 60
+picture_mask: 0x6A1A6E
+sprite:
+  id: 249
+  location: "items:249"

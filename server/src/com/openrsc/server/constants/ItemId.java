@@ -1784,12 +1784,23 @@ public enum ItemId {
 	OGRS_THIEF_MAP_FRAGMENT(1694),
 	OGRS_THIEF_WAX_TABLET(1695),
 	OGRS_THIEF_POCKET_WATCH(1696),
-	OGRS_THIEF_WINE_BOTTLE(1697);
+	OGRS_THIEF_WINE_BOTTLE(1697),
+
+	// Sacred / biblical foods (art track from CODER_HANDOFF.md).
+	// Tied to OGRS's Yahwist identity per project_ogrs.md. Edible
+	// items with heavy HP heals; sprite reuse + tints pending.
+	OGRS_SACRED_BLESSED_GRAPES(1698),
+	OGRS_SACRED_BLESSED_WHEAT(1699),
+	OGRS_SACRED_FAITH_MUSTARD_SEED(1700),
+	OGRS_SACRED_MANNA(1701),
+	OGRS_SACRED_OLIVE(1702),
+	OGRS_SACRED_POMEGRANATE(1703),
+	OGRS_SACRED_FIG(1704);
 
 	private int itemId;
 
 	public static final int maxAuthentic = 1289;
-	public static final int maxCustom = 1697;
+	public static final int maxCustom = 1704;
 
 	private static final Map<Integer, ItemId> byId = new HashMap<Integer, ItemId>();
 	private static final Map<String, ItemId> byName = new HashMap<String, ItemId>();

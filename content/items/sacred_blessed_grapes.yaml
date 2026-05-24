@@ -1,0 +1,18 @@
+# OGRS sacred food: Blessed grapes.
+# Track from CODER_HANDOFF.md (~/ogrs/art/items/sacred/). Biblical-
+# themed foods that fit OGRS's identity. Sprite reuse + tint pending
+# sprite-packing pass.
+
+id: 1698
+name: Blessed grapes
+description: A cluster of dark grapes blessed by a priest. Heals well.
+command: "Eat"
+stackable: false
+untradeable: false
+members_only: true
+noteable: true
+base_price: 35
+picture_mask: 0x4A1A6E
+sprite:
+  id: 143
+  location: "items:143"

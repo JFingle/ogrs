@@ -337,6 +337,27 @@ public final class OgrsClientItems {
 		// id 1697 — from content/items/thief_wine_bottle.yaml
 		items.add(new ItemDef("Wine bottle", "A dusty bottle of red wine. Vintage uncertain.", "Drink", 25, 142, "items:142", false, false, 0, 0x000000, false, false, true, i++));
 
+		// id 1698 — from content/items/sacred_blessed_grapes.yaml
+		items.add(new ItemDef("Blessed grapes", "A cluster of dark grapes blessed by a priest. Heals well.", "Eat", 35, 143, "items:143", false, false, 0, 0x4A1A6E, true, false, true, i++));
+
+		// id 1699 — from content/items/sacred_blessed_wheat.yaml
+		items.add(new ItemDef("Blessed wheat", "Golden stalks of consecrated wheat. Mill for sacred flour.", "", 8, 29, "items:29", true, false, 0, 0xE0C040, true, false, true, i++));
+
+		// id 1700 — from content/items/sacred_faith_mustard_seed.yaml
+		items.add(new ItemDef("Faith mustard seed", "A single tiny seed. Said to move mountains if planted by the faithful.", "Plant", 100, 796, "items:796", true, false, 0, 0xE0C040, true, false, true, i++));
+
+		// id 1701 — from content/items/sacred_manna.yaml
+		items.add(new ItemDef("Manna", "Small white wafers that fell from the sky overnight. Tastes like honey.", "Eat", 50, 252, "items:252", true, false, 0, 0xFAFAE6, true, false, true, i++));
+
+		// id 1702 — from content/items/sacred_olive_tree_fruit.yaml
+		items.add(new ItemDef("Olive", "Plump black olives from a sacred tree. Crush for oil or eat whole.", "Eat", 18, 143, "items:143", true, false, 0, 0x2A1A1A, true, false, true, i++));
+
+		// id 1703 — from content/items/sacred_pomegranate.yaml
+		items.add(new ItemDef("Pomegranate", "A fist-sized red fruit. The seeds inside are jewel-like and tart.", "Eat", 40, 857, "items:857", false, false, 0, 0xCC1A1A, true, false, true, i++));
+
+		// id 1704 — from content/items/sacred_sacred_fig.yaml
+		items.add(new ItemDef("Sacred fig", "A purple fig from a tree mentioned in the old stories. Heals 12 HP.", "Eat", 60, 249, "items:249", false, false, 0, 0x6A1A6E, true, false, true, i++));
+
 		return i;
 	}
 }
