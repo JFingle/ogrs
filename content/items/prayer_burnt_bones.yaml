@@ -1,0 +1,19 @@
+# OGRS prayer/sacred item: Burnt bones.
+# Spider Boss spec-style integration — reuses upstream sprite + tint.
+# Artist's authored sprite at art/items/prayer/burnt_bones.png
+# pending the sprite-packing pass (slot-allocation work for items vs
+# projectile range overlap).
+
+id: 1620
+name: Burnt bones
+description: Charred bones, useless for prayer but still grant a sliver of XP.
+command: "Bury"
+stackable: false
+untradeable: false
+members_only: false
+noteable: true
+base_price: 0
+picture_mask: 0x222222
+sprite:
+  id: 20
+  location: "items:20"

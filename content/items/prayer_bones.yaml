@@ -1,0 +1,19 @@
+# OGRS prayer/sacred item: Bones.
+# Spider Boss spec-style integration — reuses upstream sprite + tint.
+# Artist's authored sprite at art/items/prayer/bones.png
+# pending the sprite-packing pass (slot-allocation work for items vs
+# projectile range overlap).
+
+id: 1615
+name: Bones
+description: The remains of a fallen creature. Worth burying.
+command: "Bury"
+stackable: false
+untradeable: false
+members_only: false
+noteable: true
+base_price: 1
+picture_mask: 0x000000
+sprite:
+  id: 20
+  location: "items:20"

@@ -1,0 +1,19 @@
+# OGRS prayer/sacred item: Mitre.
+# Spider Boss spec-style integration — reuses upstream sprite + tint.
+# Artist's authored sprite at art/items/prayer/mitre.png
+# pending the sprite-packing pass (slot-allocation work for items vs
+# projectile range overlap).
+
+id: 1631
+name: Mitre
+description: A tall ceremonial bishop's hat. Worn by senior clerics.
+command: ""
+stackable: false
+untradeable: false
+members_only: false
+noteable: true
+base_price: 150
+picture_mask: 0xF8F0D8
+sprite:
+  id: 807
+  location: "items:807"

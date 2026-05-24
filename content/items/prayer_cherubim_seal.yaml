@@ -1,0 +1,19 @@
+# OGRS prayer/sacred item: Cherubim seal.
+# Spider Boss spec-style integration — reuses upstream sprite + tint.
+# Artist's authored sprite at art/items/prayer/cherubim_seal.png
+# pending the sprite-packing pass (slot-allocation work for items vs
+# projectile range overlap).
+
+id: 1630
+name: Cherubim seal
+description: A small gold medallion stamped with winged figures. Boon to the faithful.
+command: ""
+stackable: false
+untradeable: true
+members_only: false
+noteable: true
+base_price: 200
+picture_mask: 0xE0C040
+sprite:
+  id: 385
+  location: "items:385"

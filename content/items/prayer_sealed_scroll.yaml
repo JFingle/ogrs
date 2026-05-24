@@ -1,0 +1,19 @@
+# OGRS prayer/sacred item: Sealed scroll.
+# Spider Boss spec-style integration — reuses upstream sprite + tint.
+# Artist's authored sprite at art/items/prayer/sealed_scroll.png
+# pending the sprite-packing pass (slot-allocation work for items vs
+# projectile range overlap).
+
+id: 1636
+name: Sealed scroll
+description: A scroll bound with wax. The seal is unbroken — what's inside?
+command: "Open"
+stackable: false
+untradeable: false
+members_only: false
+noteable: true
+base_price: 20
+picture_mask: 0xCC6644
+sprite:
+  id: 1173
+  location: "items:1173"

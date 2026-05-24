@@ -1,0 +1,19 @@
+# OGRS prayer/sacred item: Anointing oil flask.
+# Spider Boss spec-style integration — reuses upstream sprite + tint.
+# Artist's authored sprite at art/items/prayer/anointing_oil_flask.png
+# pending the sprite-packing pass (slot-allocation work for items vs
+# projectile range overlap).
+
+id: 1639
+name: Anointing oil flask
+description: A small clay flask of pressed olive oil, consecrated for sacred use.
+command: "Anoint"
+stackable: true
+untradeable: false
+members_only: false
+noteable: true
+base_price: 45
+picture_mask: 0xE0B040
+sprite:
+  id: 464
+  location: "items:464"

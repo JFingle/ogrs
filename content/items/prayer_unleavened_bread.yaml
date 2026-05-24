@@ -1,0 +1,19 @@
+# OGRS prayer/sacred item: Unleavened bread.
+# Spider Boss spec-style integration — reuses upstream sprite + tint.
+# Artist's authored sprite at art/items/prayer/unleavened_bread.png
+# pending the sprite-packing pass (slot-allocation work for items vs
+# projectile range overlap).
+
+id: 1641
+name: Unleavened bread
+description: Flat, hastily-baked bread. Eaten in haste during sacred remembrances.
+command: "Eat"
+stackable: false
+untradeable: false
+members_only: false
+noteable: true
+base_price: 12
+picture_mask: 0xC8A878
+sprite:
+  id: 138
+  location: "items:138"

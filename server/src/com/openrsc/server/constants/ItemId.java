@@ -1685,12 +1685,45 @@ public enum ItemId {
 	OGRS_POISON_DRIP(1611),
 	OGRS_SPIDER_EGG_SAC(1612),
 	OGRS_ANTIDOTE_VIAL(1613),
-	OGRS_WEB_PROJECTILE(1614);
+	OGRS_WEB_PROJECTILE(1614),
+
+	// Prayer / sacred items (art track from CODER_HANDOFF.md §4).
+	// Bones tier, ashes, holy symbols/water/cup, censers, priest
+	// garments, scriptures + scrolls, sacred relics. All sprites
+	// currently reuse upstream slots + picture_mask tints; artist's
+	// authored PNGs at art/items/prayer/ waiting on packing pass.
+	OGRS_PRAYER_BONES(1615),
+	OGRS_PRAYER_BIG_BONES(1616),
+	OGRS_PRAYER_BABYDRAGON_BONES(1617),
+	OGRS_PRAYER_DRAGON_BONES(1618),
+	OGRS_PRAYER_WOLF_BONES(1619),
+	OGRS_PRAYER_BURNT_BONES(1620),
+	OGRS_PRAYER_ASHES(1621),
+	OGRS_PRAYER_DEMONIC_ASHES(1622),
+	OGRS_PRAYER_HOLY_SYMBOL(1623),
+	OGRS_PRAYER_HOLY_WATER_VIAL(1624),
+	OGRS_PRAYER_COMMUNION_CUP(1625),
+	OGRS_PRAYER_INCENSE_STICK(1626),
+	OGRS_PRAYER_CENSER_UNLIT(1627),
+	OGRS_PRAYER_CENSER_LIT(1628),
+	OGRS_PRAYER_BLESSED_CANDLE(1629),
+	OGRS_PRAYER_CHERUBIM_SEAL(1630),
+	OGRS_PRAYER_MITRE(1631),
+	OGRS_PRAYER_PRIEST_ROBE_TOP(1632),
+	OGRS_PRAYER_PRIEST_ROBE_BOTTOM(1633),
+	OGRS_PRAYER_STOLE(1634),
+	OGRS_PRAYER_YAHWIST_SCRIPTURE(1635),
+	OGRS_PRAYER_SEALED_SCROLL(1636),
+	OGRS_PRAYER_OPEN_PRAYER_SCROLL(1637),
+	OGRS_PRAYER_ANOINTING_HORN(1638),
+	OGRS_PRAYER_ANOINTING_OIL_FLASK(1639),
+	OGRS_PRAYER_BREAD_OF_PRESENCE(1640),
+	OGRS_PRAYER_UNLEAVENED_BREAD(1641);
 
 	private int itemId;
 
 	public static final int maxAuthentic = 1289;
-	public static final int maxCustom = 1614;
+	public static final int maxCustom = 1641;
 
 	private static final Map<Integer, ItemId> byId = new HashMap<Integer, ItemId>();
 	private static final Map<String, ItemId> byName = new HashMap<String, ItemId>();

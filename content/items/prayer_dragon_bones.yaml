@@ -1,0 +1,19 @@
+# OGRS prayer/sacred item: Dragon bones.
+# Spider Boss spec-style integration — reuses upstream sprite + tint.
+# Artist's authored sprite at art/items/prayer/dragon_bones.png
+# pending the sprite-packing pass (slot-allocation work for items vs
+# projectile range overlap).
+
+id: 1618
+name: Dragon bones
+description: Bones from a fully-grown dragon. Heavy with residual power.
+command: "Bury"
+stackable: false
+untradeable: false
+members_only: false
+noteable: true
+base_price: 80
+picture_mask: 0x000000
+sprite:
+  id: 814
+  location: "items:814"

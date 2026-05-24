@@ -1,0 +1,19 @@
+# OGRS prayer/sacred item: Holy water vial.
+# Spider Boss spec-style integration — reuses upstream sprite + tint.
+# Artist's authored sprite at art/items/prayer/holy_water_vial.png
+# pending the sprite-packing pass (slot-allocation work for items vs
+# projectile range overlap).
+
+id: 1624
+name: Holy water vial
+description: A vial of consecrated water. Throw at undead for heavy damage.
+command: ""
+stackable: true
+untradeable: false
+members_only: false
+noteable: true
+base_price: 35
+picture_mask: 0x000000
+sprite:
+  id: 1239
+  location: "items:1239"

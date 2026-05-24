@@ -1,0 +1,19 @@
+# OGRS prayer/sacred item: Incense stick.
+# Spider Boss spec-style integration — reuses upstream sprite + tint.
+# Artist's authored sprite at art/items/prayer/incense_stick.png
+# pending the sprite-packing pass (slot-allocation work for items vs
+# projectile range overlap).
+
+id: 1626
+name: Incense stick
+description: A slender stick that smokes a sweet, calming fragrance when lit.
+command: "Light"
+stackable: true
+untradeable: false
+members_only: false
+noteable: true
+base_price: 8
+picture_mask: 0x7C4F2A
+sprite:
+  id: 381
+  location: "items:381"

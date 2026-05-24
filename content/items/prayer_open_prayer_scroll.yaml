@@ -1,0 +1,19 @@
+# OGRS prayer/sacred item: Open prayer scroll.
+# Spider Boss spec-style integration — reuses upstream sprite + tint.
+# Artist's authored sprite at art/items/prayer/open_scroll.png
+# pending the sprite-packing pass (slot-allocation work for items vs
+# projectile range overlap).
+
+id: 1637
+name: Open prayer scroll
+description: A scroll of prayer verses. Recite during prayer for a small bonus.
+command: "Recite"
+stackable: false
+untradeable: false
+members_only: false
+noteable: true
+base_price: 30
+picture_mask: 0xE8D8B0
+sprite:
+  id: 752
+  location: "items:752"

@@ -1,0 +1,19 @@
+# OGRS prayer/sacred item: Bread of presence.
+# Spider Boss spec-style integration — reuses upstream sprite + tint.
+# Artist's authored sprite at art/items/prayer/bread_of_presence.png
+# pending the sprite-packing pass (slot-allocation work for items vs
+# projectile range overlap).
+
+id: 1640
+name: Bread of presence
+description: Twelve loaves arranged on the altar. Symbol of provision and covenant.
+command: ""
+stackable: false
+untradeable: false
+members_only: false
+noteable: true
+base_price: 50
+picture_mask: 0xE6CC55
+sprite:
+  id: 138
+  location: "items:138"

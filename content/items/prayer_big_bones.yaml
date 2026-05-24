@@ -1,0 +1,19 @@
+# OGRS prayer/sacred item: Big bones.
+# Spider Boss spec-style integration — reuses upstream sprite + tint.
+# Artist's authored sprite at art/items/prayer/big_bones.png
+# pending the sprite-packing pass (slot-allocation work for items vs
+# projectile range overlap).
+
+id: 1616
+name: Big bones
+description: Larger bones from a larger beast. More prayer worth.
+command: "Bury"
+stackable: false
+untradeable: false
+members_only: false
+noteable: true
+base_price: 5
+picture_mask: 0x000000
+sprite:
+  id: 413
+  location: "items:413"

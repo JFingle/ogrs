@@ -1,0 +1,19 @@
+# OGRS prayer/sacred item: Stole.
+# Spider Boss spec-style integration — reuses upstream sprite + tint.
+# Artist's authored sprite at art/items/prayer/stole.png
+# pending the sprite-packing pass (slot-allocation work for items vs
+# projectile range overlap).
+
+id: 1634
+name: Stole
+description: A long white sash worn around the neck of a priest. Sign of office.
+command: ""
+stackable: false
+untradeable: false
+members_only: false
+noteable: true
+base_price: 60
+picture_mask: 0xFFFFFF
+sprite:
+  id: 183
+  location: "items:183"

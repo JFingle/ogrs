@@ -1,0 +1,19 @@
+# OGRS prayer/sacred item: Baby dragon bones.
+# Spider Boss spec-style integration — reuses upstream sprite + tint.
+# Artist's authored sprite at art/items/prayer/babydragon_bones.png
+# pending the sprite-packing pass (slot-allocation work for items vs
+# projectile range overlap).
+
+id: 1617
+name: Baby dragon bones
+description: Small but still potent. The bones of a dragon hatchling.
+command: "Bury"
+stackable: false
+untradeable: false
+members_only: false
+noteable: true
+base_price: 20
+picture_mask: 0xC0E0C0
+sprite:
+  id: 814
+  location: "items:814"

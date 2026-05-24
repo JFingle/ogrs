@@ -1,0 +1,19 @@
+# OGRS prayer/sacred item: Censer (lit).
+# Spider Boss spec-style integration — reuses upstream sprite + tint.
+# Artist's authored sprite at art/items/prayer/censer_lit.png
+# pending the sprite-packing pass (slot-allocation work for items vs
+# projectile range overlap).
+
+id: 1628
+name: Censer (lit)
+description: A lit censer, smoking with holy incense. Slowly grants Prayer XP.
+command: ""
+stackable: false
+untradeable: false
+members_only: false
+noteable: true
+base_price: 40
+picture_mask: 0xD4A64A
+sprite:
+  id: 585
+  location: "items:585"

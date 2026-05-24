@@ -1,0 +1,19 @@
+# OGRS prayer/sacred item: Anointing horn.
+# Spider Boss spec-style integration — reuses upstream sprite + tint.
+# Artist's authored sprite at art/items/prayer/anointing_horn.png
+# pending the sprite-packing pass (slot-allocation work for items vs
+# projectile range overlap).
+
+id: 1638
+name: Anointing horn
+description: A small ram's horn filled with sacred oil. Anoint others for a blessing.
+command: "Anoint"
+stackable: false
+untradeable: false
+members_only: false
+noteable: true
+base_price: 120
+picture_mask: 0x9E6F2A
+sprite:
+  id: 466
+  location: "items:466"

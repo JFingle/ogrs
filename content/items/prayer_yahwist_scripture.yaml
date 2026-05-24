@@ -1,0 +1,19 @@
+# OGRS prayer/sacred item: Yahwist scripture.
+# Spider Boss spec-style integration — reuses upstream sprite + tint.
+# Artist's authored sprite at art/items/prayer/yahwist_scripture.png
+# pending the sprite-packing pass (slot-allocation work for items vs
+# projectile range overlap).
+
+id: 1635
+name: Yahwist scripture
+description: A weathered scroll inked with old promises. Reading it heals the spirit.
+command: "Read"
+stackable: false
+untradeable: false
+members_only: false
+noteable: true
+base_price: 250
+picture_mask: 0x9E7B4A
+sprite:
+  id: 1238
+  location: "items:1238"

@@ -1,0 +1,19 @@
+# OGRS prayer/sacred item: Priest robe (top).
+# Spider Boss spec-style integration — reuses upstream sprite + tint.
+# Artist's authored sprite at art/items/prayer/priest_robe_top.png
+# pending the sprite-packing pass (slot-allocation work for items vs
+# projectile range overlap).
+
+id: 1632
+name: Priest robe (top)
+description: Cream-coloured cleric's robe. Modest, unadorned.
+command: ""
+stackable: false
+untradeable: false
+members_only: false
+noteable: true
+base_price: 80
+picture_mask: 0xEDE2C8
+sprite:
+  id: 807
+  location: "items:807"

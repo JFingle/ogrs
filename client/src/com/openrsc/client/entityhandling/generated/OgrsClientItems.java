@@ -88,6 +88,87 @@ public final class OgrsClientItems {
 		// id 1614 — from content/items/web_projectile.yaml
 		items.add(new ItemDef("Web Projectile", "A wad of sticky spider-web. Heavy. Feels like it wants to be thrown.", "", 35, 200, "items:200", true, false, 0, 0xCCCCDD, false, false, true, i++));
 
+		// id 1615 — from content/items/prayer_bones.yaml
+		items.add(new ItemDef("Bones", "The remains of a fallen creature. Worth burying.", "Bury", 1, 20, "items:20", false, false, 0, 0x000000, false, false, true, i++));
+
+		// id 1616 — from content/items/prayer_big_bones.yaml
+		items.add(new ItemDef("Big bones", "Larger bones from a larger beast. More prayer worth.", "Bury", 5, 413, "items:413", false, false, 0, 0x000000, false, false, true, i++));
+
+		// id 1617 — from content/items/prayer_babydragon_bones.yaml
+		items.add(new ItemDef("Baby dragon bones", "Small but still potent. The bones of a dragon hatchling.", "Bury", 20, 814, "items:814", false, false, 0, 0xC0E0C0, false, false, true, i++));
+
+		// id 1618 — from content/items/prayer_dragon_bones.yaml
+		items.add(new ItemDef("Dragon bones", "Bones from a fully-grown dragon. Heavy with residual power.", "Bury", 80, 814, "items:814", false, false, 0, 0x000000, false, false, true, i++));
+
+		// id 1619 — from content/items/prayer_wolf_bones.yaml
+		items.add(new ItemDef("Wolf bones", "The bones of a wild wolf. Bury for a small prayer offering.", "Bury", 2, 20, "items:20", false, false, 0, 0x9E8B7A, false, false, true, i++));
+
+		// id 1620 — from content/items/prayer_burnt_bones.yaml
+		items.add(new ItemDef("Burnt bones", "Charred bones, useless for prayer but still grant a sliver of XP.", "Bury", 0, 20, "items:20", false, false, 0, 0x222222, false, false, true, i++));
+
+		// id 1621 — from content/items/prayer_prayer_ashes.yaml
+		items.add(new ItemDef("Ashes", "A handful of grey ashes. Scatter in a holy place for a small blessing.", "Scatter", 1, 181, "items:181", false, false, 0, 0x000000, false, false, true, i++));
+
+		// id 1622 — from content/items/prayer_demonic_ashes.yaml
+		items.add(new ItemDef("Demonic ashes", "Black ashes that smoulder faintly. The remains of something unholy.", "Scatter", 50, 1002, "items:1002", false, false, 0, 0x000000, false, false, true, i++));
+
+		// id 1623 — from content/items/prayer_holy_symbol_yahwist.yaml
+		items.add(new ItemDef("Holy symbol", "A simple iron cross on a thong. Wear it to ward off evil.", "", 25, 44, "items:44", false, false, 0, 0x000000, false, false, true, i++));
+
+		// id 1624 — from content/items/prayer_holy_water_vial.yaml
+		items.add(new ItemDef("Holy water vial", "A vial of consecrated water. Throw at undead for heavy damage.", "", 35, 1239, "items:1239", true, false, 0, 0x000000, false, false, true, i++));
+
+		// id 1625 — from content/items/prayer_communion_cup.yaml
+		items.add(new ItemDef("Communion cup", "A silver cup used in sacred rites. Hold during prayer for a bonus.", "Use", 75, 1195, "items:1195", false, false, 0, 0xE6CC55, false, false, true, i++));
+
+		// id 1626 — from content/items/prayer_incense_stick.yaml
+		items.add(new ItemDef("Incense stick", "A slender stick that smokes a sweet, calming fragrance when lit.", "Light", 8, 381, "items:381", true, false, 0, 0x7C4F2A, false, false, true, i++));
+
+		// id 1627 — from content/items/prayer_censer_unlit.yaml
+		items.add(new ItemDef("Censer (unlit)", "A hanging brass censer. Light incense in it for sustained Prayer XP.", "", 40, 585, "items:585", false, false, 0, 0x7A6F4A, false, false, true, i++));
+
+		// id 1628 — from content/items/prayer_censer_lit.yaml
+		items.add(new ItemDef("Censer (lit)", "A lit censer, smoking with holy incense. Slowly grants Prayer XP.", "", 40, 585, "items:585", false, false, 0, 0xD4A64A, false, false, true, i++));
+
+		// id 1629 — from content/items/prayer_blessed_candle.yaml
+		items.add(new ItemDef("Blessed candle", "A pure white candle. Burns with a gentle, holy light.", "Light", 15, 599, "items:599", false, false, 0, 0xF5E8C8, false, false, true, i++));
+
+		// id 1630 — from content/items/prayer_cherubim_seal.yaml
+		items.add(new ItemDef("Cherubim seal", "A small gold medallion stamped with winged figures. Boon to the faithful.", "", 200, 385, "items:385", false, false, 0, 0xE0C040, false, true, true, i++));
+
+		// id 1631 — from content/items/prayer_mitre.yaml
+		items.add(new ItemDef("Mitre", "A tall ceremonial bishop's hat. Worn by senior clerics.", "", 150, 807, "items:807", false, false, 0, 0xF8F0D8, false, false, true, i++));
+
+		// id 1632 — from content/items/prayer_priest_robe_top.yaml
+		items.add(new ItemDef("Priest robe (top)", "Cream-coloured cleric's robe. Modest, unadorned.", "", 80, 807, "items:807", false, false, 0, 0xEDE2C8, false, false, true, i++));
+
+		// id 1633 — from content/items/prayer_priest_robe_bottom.yaml
+		items.add(new ItemDef("Priest robe (bottom)", "Cream-coloured cleric's gown. Falls to the ankles.", "", 80, 808, "items:808", false, false, 0, 0xEDE2C8, false, false, true, i++));
+
+		// id 1634 — from content/items/prayer_stole.yaml
+		items.add(new ItemDef("Stole", "A long white sash worn around the neck of a priest. Sign of office.", "", 60, 183, "items:183", false, false, 0, 0xFFFFFF, false, false, true, i++));
+
+		// id 1635 — from content/items/prayer_yahwist_scripture.yaml
+		items.add(new ItemDef("Yahwist scripture", "A weathered scroll inked with old promises. Reading it heals the spirit.", "Read", 250, 1238, "items:1238", false, false, 0, 0x9E7B4A, false, false, true, i++));
+
+		// id 1636 — from content/items/prayer_sealed_scroll.yaml
+		items.add(new ItemDef("Sealed scroll", "A scroll bound with wax. The seal is unbroken — what's inside?", "Open", 20, 1173, "items:1173", false, false, 0, 0xCC6644, false, false, true, i++));
+
+		// id 1637 — from content/items/prayer_open_prayer_scroll.yaml
+		items.add(new ItemDef("Open prayer scroll", "A scroll of prayer verses. Recite during prayer for a small bonus.", "Recite", 30, 752, "items:752", false, false, 0, 0xE8D8B0, false, false, true, i++));
+
+		// id 1638 — from content/items/prayer_anointing_horn.yaml
+		items.add(new ItemDef("Anointing horn", "A small ram's horn filled with sacred oil. Anoint others for a blessing.", "Anoint", 120, 466, "items:466", false, false, 0, 0x9E6F2A, false, false, true, i++));
+
+		// id 1639 — from content/items/prayer_anointing_oil_flask.yaml
+		items.add(new ItemDef("Anointing oil flask", "A small clay flask of pressed olive oil, consecrated for sacred use.", "Anoint", 45, 464, "items:464", true, false, 0, 0xE0B040, false, false, true, i++));
+
+		// id 1640 — from content/items/prayer_bread_of_presence.yaml
+		items.add(new ItemDef("Bread of presence", "Twelve loaves arranged on the altar. Symbol of provision and covenant.", "", 50, 138, "items:138", false, false, 0, 0xE6CC55, false, false, true, i++));
+
+		// id 1641 — from content/items/prayer_unleavened_bread.yaml
+		items.add(new ItemDef("Unleavened bread", "Flat, hastily-baked bread. Eaten in haste during sacred remembrances.", "Eat", 12, 138, "items:138", false, false, 0, 0xC8A878, false, false, true, i++));
+
 		return i;
 	}
 }

@@ -1,0 +1,19 @@
+# OGRS prayer/sacred item: Blessed candle.
+# Spider Boss spec-style integration — reuses upstream sprite + tint.
+# Artist's authored sprite at art/items/prayer/blessed_candle.png
+# pending the sprite-packing pass (slot-allocation work for items vs
+# projectile range overlap).
+
+id: 1629
+name: Blessed candle
+description: A pure white candle. Burns with a gentle, holy light.
+command: "Light"
+stackable: false
+untradeable: false
+members_only: false
+noteable: true
+base_price: 15
+picture_mask: 0xF5E8C8
+sprite:
+  id: 599
+  location: "items:599"

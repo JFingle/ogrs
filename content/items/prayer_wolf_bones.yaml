@@ -1,0 +1,19 @@
+# OGRS prayer/sacred item: Wolf bones.
+# Spider Boss spec-style integration — reuses upstream sprite + tint.
+# Artist's authored sprite at art/items/prayer/wolf_bones.png
+# pending the sprite-packing pass (slot-allocation work for items vs
+# projectile range overlap).
+
+id: 1619
+name: Wolf bones
+description: The bones of a wild wolf. Bury for a small prayer offering.
+command: "Bury"
+stackable: false
+untradeable: false
+members_only: false
+noteable: true
+base_price: 2
+picture_mask: 0x9E8B7A
+sprite:
+  id: 20
+  location: "items:20"

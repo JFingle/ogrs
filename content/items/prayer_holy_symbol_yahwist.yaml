@@ -1,0 +1,19 @@
+# OGRS prayer/sacred item: Holy symbol.
+# Spider Boss spec-style integration — reuses upstream sprite + tint.
+# Artist's authored sprite at art/items/prayer/holy_symbol_yahwist.png
+# pending the sprite-packing pass (slot-allocation work for items vs
+# projectile range overlap).
+
+id: 1623
+name: Holy symbol
+description: A simple iron cross on a thong. Wear it to ward off evil.
+command: ""
+stackable: false
+untradeable: false
+members_only: false
+noteable: true
+base_price: 25
+picture_mask: 0x000000
+sprite:
+  id: 44
+  location: "items:44"
