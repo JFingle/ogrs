@@ -39,11 +39,17 @@ public final class PlotFeature {
 	public final long builtAtMs;
 
 	public PlotFeature(final int plotId, final Type type, final int x, final int y, final String builtBy) {
+		this(plotId, type, x, y, builtBy, System.currentTimeMillis());
+	}
+
+	/** Persistence-side constructor that preserves the original
+	 *  built-at timestamp when restoring from DB. */
+	public PlotFeature(final int plotId, final Type type, final int x, final int y, final String builtBy, final long builtAtMs) {
 		this.plotId = plotId;
 		this.type = type;
 		this.x = x;
 		this.y = y;
 		this.builtBy = builtBy;
-		this.builtAtMs = System.currentTimeMillis();
+		this.builtAtMs = builtAtMs;
 	}
 }

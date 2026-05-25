@@ -119,6 +119,26 @@ public final class GuildRegistry {
 
 	// ─── Disband ─────────────────────────────────────────────────────
 
+	/** Bulk-load registry state from persistence on server startup.
+	 *  Wipes the in-memory state first and resets NEXT_ID past any
+	 *  loaded guild id. The supplied guilds must arrive with their
+	 *  members + pendingInvites maps already populated. */
+	public static synchronized void loadFromPersistence(final List<Guild> guilds) {
+		GUILDS.clear();
+		NAME_TO_ID.clear();
+		MEMBER_TO_GUILD.clear();
+		int maxId = 0;
+		for (Guild g : guilds) {
+			GUILDS.put(g.id, g);
+			NAME_TO_ID.put(g.name.toLowerCase(), g.id);
+			for (String member : g.members.keySet()) {
+				MEMBER_TO_GUILD.put(member, g.id);
+			}
+			if (g.id > maxId) maxId = g.id;
+		}
+		NEXT_ID.set(maxId + 1);
+	}
+
 	public static synchronized boolean disband(final Guild g, final String byUsername) {
 		final Guild.Role role = g.roleOf(byUsername);
 		if (role == null || !role.canDisband()) return false;

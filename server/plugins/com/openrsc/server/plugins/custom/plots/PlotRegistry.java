@@ -89,6 +89,45 @@ public final class PlotRegistry {
 		return prev == null ? 0 : prev;
 	}
 
+	/** Apply persisted state on top of the bootstrapped plot definitions.
+	 *  Plot identity + coords come from bootstrap(); we just overlay
+	 *  the mutable fields (deedHolder, tenancyExpiresMs, openBids,
+	 *  features). Unknown plot ids are skipped — they reference plots
+	 *  no longer in the bootstrap inventory (post-deletion). */
+	public static synchronized void loadFromPersistence(
+			final Map<Integer, String> deedHolders,
+			final Map<Integer, Long> tenancyExpiry,
+			final Map<Integer, Map<String, Integer>> bidsByPlot,
+			final Map<Integer, List<PlotFeature>> featuresByPlot) {
+		bootstrap();
+		for (Map.Entry<Integer, String> e : deedHolders.entrySet()) {
+			final Plot p = PLOTS.get(e.getKey());
+			if (p == null) continue;
+			p.deedHolder = e.getValue();
+		}
+		for (Map.Entry<Integer, Long> e : tenancyExpiry.entrySet()) {
+			final Plot p = PLOTS.get(e.getKey());
+			if (p == null) continue;
+			p.tenancyExpiresMs = e.getValue();
+		}
+		for (Plot p : PLOTS.values()) {
+			p.openBids.clear();
+			p.features.clear();
+		}
+		for (Map.Entry<Integer, Map<String, Integer>> e : bidsByPlot.entrySet()) {
+			final Plot p = PLOTS.get(e.getKey());
+			if (p == null) continue;
+			p.openBids.putAll(e.getValue());
+		}
+		for (Map.Entry<Integer, List<PlotFeature>> e : featuresByPlot.entrySet()) {
+			final Plot p = PLOTS.get(e.getKey());
+			if (p == null) continue;
+			for (PlotFeature pf : e.getValue()) {
+				p.features.put(Plot.featureKey(pf.x, pf.y), pf);
+			}
+		}
+	}
+
 	// ─── Auction close ───────────────────────────────────────────────
 
 	/** Close the auction on this plot. Highest bidder becomes the deed

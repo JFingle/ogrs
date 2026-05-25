@@ -222,6 +222,46 @@ public final class ContractRegistry {
 		return true;
 	}
 
+	// ─── Persistence hooks (called by OgrsPersistence only) ──────────
+
+	/** Full snapshot of every contract in any state. Used by the
+	 *  periodic DB flush. */
+	public static synchronized List<Contract> snapshotAll() {
+		return new ArrayList<>(CONTRACTS.values());
+	}
+
+	/** Snapshot of delivered-but-uncollected item escrow, keyed by
+	 *  contract id. Caller must not mutate the returned Item arrays. */
+	public static synchronized Map<Integer, Item[]> snapshotDeliveries() {
+		return new HashMap<>(PENDING_DELIVERY);
+	}
+
+	/** Snapshot of pending mentor gold payouts. */
+	public static synchronized Map<String, Integer> snapshotMentorPayouts() {
+		return new HashMap<>(MENTOR_PENDING_GOLD);
+	}
+
+	/** Bulk-load registry state from persistence on server startup.
+	 *  Wipes the in-memory state first. NEXT_ID resets to max(id)+1
+	 *  so newly-posted contracts don't collide with loaded ones. */
+	public static synchronized void loadFromPersistence(final List<Contract> contracts,
+	                                                     final Map<Integer, Item[]> deliveries,
+	                                                     final Map<String, Integer> mentorPayouts) {
+		CONTRACTS.clear();
+		PENDING_DELIVERY.clear();
+		MENTOR_PENDING_GOLD.clear();
+		int maxId = 0;
+		for (Contract c : contracts) {
+			CONTRACTS.put(c.id, c);
+			if (c.id > maxId) maxId = c.id;
+		}
+		PENDING_DELIVERY.putAll(deliveries);
+		for (Map.Entry<String, Integer> e : mentorPayouts.entrySet()) {
+			MENTOR_PENDING_GOLD.put(e.getKey().toLowerCase(), e.getValue());
+		}
+		NEXT_ID.set(maxId + 1);
+	}
+
 	// ─── Utility ─────────────────────────────────────────────────────
 
 	/** Format a one-line summary of a contract for chat display. */
