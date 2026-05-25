@@ -1,24 +1,29 @@
 package com.openrsc.server.plugins.custom.misc;
 
+import com.openrsc.server.constants.ItemId;
+import com.openrsc.server.model.container.Item;
 import com.openrsc.server.model.entity.GameObject;
 import com.openrsc.server.model.entity.player.Player;
+import com.openrsc.server.plugins.custom.contracts.Contract;
+import com.openrsc.server.plugins.custom.contracts.ContractRegistry;
 import com.openrsc.server.plugins.triggers.OpLocTrigger;
 
+import java.util.List;
+
 /**
- * OGRS — Job Board interaction (Phase 1B of the housing/contract arc).
+ * OGRS — Job Board interaction (Phase 1B + 1C). Scenery id 1326 in
+ * Lumbridge castle courtyard. Right-click commands:
  *
- * Scenery id 1326 placed in town centers. Right-click View / Post opens
- * the contract menu. v1 is a placeholder shell — the actual storage,
- * UI panel, and per-contract-type mechanics ship in subsequent phases:
+ *   View — context-aware:
+ *     * If you have items to collect (employer of a completed contract)
+ *       → collect them (added to bank).
+ *     * If you have an active contract and the required items in your
+ *       inventory → deliver them and claim the gold.
+ *     * Otherwise → list up to 10 most-recent open contracts in chat.
+ *   Post — points the player at the ::contract post chat command for
+ *     v1. A full posting UI ships in a later phase.
  *
- *   1C — Resource delivery contracts (player-to-player item commissions)
- *   1D — Mentorship contracts (20-tile bonded play with +50% XP)
- *   1E — Construction-job contracts (commission furniture on your plot,
- *        the one place employer-collected XP is allowed)
- *
- * For now: shows a flavor message + previews the future contract types
- * so players know what's coming. Lets us drop the physical scenery
- * early without committing the implementation in one giant session.
+ * All contract storage lives in ContractRegistry (in-memory for v1).
  */
 public final class OgrsJobBoard implements OpLocTrigger {
 
@@ -34,17 +39,78 @@ public final class OgrsJobBoard implements OpLocTrigger {
 		if (obj.getID() != BOARD_ID) return;
 
 		if ("post".equalsIgnoreCase(command)) {
-			player.message("@yel@You consider pinning a job postal here, but the system isn't yet open.");
-			player.message("Post-a-contract UI lands in Phase 1C — resource delivery first.");
+			player.message("@gre@To post a contract:");
+			player.message("  @whi@::contract post <itemId> <amount> <gold> <hours>");
+			player.message("Gold escrows immediately. ::contract list to see what others posted.");
 			return;
 		}
 
-		// Default: View
-		player.message("@gre@The Lumbridge Job Board.");
-		player.message("Coming soon:");
-		player.message("  @whi@Resource delivery@yel@ — pay another player to gather + bring items.");
-		player.message("  @whi@Mentorship@yel@ — pay a high-skilled player to bond-train alongside you (20-tile range, +50% XP while bonded).");
-		player.message("  @whi@Construction jobs@yel@ — once you own a plot, hire others to build furniture (the XP goes to you).");
-		player.message("Build out: 1C (resource), 1D (mentor), 1E (construction-job).");
+		// "View" — context-aware.
+		// Priority 1: collect pending deliveries first (it's the employer's reward).
+		final List<Contract> ready = ContractRegistry.readyForCollection(player.getUsername());
+		if (!ready.isEmpty()) {
+			collectPending(player, ready);
+			return;
+		}
+		// Priority 2: deliver an active contract if items are on hand.
+		final Contract active = ContractRegistry.activeForWorker(player.getUsername());
+		if (active != null && player.getCarriedItems().getInventory().countId(active.itemId) >= active.itemAmount) {
+			deliver(player, active);
+			return;
+		}
+		// Priority 3: list open contracts.
+		listOpen(player, active);
+	}
+
+	private static void collectPending(final Player employer, final List<Contract> ready) {
+		int collected = 0;
+		for (Contract c : ready) {
+			final Item[] items = ContractRegistry.collect(c);
+			if (items == null) continue;
+			for (Item it : items) {
+				// Add directly to inventory if room, else drop on the board tile.
+				if (employer.getCarriedItems().getInventory().getFreeSlots() > 0) {
+					employer.getCarriedItems().getInventory().add(it);
+				} else {
+					employer.getWorld().registerItem(
+						new com.openrsc.server.model.entity.GroundItem(
+							employer.getWorld(), it.getCatalogId(), employer.getX(), employer.getY(),
+							it.getAmount(), employer),
+						employer.getConfig().GAME_TICK * 150);
+					employer.message("@yel@Inventory full — " + it.getAmount() + " of item " + it.getCatalogId()
+						+ " dropped at your feet.");
+				}
+			}
+			collected++;
+		}
+		employer.message("@gre@Collected " + collected + " completed contract(s).");
+	}
+
+	private static void deliver(final Player worker, final Contract c) {
+		final int need = c.itemAmount;
+		worker.getCarriedItems().getInventory().remove(new Item(c.itemId, need), true);
+		worker.getCarriedItems().getInventory().add(new Item(ItemId.COINS.id(), c.goldReward));
+		ContractRegistry.markDelivered(c, new Item[]{ new Item(c.itemId, need) });
+		worker.message("@gre@Delivered " + need + " of item " + c.itemId + " for " + c.goldReward + "gp.");
+		worker.message("Employer @whi@" + c.posterName + "@gre@ can collect their goods here.");
+	}
+
+	private static void listOpen(final Player p, final Contract activeReminder) {
+		if (activeReminder != null) {
+			p.message("@yel@Active contract: " + ContractRegistry.summary(activeReminder));
+			p.message("Bring the items here — the board will accept them automatically.");
+			p.message("");
+		}
+		final List<Contract> open = ContractRegistry.listOpen();
+		if (open.isEmpty()) {
+			p.message("@yel@No open contracts. Post one with ::contract post.");
+			return;
+		}
+		p.message("@gre@Open contracts (top 10) — accept with ::contract accept <id>:");
+		int shown = 0;
+		for (Contract c : open) {
+			p.message("@yel@" + ContractRegistry.summary(c));
+			if (++shown >= 10) break;
+		}
 	}
 }
