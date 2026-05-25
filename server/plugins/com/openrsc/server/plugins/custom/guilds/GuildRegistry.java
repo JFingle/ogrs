@@ -119,6 +119,28 @@ public final class GuildRegistry {
 
 	// ─── Disband ─────────────────────────────────────────────────────
 
+	// ─── Bank operations ─────────────────────────────────────────────
+
+	/** Deposit gold to the guild's treasury. Available to any member. */
+	public static synchronized boolean deposit(final Guild g, final String username, final long gold) {
+		if (gold <= 0) return false;
+		if (g.roleOf(username) == null) return false;
+		g.bankGold += gold;
+		return true;
+	}
+
+	/** Withdraw gold from the guild treasury. Role-gated:
+	 *  RECRUIT cannot withdraw; everyone else can (up to balance).
+	 *  Returns the amount actually withdrawn (0 on refusal). */
+	public static synchronized long withdraw(final Guild g, final String username, final long gold) {
+		if (gold <= 0) return 0;
+		final Guild.Role r = g.roleOf(username);
+		if (r == null || !r.canWithdrawBank()) return 0;
+		final long actual = Math.min(gold, g.bankGold);
+		g.bankGold -= actual;
+		return actual;
+	}
+
 	/** Bulk-load registry state from persistence on server startup.
 	 *  Wipes the in-memory state first and resets NEXT_ID past any
 	 *  loaded guild id. The supplied guilds must arrive with their

@@ -37,6 +37,10 @@ public final class Guild {
 	public final String founderUsername;  // never changes (used for audit)
 	public final long   createdEpochMs;
 	public       String motto = "";       // editable by FOUNDER+OFFICER
+	/** Shared guild treasury (gold-only v1). Deposits unrestricted;
+	 *  withdrawals gated by Role.canWithdrawBank(). Persisted in
+	 *  ogrs_guild_bank. */
+	public       long   bankGold = 0;
 
 	/** member username (lowercase) -> role. */
 	public final Map<String, Role> members = new HashMap<>();
