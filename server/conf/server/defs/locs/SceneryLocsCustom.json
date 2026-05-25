@@ -879,6 +879,51 @@
         "Y": 648
       },
       "direction": 0
+    },
+    {
+      "_n": "OGRS Deed Pillar \u2014 Lumbridge Market Plot",
+      "id": 1327,
+      "pos": {
+        "X": 122,
+        "Y": 660
+      },
+      "direction": 0
+    },
+    {
+      "_n": "OGRS Deed Pillar \u2014 Falador Outskirts Plot",
+      "id": 1327,
+      "pos": {
+        "X": 302,
+        "Y": 555
+      },
+      "direction": 0
+    },
+    {
+      "_n": "OGRS Deed Pillar \u2014 Catherby Coast Plot",
+      "id": 1327,
+      "pos": {
+        "X": 432,
+        "Y": 510
+      },
+      "direction": 0
+    },
+    {
+      "_n": "OGRS Deed Pillar \u2014 Karamja Jungle Plot",
+      "id": 1327,
+      "pos": {
+        "X": 364,
+        "Y": 705
+      },
+      "direction": 0
+    },
+    {
+      "_n": "OGRS Deed Pillar \u2014 Wilderness Stronghold",
+      "id": 1327,
+      "pos": {
+        "X": 236,
+        "Y": 162
+      },
+      "direction": 0
     }
   ]
 }

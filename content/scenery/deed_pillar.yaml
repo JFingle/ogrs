@@ -1,0 +1,26 @@
+# OGRS scenery: Deed Pillar.
+#
+# Placed at the entry point of each estate plot. Click "Inspect" for
+# plot info (name, tier, current deed holder, current bids, auction
+# status). Click "Bid" to bid via chat-prompt flow (eventually a UI
+# panel; v1 routes to ::plot bid).
+#
+# Reuses upstream `signpost` model — wooden post with a deed-shaped
+# parchment. Future polish: dedicated 3D model with a brass plaque.
+#
+# Plot definitions + Deed Pillar placements live in
+# server/plugins/.../plots/PlotRegistry.java. Each plot's pillar
+# scenery is placed at the corresponding (deedPillarX, deedPillarY)
+# in SceneryLocsCustom.json (managed at bootstrap if we ever add
+# auto-placement, or manually for v1).
+
+id: 1327
+name: Deed Pillar
+description: A weathered wooden post bearing the deed-shaped parchment of an estate plot.
+command1: "Inspect"
+command2: "Bid"
+type: 1
+width: 1
+height: 1
+ground_item_var: 0
+model: signpost

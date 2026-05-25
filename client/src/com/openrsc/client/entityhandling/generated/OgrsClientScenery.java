@@ -113,6 +113,9 @@ public final class OgrsClientScenery {
 		// id 1326 — from content/scenery/job_board.yaml
 		objects.add(new GameObjectDef("Job Board", "A weathered wooden board pinned with parchment job postings.", "View", "Post", 1, 1, 1, 0, "signpost", ++i));
 
+		// id 1327 — from content/scenery/deed_pillar.yaml
+		objects.add(new GameObjectDef("Deed Pillar", "A weathered wooden post bearing the deed-shaped parchment of an estate plot.", "Inspect", "Bid", 1, 1, 1, 0, "signpost", ++i));
+
 		return i;
 	}
 }
