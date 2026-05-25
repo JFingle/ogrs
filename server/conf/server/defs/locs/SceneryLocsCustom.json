@@ -924,6 +924,51 @@
         "Y": 162
       },
       "direction": 0
+    },
+    {
+      "_n": "OGRS Communal Lodge Bank Chest \u2014 Lumbridge",
+      "id": 1328,
+      "pos": {
+        "X": 128,
+        "Y": 651
+      },
+      "direction": 0
+    },
+    {
+      "_n": "OGRS Communal Lodge Bank Chest \u2014 Falador",
+      "id": 1328,
+      "pos": {
+        "X": 307,
+        "Y": 547
+      },
+      "direction": 0
+    },
+    {
+      "_n": "OGRS Communal Lodge Bank Chest \u2014 Varrock",
+      "id": 1328,
+      "pos": {
+        "X": 217,
+        "Y": 461
+      },
+      "direction": 0
+    },
+    {
+      "_n": "OGRS Communal Lodge Bank Chest \u2014 Catherby",
+      "id": 1328,
+      "pos": {
+        "X": 440,
+        "Y": 502
+      },
+      "direction": 0
+    },
+    {
+      "_n": "OGRS Communal Lodge Bank Chest \u2014 Al-Kharid",
+      "id": 1328,
+      "pos": {
+        "X": 78,
+        "Y": 692
+      },
+      "direction": 0
     }
   ]
 }
