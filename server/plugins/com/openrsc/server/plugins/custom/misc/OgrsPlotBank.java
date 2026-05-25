@@ -40,14 +40,24 @@ public final class OgrsPlotBank implements OpLocTrigger {
 		}
 
 		if (owning != null) {
-			// Plot-built chest — only the deed holder can use.
+			// Plot-built chest — permission gate.
 			final PlotFeature pf = owning.featureAt(obj.getX(), obj.getY());
 			if (pf == null) {
 				player.message("(@yel@The chest looks built but isn't registered. Try again after a restart.)");
 				return;
 			}
-			if (owning.deedHolder == null
-				|| !owning.deedHolder.equalsIgnoreCase(player.getUsername())) {
+			if (owning.deedHolder == null) {
+				player.message("@red@This chest's plot has no deed holder.");
+				return;
+			}
+			if (owning.tier == Plot.Tier.WILDERNESS) {
+				final com.openrsc.server.plugins.custom.guilds.Guild g =
+					com.openrsc.server.plugins.custom.guilds.GuildRegistry.byName(owning.deedHolder);
+				if (g == null || !g.hasMember(player.getUsername())) {
+					player.message("@red@This chest is property of guild @whi@" + owning.deedHolder + "@red@.");
+					return;
+				}
+			} else if (!owning.deedHolder.equalsIgnoreCase(player.getUsername())) {
 				player.message("@red@This chest belongs to @whi@" + owning.deedHolder + "@red@. Hands off.");
 				return;
 			}

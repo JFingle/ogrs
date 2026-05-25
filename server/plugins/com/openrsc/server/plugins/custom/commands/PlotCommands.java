@@ -126,6 +126,21 @@ public final class PlotCommands implements CommandTrigger {
 			p.message("@red@Bid below auction floor of " + pl.tier.auctionFloor() + "gp.");
 			return;
 		}
+		// WILDERNESS plots are guild-only. Bidder must be FOUNDER/OFFICER
+		// of a guild; deed holder becomes the guild name.
+		if (pl.tier == Plot.Tier.WILDERNESS) {
+			final com.openrsc.server.plugins.custom.guilds.Guild g =
+				com.openrsc.server.plugins.custom.guilds.GuildRegistry.byMember(p.getUsername());
+			if (g == null) {
+				p.message("@red@Wilderness plots are guild-only. ::guild create one first.");
+				return;
+			}
+			final com.openrsc.server.plugins.custom.guilds.Guild.Role role = g.roleOf(p.getUsername());
+			if (role == null || !role.canManageEstate()) {
+				p.message("@red@Only your guild's founder/officers can bid on wilderness plots.");
+				return;
+			}
+		}
 		// Refund any prior bid this player had on this plot.
 		final int prior = PlotRegistry.withdrawBid(pl, p.getUsername());
 		if (prior > 0) {
@@ -254,7 +269,31 @@ public final class PlotCommands implements CommandTrigger {
 			}
 			// Offline losers — gold lost for v1 (real impl: mailbox).
 		}
-		p.message("@gre@Auction closed. Winner: @whi@" + winner.getKey() + "@gre@ @ " + winner.getValue() + "gp.");
+		// For WILDERNESS plots, rewrite deedHolder from the winning
+		// player's username to their guild name.
+		if (pl.tier == Plot.Tier.WILDERNESS) {
+			final com.openrsc.server.plugins.custom.guilds.Guild g =
+				com.openrsc.server.plugins.custom.guilds.GuildRegistry.byMember(winner.getKey());
+			if (g != null) {
+				pl.deedHolder = g.name;
+				p.message("@gre@Auction closed. Winner: @whi@" + g.name + "@gre@ (via "
+					+ winner.getKey() + ") @ " + winner.getValue() + "gp.");
+			} else {
+				// Winning bidder somehow left their guild between bid and close.
+				// Refund instead.
+				final long whash = com.openrsc.server.util.rsc.DataConversions.usernameToHash(winner.getKey());
+				final Player wp = p.getWorld().getPlayer(whash);
+				if (wp != null) {
+					wp.getCarriedItems().getInventory().add(new Item(ItemId.COINS.id(), winner.getValue()));
+					wp.message("@yel@Wilderness auction skipped — you're no longer in a guild. " + winner.getValue() + "gp refunded.");
+				}
+				pl.deedHolder = null;
+				p.message("@yel@Auction void: winning bidder is no longer in a guild.");
+				return;
+			}
+		} else {
+			p.message("@gre@Auction closed. Winner: @whi@" + winner.getKey() + "@gre@ @ " + winner.getValue() + "gp.");
+		}
 		// Notify the winner if online.
 		final long hash = com.openrsc.server.util.rsc.DataConversions.usernameToHash(winner.getKey());
 		final Player wp = p.getWorld().getPlayer(hash);

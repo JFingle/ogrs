@@ -41,8 +41,15 @@ public final class OgrsPlotForge implements OpLocTrigger {
 		if (owning != null) {
 			final PlotFeature pf = owning.featureAt(obj.getX(), obj.getY());
 			if (pf == null) return;
-			if (owning.deedHolder == null
-				|| !owning.deedHolder.equalsIgnoreCase(player.getUsername())) {
+			if (owning.deedHolder == null) return;
+			if (owning.tier == Plot.Tier.WILDERNESS) {
+				final com.openrsc.server.plugins.custom.guilds.Guild g =
+					com.openrsc.server.plugins.custom.guilds.GuildRegistry.byName(owning.deedHolder);
+				if (g == null || !g.hasMember(player.getUsername())) {
+					player.message("@red@This forge belongs to guild @whi@" + owning.deedHolder + "@red@.");
+					return;
+				}
+			} else if (!owning.deedHolder.equalsIgnoreCase(player.getUsername())) {
 				player.message("@red@This forge belongs to @whi@" + owning.deedHolder + "@red@.");
 				return;
 			}
