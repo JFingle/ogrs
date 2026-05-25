@@ -11,7 +11,19 @@ application {
     // OGRS default world. Override at the command line with `-Pconf=<name>`,
     // e.g. `./gradlew run -Pconf=preservation` to boot upstream's preservation
     // world for behavioural comparison.
-    applicationDefaultJvmArgs = ['-DcoloredLogging=true','-Dconf=ogrs']
+    //
+    // Heap: 2GB initial / 4GB max gives headroom for 1k concurrent players
+    // (each Player ~150-250KB resident with inventory + bank + skills, plus
+    // server overhead). The single-threaded game tick is the real ceiling
+    // — heap headroom just keeps GC from eating into the 640ms budget.
+    applicationDefaultJvmArgs = [
+        '-DcoloredLogging=true',
+        '-Dconf=ogrs',
+        '-Xms2g',
+        '-Xmx4g',
+        '-XX:+UseG1GC',
+        '-XX:MaxGCPauseMillis=200'
+    ]
 }
 
 repositories {

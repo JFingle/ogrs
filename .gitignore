@@ -83,3 +83,6 @@ scripts/duckdns/duckdns.conf
 # Local landscape/sprite backups — never commit; regenerate from source data
 client/Cache/video/*.bak
 client/Cache/video/*.crypt-backup
+
+# Build outputs from scripts/build-cache-bundle.sh — regenerated on demand
+dist/

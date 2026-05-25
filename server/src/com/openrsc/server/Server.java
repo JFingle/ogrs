@@ -192,6 +192,23 @@ public class Server implements Runnable {
 
 	public static void main(final String[] args) {
 		LOGGER.info("Launching Game Server...");
+
+		// OGRS — graceful shutdown on SIGTERM / SIGINT. Without this,
+		// the JVM exits abruptly and any in-flight player saves blow up
+		// with NullPointerException. The hook walks every active server,
+		// calls stop(), and lets unloadPlayers() drain the save queue.
+		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+			LOGGER.info("Shutdown signal received — draining servers...");
+			for (final Server srv : serversList.values()) {
+				try {
+					srv.stop();
+				} catch (final Throwable t) {
+					LOGGER.error("Error stopping server during shutdown hook", t);
+				}
+			}
+			LOGGER.info("Shutdown drain complete.");
+		}, "ogrs-shutdown-hook"));
+
 		try {
 			List<String> configurationFiles = new ArrayList<>();
 			Optional.ofNullable(System.getProperty("conf")).ifPresent(files -> {
@@ -568,6 +585,7 @@ public class Server implements Runnable {
 					return;
 				}
 				LOGGER.info("Server stop requested");
+				ogrsFinalFlush();
 				getWorld().unloadPlayers();
 
 				scheduledExecutor.shutdown();
@@ -1320,5 +1338,21 @@ public class Server implements Runnable {
 
 	public SslContext getSSLContext() {
 		return this.sslcontext;
+	}
+
+	/** OGRS — force one last persistence flush before the rest of stop()
+	 *  tears down the database / world. Reflection because OgrsPersistence
+	 *  lives in plugins.jar and core can't see it at compile time. Silent
+	 *  on failure: shutdown must continue even if the flush errors. */
+	private void ogrsFinalFlush() {
+		try {
+			final Class<?> persistence = Class.forName("com.openrsc.server.plugins.custom.persistence.OgrsPersistence");
+			persistence.getMethod("flushAll", getWorld().getClass()).invoke(null, getWorld());
+			LOGGER.info("OGRS: final persistence flush complete on shutdown");
+		} catch (final ClassNotFoundException ignored) {
+			// Running without OGRS plugins (e.g. upstream preservation world) — no-op.
+		} catch (final Throwable t) {
+			LOGGER.warn("OGRS final persistence flush failed (continuing shutdown anyway): {}", t.getMessage());
+		}
 	}
 }
