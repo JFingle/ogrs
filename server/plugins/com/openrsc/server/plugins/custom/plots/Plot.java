@@ -65,6 +65,11 @@ public final class Plot {
 	public String deedHolder = null;
 	/** Tenancy expires here. After this, the plot re-opens for bidding. */
 	public long   tenancyExpiresMs = 0;
+	/** When the current bidding window closes. 0 means no window is
+	 *  active (no bids placed yet on a vacant plot). Set to now+24h
+	 *  by the first bid on a vacant plot. PlotAuctionTick closes the
+	 *  auction when now >= this value. */
+	public long   auctionEndsMs = 0;
 
 	/** Open bids on this plot — username -> amount. Drained on auction
 	 *  close (highest bidder wins, others refunded). */

@@ -199,16 +199,19 @@ public final class OgrsPersistence {
 	private static void loadPlots(final JDBCDatabase db) throws SQLException {
 		final Map<Integer, String> deedHolders = new HashMap<>();
 		final Map<Integer, Long> tenancyExpiry = new HashMap<>();
+		final Map<Integer, Long> auctionEnds = new HashMap<>();
 		final Map<Integer, Map<String, Integer>> bidsByPlot = new HashMap<>();
 		final Map<Integer, List<PlotFeature>> featuresByPlot = new HashMap<>();
 
-		try (PreparedStatement ps = db.preparedStatement("SELECT id, deed_holder, tenancy_expires_ms FROM ogrs_plots");
+		try (PreparedStatement ps = db.preparedStatement(
+				"SELECT id, deed_holder, tenancy_expires_ms, auction_ends_ms FROM ogrs_plots");
 		     ResultSet rs = ps.executeQuery()) {
 			while (rs.next()) {
 				final int id = rs.getInt("id");
 				final String holder = rs.getString("deed_holder");
 				deedHolders.put(id, holder == null || holder.isEmpty() ? null : holder);
 				tenancyExpiry.put(id, rs.getLong("tenancy_expires_ms"));
+				auctionEnds.put(id, rs.getLong("auction_ends_ms"));
 			}
 		}
 
@@ -234,7 +237,7 @@ public final class OgrsPersistence {
 			}
 		}
 
-		PlotRegistry.loadFromPersistence(deedHolders, tenancyExpiry, bidsByPlot, featuresByPlot);
+		PlotRegistry.loadFromPersistence(deedHolders, tenancyExpiry, auctionEnds, bidsByPlot, featuresByPlot);
 	}
 
 	// ─── Flush: contracts ────────────────────────────────────────────
@@ -378,11 +381,12 @@ public final class OgrsPersistence {
 		if (plots.isEmpty()) return;
 
 		try (PreparedStatement ps = conn.prepareStatement(
-				"INSERT INTO ogrs_plots(id, deed_holder, tenancy_expires_ms) VALUES (?,?,?)")) {
+				"INSERT INTO ogrs_plots(id, deed_holder, tenancy_expires_ms, auction_ends_ms) VALUES (?,?,?,?)")) {
 			for (Plot p : plots) {
 				ps.setInt   (1, p.id);
 				ps.setString(2, p.deedHolder == null ? "" : p.deedHolder);
 				ps.setLong  (3, p.tenancyExpiresMs);
+				ps.setLong  (4, p.auctionEndsMs);
 				ps.addBatch();
 			}
 			ps.executeBatch();

@@ -1,6 +1,12 @@
 package com.openrsc.server.plugins.custom.plots;
 
+import com.openrsc.server.constants.ItemId;
+import com.openrsc.server.model.container.Item;
 import com.openrsc.server.model.entity.player.Player;
+import com.openrsc.server.model.world.World;
+import com.openrsc.server.plugins.custom.guilds.Guild;
+import com.openrsc.server.plugins.custom.guilds.GuildRegistry;
+import com.openrsc.server.util.rsc.DataConversions;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -77,6 +83,12 @@ public final class PlotRegistry {
 
 	public static synchronized boolean placeBid(final Plot p, final String username, final int amount) {
 		if (amount < p.tier.auctionFloor()) return false;
+		// First bid on a vacant plot starts the 24h auction countdown.
+		// Subsequent bids don't extend it (anti-snipe is left to the
+		// natural "highest bid wins at close" mechanic).
+		if (p.openBids.isEmpty() && p.auctionEndsMs == 0) {
+			p.auctionEndsMs = System.currentTimeMillis() + 24L * 3600 * 1000;
+		}
 		// Add (or update) this player's bid.
 		p.openBids.put(username.toLowerCase(), amount);
 		return true;
@@ -91,12 +103,13 @@ public final class PlotRegistry {
 
 	/** Apply persisted state on top of the bootstrapped plot definitions.
 	 *  Plot identity + coords come from bootstrap(); we just overlay
-	 *  the mutable fields (deedHolder, tenancyExpiresMs, openBids,
-	 *  features). Unknown plot ids are skipped — they reference plots
-	 *  no longer in the bootstrap inventory (post-deletion). */
+	 *  the mutable fields (deedHolder, tenancyExpiresMs, auctionEndsMs,
+	 *  openBids, features). Unknown plot ids are skipped — they
+	 *  reference plots no longer in the bootstrap inventory (post-deletion). */
 	public static synchronized void loadFromPersistence(
 			final Map<Integer, String> deedHolders,
 			final Map<Integer, Long> tenancyExpiry,
+			final Map<Integer, Long> auctionEnds,
 			final Map<Integer, Map<String, Integer>> bidsByPlot,
 			final Map<Integer, List<PlotFeature>> featuresByPlot) {
 		bootstrap();
@@ -109,6 +122,11 @@ public final class PlotRegistry {
 			final Plot p = PLOTS.get(e.getKey());
 			if (p == null) continue;
 			p.tenancyExpiresMs = e.getValue();
+		}
+		for (Map.Entry<Integer, Long> e : auctionEnds.entrySet()) {
+			final Plot p = PLOTS.get(e.getKey());
+			if (p == null) continue;
+			p.auctionEndsMs = e.getValue();
 		}
 		for (Plot p : PLOTS.values()) {
 			p.openBids.clear();
@@ -128,19 +146,105 @@ public final class PlotRegistry {
 		}
 	}
 
-	// ─── Auction close ───────────────────────────────────────────────
+	// ─── Settle helper (shared by ::plot close + PlotAuctionTick) ───
 
-	/** Close the auction on this plot. Highest bidder becomes the deed
-	 *  holder; tenancy lasts 7 days. Returns the winning entry (or null
-	 *  if no bids). All non-winning bids must be refunded by the caller
-	 *  (the bid escrow lives in the chat command layer). */
-	public static synchronized Map.Entry<String, Integer> closeAuction(final Plot p) {
-		if (p.openBids.isEmpty()) return null;
+	/** Outcome record so the caller can render a chat summary. */
+	public static final class SettleResult {
+		public final String winnerName;       // null if void
+		public final int    winnerAmount;     // 0 if void
+		public final String voidReason;       // null on success
+		public final String deedAssignedTo;   // username or guild name; null on void
+		SettleResult(final String w, final int amt, final String reason, final String deed) {
+			this.winnerName = w; this.winnerAmount = amt;
+			this.voidReason = reason; this.deedAssignedTo = deed;
+		}
+	}
+
+	/** Close one plot's auction: pick highest bid, refund losers to
+	 *  inventory if online (gold sinks for offline losers in v1 —
+	 *  mailbox queue lands later), assign the deed (translating to
+	 *  guild name for WILDERNESS plots), reset the auction window.
+	 *
+	 *  Idempotent on plots with no bids — returns a "no bids" void.
+	 *  Should be called from the game thread (mutates inventories). */
+	public static synchronized SettleResult settleAuction(final Plot p, final World world) {
+		if (p.openBids.isEmpty()) {
+			// Extend the auction window by another 24h so the plot keeps
+			// inviting bids without immediately re-firing the tick.
+			p.auctionEndsMs = System.currentTimeMillis() + 24L * 3600 * 1000;
+			return new SettleResult(null, 0, "no bids", null);
+		}
 		final List<Map.Entry<String, Integer>> sorted = p.bidsHighestFirst();
 		final Map.Entry<String, Integer> winner = sorted.get(0);
-		p.deedHolder = winner.getKey();
+
+		// Refund losers.
+		for (int i = 1; i < sorted.size(); i++) {
+			refundBidder(world, sorted.get(i).getKey(), sorted.get(i).getValue(), p.name);
+		}
+
+		String deed;
+		if (p.tier == Plot.Tier.WILDERNESS) {
+			final Guild g = GuildRegistry.byMember(winner.getKey());
+			if (g == null) {
+				// Winner left their guild between bid and close — refund them too, void the auction.
+				refundBidder(world, winner.getKey(), winner.getValue(), p.name);
+				p.openBids.clear();
+				p.auctionEndsMs = System.currentTimeMillis() + 24L * 3600 * 1000;
+				return new SettleResult(winner.getKey(), winner.getValue(),
+					"winner no longer in a guild — wilderness deed could not be assigned", null);
+			}
+			deed = g.name;
+		} else {
+			deed = winner.getKey();
+		}
+
+		p.deedHolder = deed;
 		p.tenancyExpiresMs = System.currentTimeMillis() + 7L * 24 * 3600 * 1000;
 		p.openBids.clear();
-		return winner;
+		p.auctionEndsMs = 0;
+
+		// Notify the winner if online.
+		final Player wp = world.getPlayer(DataConversions.usernameToHash(winner.getKey()));
+		if (wp != null) {
+			wp.message("@gre@You won the deed to '" + p.name + "' for " + winner.getValue()
+				+ "gp. Tenancy: 7 days.");
+		}
+		return new SettleResult(winner.getKey(), winner.getValue(), null, deed);
 	}
+
+	private static void refundBidder(final World world, final String username, final int gold, final String plotName) {
+		final Player lp = world.getPlayer(DataConversions.usernameToHash(username));
+		if (lp != null) {
+			lp.getCarriedItems().getInventory().add(new Item(ItemId.COINS.id(), gold));
+			lp.message("@yel@Auction on '" + plotName + "' closed. Refunded your " + gold + "gp bid.");
+		}
+		// Offline → gold sinks (mailbox queue ships in a future phase).
+	}
+
+	/** Revert a plot to vacant when its tenancy expires. Idempotent.
+	 *  Notifies the previous deed holder if online. */
+	public static synchronized void revertExpiredTenancy(final Plot p, final World world) {
+		if (p.deedHolder == null) return;
+		if (p.tenancyExpiresMs > System.currentTimeMillis()) return;
+		final String prev = p.deedHolder;
+		p.deedHolder = null;
+		p.tenancyExpiresMs = 0;
+		// auctionEndsMs left at 0 — first new bid will start the window.
+		if (p.tier != Plot.Tier.WILDERNESS) {
+			final Player pp = world.getPlayer(DataConversions.usernameToHash(prev));
+			if (pp != null) pp.message("@yel@Your tenancy on '" + p.name + "' has expired. The plot is back up for auction.");
+		}
+		// For WILDERNESS plots, deed holder is a guild — broadcast to
+		// online guild members.
+		if (p.tier == Plot.Tier.WILDERNESS) {
+			final Guild g = GuildRegistry.byName(prev);
+			if (g != null) {
+				for (String member : g.members.keySet()) {
+					final Player pp = world.getPlayer(DataConversions.usernameToHash(member));
+					if (pp != null) pp.message("@yel@Your guild's wilderness deed on '" + p.name + "' has expired. Bid again to retain it.");
+				}
+			}
+		}
+	}
+
 }
