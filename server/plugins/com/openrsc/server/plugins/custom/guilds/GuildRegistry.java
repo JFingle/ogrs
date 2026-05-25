@@ -1,0 +1,132 @@
+package com.openrsc.server.plugins.custom.guilds;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
+
+/**
+ * OGRS — in-memory guild storage + lifecycle. Phase 2-α of the
+ * housing/contract arc (sparky 2026-05-24). Mirrors ContractRegistry's
+ * static-map-with-locks pattern.
+ *
+ * Constraints:
+ *   - Guild name uniqueness (case-insensitive).
+ *   - A player can only belong to ONE guild at a time.
+ *   - Founder cannot leave or be kicked — they have to disband or
+ *     transfer leadership first (transfer command lands in 2-β).
+ *   - Min member count to form: 1 (founder); min recruits to access
+ *     wilderness estates: 5 (gated when 1F-wilderness lands).
+ *
+ * Costs (gold sinks):
+ *   - Creation fee: 100,000gp paid up front from founder's inventory.
+ *     Caller (GuildCommands) enforces; this registry just creates.
+ *
+ * In-memory only — guilds lost on restart for v1. DB persistence in
+ * Phase 2-β.
+ */
+public final class GuildRegistry {
+
+	private static final Map<Integer, Guild> GUILDS = new HashMap<>();
+	private static final Map<String, Integer> NAME_TO_ID = new HashMap<>();     // lowercase name -> id
+	private static final Map<String, Integer> MEMBER_TO_GUILD = new HashMap<>(); // lowercase username -> id
+	private static final AtomicInteger NEXT_ID = new AtomicInteger(1);
+
+	private GuildRegistry() {}
+
+	// ─── Create / Lookup ─────────────────────────────────────────────
+
+	public static synchronized Guild create(final String name, final String founderUsername) {
+		final String key = name.toLowerCase();
+		if (NAME_TO_ID.containsKey(key)) return null;  // name taken
+		if (MEMBER_TO_GUILD.containsKey(founderUsername.toLowerCase())) return null; // already in a guild
+		final Guild g = new Guild(NEXT_ID.getAndIncrement(), name, founderUsername);
+		GUILDS.put(g.id, g);
+		NAME_TO_ID.put(key, g.id);
+		MEMBER_TO_GUILD.put(founderUsername.toLowerCase(), g.id);
+		return g;
+	}
+
+	public static synchronized Guild byName(final String name) {
+		final Integer id = NAME_TO_ID.get(name.toLowerCase());
+		return id == null ? null : GUILDS.get(id);
+	}
+
+	public static synchronized Guild byMember(final String username) {
+		final Integer id = MEMBER_TO_GUILD.get(username.toLowerCase());
+		return id == null ? null : GUILDS.get(id);
+	}
+
+	public static synchronized List<Guild> listAll() {
+		return new ArrayList<>(GUILDS.values());
+	}
+
+	// ─── Invite / Accept / Leave / Kick ──────────────────────────────
+
+	/** Inviter must be FOUNDER or OFFICER. Invitee must not already be
+	 *  in a guild. Sets a pending invite; invitee accepts via accept(). */
+	public static synchronized boolean invite(final Guild g, final String inviterUsername,
+	                                          final String inviteeUsername) {
+		final Guild.Role role = g.roleOf(inviterUsername);
+		if (role == null || !role.canInviteOrKick()) return false;
+		if (MEMBER_TO_GUILD.containsKey(inviteeUsername.toLowerCase())) return false;
+		g.pendingInvites.put(inviteeUsername.toLowerCase(), inviterUsername);
+		return true;
+	}
+
+	/** Invitee accepts a pending invite. Joins as RECRUIT. */
+	public static synchronized Guild accept(final String inviteeUsername) {
+		final String key = inviteeUsername.toLowerCase();
+		// Find the guild that has this player pending (first wins; players
+		// can only have one outstanding invite cycle in practice).
+		for (Guild g : GUILDS.values()) {
+			if (g.pendingInvites.containsKey(key)) {
+				g.pendingInvites.remove(key);
+				if (MEMBER_TO_GUILD.containsKey(key)) return null;
+				g.members.put(key, Guild.Role.RECRUIT);
+				MEMBER_TO_GUILD.put(key, g.id);
+				return g;
+			}
+		}
+		return null;
+	}
+
+	public static synchronized boolean leave(final String username) {
+		final String key = username.toLowerCase();
+		final Integer gid = MEMBER_TO_GUILD.get(key);
+		if (gid == null) return false;
+		final Guild g = GUILDS.get(gid);
+		if (g == null) return false;
+		if (g.roleOf(username) == Guild.Role.FOUNDER) return false;  // founder must disband
+		g.members.remove(key);
+		MEMBER_TO_GUILD.remove(key);
+		return true;
+	}
+
+	public static synchronized boolean kick(final Guild g, final String byUsername, final String targetUsername) {
+		final Guild.Role byRole = g.roleOf(byUsername);
+		if (byRole == null || !byRole.canInviteOrKick()) return false;
+		final Guild.Role tgtRole = g.roleOf(targetUsername);
+		if (tgtRole == null) return false;
+		if (tgtRole == Guild.Role.FOUNDER) return false;  // can't kick founder
+		// Officers can only kick MEMBER/RECRUIT, not other OFFICERs.
+		if (byRole == Guild.Role.OFFICER && tgtRole == Guild.Role.OFFICER) return false;
+		g.members.remove(targetUsername.toLowerCase());
+		MEMBER_TO_GUILD.remove(targetUsername.toLowerCase());
+		return true;
+	}
+
+	// ─── Disband ─────────────────────────────────────────────────────
+
+	public static synchronized boolean disband(final Guild g, final String byUsername) {
+		final Guild.Role role = g.roleOf(byUsername);
+		if (role == null || !role.canDisband()) return false;
+		for (String m : new ArrayList<>(g.members.keySet())) {
+			MEMBER_TO_GUILD.remove(m);
+		}
+		NAME_TO_ID.remove(g.name.toLowerCase());
+		GUILDS.remove(g.id);
+		return true;
+	}
+}
