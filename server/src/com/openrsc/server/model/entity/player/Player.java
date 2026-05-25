@@ -1855,6 +1855,18 @@ public final class Player extends Mob {
 			doubledXp = true;
 		}
 
+		// OGRS — mentorship bond: if an apprentice is bonded with their
+		// mentor (set by MentorshipTick every ~3.2s while within 20 tiles),
+		// apply +50% XP for that contract's targeted skill. The "until"
+		// timestamp lapses naturally if the bond breaks.
+		final long ogrsMentorUntil = getAttribute("ogrs_mentor_bonus_until_ms", 0L);
+		if (ogrsMentorUntil > System.currentTimeMillis()) {
+			final int ogrsMentorSkill = getAttribute("ogrs_mentor_bonus_skill", -1);
+			if (ogrsMentorSkill == skill && !fromQuest) {
+				skillXP = skillXP * 3 / 2;
+			}
+		}
+
 		if (getWorld().getServer().getConfig().WANT_FATIGUE) {
 			// If the action uses fatigue, and the player is too tired,
 			// send a message saying so, and do not give xp.

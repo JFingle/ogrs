@@ -60,6 +60,15 @@ public final class MentorshipTick extends GameTickEvent {
 			final int dy = Math.abs(apprentice.getY() - mentor.getY());
 			if (Math.max(dx, dy) > BOND_RANGE) continue;
 
+			// Flag the apprentice for +50% XP on the mentored skill. Player.incExp
+			// reads this attribute pair to apply the bonus. The until-timestamp
+			// covers two strides (~6.4s) so a stride that doesn't refresh the
+			// flag naturally lets the bonus lapse.
+			final long tickMsForBonus = getWorld().getServer().getConfig().GAME_TICK;
+			apprentice.setAttribute("ogrs_mentor_bonus_skill", c.mentorSkillId);
+			apprentice.setAttribute("ogrs_mentor_bonus_until_ms",
+				nowMs + 2L * STRIDE_TICKS * tickMsForBonus);
+
 			// Bonded this stride.
 			c.bondedTicksAccrued += STRIDE_TICKS;
 			final long bondedMs = c.bondedTicksAccrued * tickMs;
