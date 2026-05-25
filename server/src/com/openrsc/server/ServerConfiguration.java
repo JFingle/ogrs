@@ -194,6 +194,11 @@ public class ServerConfiguration {
 	 *  Plant/harvest mechanics are separate work; this flag just registers the
 	 *  skill so XP/levels/DB column exist. */
 	public boolean WANT_FARMING;
+	/** OGRS additive skill: enable Construction. Loaded via content/skills/construction.yaml.
+	 *  Used by the housing system to upgrade plot features (rooms, bank chest,
+	 *  portal nexus, farming patches, etc.). Trainable via NPC contracts even
+	 *  without owning a plot. */
+	public boolean WANT_CONSTRUCTION;
 	/** OGRS — OSRS-style run-energy. When on, players can toggle running (::run),
 	 *  which makes WalkingQueue pop 2 tiles per tick instead of 1 as long as
 	 *  Player.runEnergy > 0. Energy drains while running, regenerates while
@@ -645,6 +650,7 @@ public class ServerConfiguration {
 		WANT_HARVESTING = tryReadBool("want_harvesting").orElse(false);
 		WANT_SLAYER = tryReadBool("want_slayer").orElse(false);
 		WANT_FARMING = tryReadBool("want_farming").orElse(false);
+		WANT_CONSTRUCTION = tryReadBool("want_construction").orElse(false);
 		WANT_RUN_ENERGY = tryReadBool("want_run_energy").orElse(false);
 		WANT_CUSTOM_LEATHER = tryReadBool("want_custom_leather").orElse(false);
 		WANT_CUSTOM_LANDSCAPE = tryReadBool("custom_landscape").orElse(false);

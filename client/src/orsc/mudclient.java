@@ -163,6 +163,10 @@ public final class mudclient implements Runnable {
 			case "slayer":      return 3858;
 			case "harvesting":  case "farming":    return 3859;
 			case "runecraft":   case "runecrafting": return 3860;
+			// OGRS — Construction has no dedicated icon yet; reuse Crafting
+			// (sword + hammer) as a temporary placeholder. Replace when the
+			// artist ships a construction icon.
+			case "construction": case "constr":    return 3852;
 			default:            return -1;
 		}
 	}
@@ -19440,6 +19444,8 @@ public final class mudclient implements Runnable {
 			addSkill("Slayer");
 		if (Config.S_WANT_FARMING)
 			addSkill("Farming");
+		if (Config.S_WANT_CONSTRUCTION)
+			addSkill("Construction");
 	}
 
 	private void addSkill(String skillname) {

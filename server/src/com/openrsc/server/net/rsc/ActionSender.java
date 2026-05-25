@@ -947,6 +947,7 @@ public class ActionSender {
 		configs.add((byte) (server.getConfig().WANT_NATURE_RUNE_PROTECTION ? 1 : 0)); // 90
 		configs.add((byte) (server.getConfig().WANT_SLAYER ? 1 : 0)); // 91 (OGRS additive skill)
 		configs.add((byte) (server.getConfig().WANT_FARMING ? 1 : 0)); // 92 (OGRS additive skill)
+		configs.add((byte) (server.getConfig().WANT_CONSTRUCTION ? 1 : 0)); // 93 (OGRS additive skill)
 
 		struct.configs = configs;
 		struct.setOpcode(OpcodeOut.SEND_SERVER_CONFIGS);
@@ -1517,6 +1518,9 @@ public class ActionSender {
 				case "Farming":
 					struct.currentFarming = lvl;
 					break;
+				case "Construction":
+					struct.currentConstruction = lvl;
+					break;
 				case "Influence":
 					struct.currentInfluence = lvl;
 					break;
@@ -1609,6 +1613,9 @@ public class ActionSender {
 				case "Farming":
 					struct.maxFarming = lvl;
 					break;
+				case "Construction":
+					struct.maxConstruction = lvl;
+					break;
 				case "Influence":
 					struct.maxInfluence = lvl;
 					break;
@@ -1700,6 +1707,9 @@ public class ActionSender {
 					break;
 				case "Farming":
 					struct.experienceFarming = exp;
+					break;
+				case "Construction":
+					struct.experienceConstruction = exp;
 					break;
 				case "Influence":
 					struct.experienceInfluence = exp;

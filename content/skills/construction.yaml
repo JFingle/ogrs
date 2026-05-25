@@ -1,0 +1,40 @@
+# OGRS skill: Construction
+#
+# Loaded by SkillsContentLoader at server boot. Becomes skill index 20
+# (after Farming at 19, gated on its want_flag).
+#
+# Used by the housing system to UPGRADE features inside a player's
+# estate plot (or guild estate in the wilderness). Higher level unlocks
+# better furniture tiers (bronze workbench -> mithril -> rune -> dragon)
+# and better plot features (bank chest at lvl 20, portal nexus at lvl 50,
+# farm patch at lvl 30, etc.).
+#
+# Trainable WITHOUT owning a plot via NPC construction-job contracts
+# posted on the town job boards — keeps new players from being locked
+# out of the skill entirely.
+#
+# Construction-on-your-plot is the only OGRS skill where employer-paid
+# XP transfer is allowed: workers can build furniture on the employer's
+# plot, employer gets the XP, worker gets paid in gold. See
+# project_ogrs.md housing/contract design notes.
+#
+# Future content (separate sessions):
+#   * furniture items in content/items/construction/
+#   * room/plot scenery defs (workbench, bank chest, portal nexus, etc.)
+#   * plot auction system + estate instance loader
+#   * contract types: construction-job, mentorship, resource delivery
+
+id: 20                       # next sequential slot after Farming (19,
+                             # gated on want_farming). Update if other
+                             # want_flags shift the count.
+
+name: Construction
+short_name: Constr
+long_name: Construction
+
+min_level: 1
+max_level: 99
+exp_curve: ORIGINAL
+
+# Only register the skill when ogrs.conf has want_construction: true.
+want_flag: WANT_CONSTRUCTION

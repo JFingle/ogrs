@@ -1,0 +1,50 @@
+-- OGRS Construction skill — add the per-skill column to every table the
+-- dynamic SQL builder iterates over.
+--
+-- Same pattern as 2026_05_06_add_farming_skill.sql / add_slayer_skill.sql.
+-- Each ALTER wrapped in its own stored procedure with CONTINUE HANDLER so
+-- the patch is idempotent (can re-run without erroring on "column exists").
+
+DROP PROCEDURE IF EXISTS `?`;
+DELIMITER //
+CREATE PROCEDURE `?`()
+BEGIN
+    DECLARE CONTINUE HANDLER FOR SQLEXCEPTION BEGIN END;
+ALTER TABLE `_PREFIX_experience` ADD COLUMN `construction` INT(9) NOT NULL DEFAULT 0;
+END //
+DELIMITER ;
+CALL `?`();
+DROP PROCEDURE `?`;
+
+DROP PROCEDURE IF EXISTS `?`;
+DELIMITER //
+CREATE PROCEDURE `?`()
+BEGIN
+    DECLARE CONTINUE HANDLER FOR SQLEXCEPTION BEGIN END;
+ALTER TABLE `_PREFIX_curstats` ADD COLUMN `construction` TINYINT(3) UNSIGNED NOT NULL DEFAULT 1;
+END //
+DELIMITER ;
+CALL `?`();
+DROP PROCEDURE `?`;
+
+DROP PROCEDURE IF EXISTS `?`;
+DELIMITER //
+CREATE PROCEDURE `?`()
+BEGIN
+    DECLARE CONTINUE HANDLER FOR SQLEXCEPTION BEGIN END;
+ALTER TABLE `_PREFIX_maxstats` ADD COLUMN `construction` TINYINT(3) UNSIGNED NOT NULL DEFAULT 1;
+END //
+DELIMITER ;
+CALL `?`();
+DROP PROCEDURE `?`;
+
+DROP PROCEDURE IF EXISTS `?`;
+DELIMITER //
+CREATE PROCEDURE `?`()
+BEGIN
+    DECLARE CONTINUE HANDLER FOR SQLEXCEPTION BEGIN END;
+ALTER TABLE `_PREFIX_capped_experience` ADD COLUMN `construction` INT(10) UNSIGNED;
+END //
+DELIMITER ;
+CALL `?`();
+DROP PROCEDURE `?`;
