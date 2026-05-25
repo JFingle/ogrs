@@ -104,6 +104,40 @@ public final class ContractRegistry {
 		return null;
 	}
 
+	/** Snapshot of all ACCEPTED contracts — for the mentorship tick handler.
+	 *  Returns a copy so the caller can iterate without holding the
+	 *  registry lock. */
+	public static synchronized java.util.List<Contract> snapshotAccepted() {
+		final java.util.List<Contract> out = new java.util.ArrayList<>();
+		for (Contract c : CONTRACTS.values()) {
+			if (c.status == Contract.Status.ACCEPTED) out.add(c);
+		}
+		return out;
+	}
+
+	/** Mentor-side payout queue. When a mentorship contract completes
+	 *  via the tick handler, the mentor's gold is escrowed here keyed
+	 *  by mentor username; they pick it up at the Job Board. */
+	private static final Map<String, Integer> MENTOR_PENDING_GOLD = new HashMap<>();
+
+	/** Mark a mentorship contract COMPLETED + queue payout for mentor. */
+	public static synchronized void completeMentorship(final Contract c) {
+		if (c.status != Contract.Status.ACCEPTED) return;
+		if (c.type != Contract.Type.MENTORSHIP) return;
+		c.status = Contract.Status.COMPLETED;
+		c.completedEpochMs = System.currentTimeMillis();
+		MENTOR_PENDING_GOLD.merge(c.workerName.toLowerCase(), c.goldReward, Integer::sum);
+		// Remove from registry — payout lives in MENTOR_PENDING_GOLD.
+		CONTRACTS.remove(c.id);
+	}
+
+	/** Returns the total gold queued for this mentor to collect, then
+	 *  clears the queue (caller pays the player). 0 if nothing pending. */
+	public static synchronized int collectMentorPayout(final String username) {
+		final Integer gold = MENTOR_PENDING_GOLD.remove(username.toLowerCase());
+		return gold == null ? 0 : gold;
+	}
+
 	/** Returns all completed contracts waiting for this employer to collect. */
 	public static synchronized List<Contract> readyForCollection(final String username) {
 		final List<Contract> out = new ArrayList<>();

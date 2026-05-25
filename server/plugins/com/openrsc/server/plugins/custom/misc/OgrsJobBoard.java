@@ -46,15 +46,23 @@ public final class OgrsJobBoard implements OpLocTrigger {
 		}
 
 		// "View" — context-aware.
-		// Priority 1: collect pending deliveries first (it's the employer's reward).
+		// Priority 1a: mentor's payout from completed mentorships.
+		final int mentorGold = ContractRegistry.collectMentorPayout(player.getUsername());
+		if (mentorGold > 0) {
+			player.getCarriedItems().getInventory().add(new Item(ItemId.COINS.id(), mentorGold));
+			player.message("@gre@Collected " + mentorGold + "gp in mentorship payouts.");
+			return;
+		}
+		// Priority 1b: collect pending deliveries (employer's reward from resource contracts).
 		final List<Contract> ready = ContractRegistry.readyForCollection(player.getUsername());
 		if (!ready.isEmpty()) {
 			collectPending(player, ready);
 			return;
 		}
-		// Priority 2: deliver an active contract if items are on hand.
+		// Priority 2: deliver an active resource contract if items are on hand.
 		final Contract active = ContractRegistry.activeForWorker(player.getUsername());
-		if (active != null && player.getCarriedItems().getInventory().countId(active.itemId) >= active.itemAmount) {
+		if (active != null && active.type == Contract.Type.RESOURCE_DELIVERY
+			&& player.getCarriedItems().getInventory().countId(active.itemId) >= active.itemAmount) {
 			deliver(player, active);
 			return;
 		}
