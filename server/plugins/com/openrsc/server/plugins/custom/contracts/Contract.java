@@ -21,7 +21,7 @@ public final class Contract {
 	public enum Type {
 		RESOURCE_DELIVERY,   // worker gathers and delivers itemId × amount
 		MENTORSHIP,          // mentor bonds with apprentice for skillId for N hours
-		// CONSTRUCTION_JOB, // Phase 1E
+		CONSTRUCTION_JOB,    // worker builds a feature on employer's plot; employer gets XP
 	}
 
 	public enum Status {
@@ -47,6 +47,14 @@ public final class Contract {
 	public int     mentorMinLevel   = 0;
 	public int     mentorDurationHrs = 0;
 	public long    bondedTicksAccrued = 0;  // for the future XP-bonus integration
+
+	// Construction-job-only fields. featureTypeOrdinal stores
+	// PlotFeature.Type.ordinal() (avoids cross-package dependency in
+	// this data class).
+	public int     constructionFeatureTypeOrdinal = -1;
+	public int     constructionPlotId  = -1;
+	public int     constructionTargetX = -1;
+	public int     constructionTargetY = -1;
 
 	public Contract(final int id, final Type type, final String posterName,
 	                final int itemId, final int itemAmount, final int goldReward,

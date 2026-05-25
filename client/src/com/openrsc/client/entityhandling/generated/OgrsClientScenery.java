@@ -119,6 +119,9 @@ public final class OgrsClientScenery {
 		// id 1328 — from content/scenery/lodge_bank_chest.yaml
 		objects.add(new GameObjectDef("Lodge Bank Chest", "A heavy oak chest reinforced with iron bands. Allows you to access your bank.", "Use", "Examine", 1, 1, 1, 0, "gravestone1", ++i));
 
+		// id 1329 — from content/scenery/lodge_forge.yaml
+		objects.add(new GameObjectDef("Lodge Forge", "A heavy iron anvil mounted on a wooden block. Hammer metal here to shape it.", "Use", "Examine", 1, 1, 1, 0, "anvil", ++i));
+
 		return i;
 	}
 }

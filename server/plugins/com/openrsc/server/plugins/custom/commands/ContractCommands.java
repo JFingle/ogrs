@@ -53,26 +53,31 @@ public final class ContractCommands implements CommandTrigger {
 		}
 		final String sub = args[0].toLowerCase();
 		switch (sub) {
-			case "post":    handlePost(player, args);    break;
-			case "mentor":  handleMentorPost(player, args); break;
-			case "list":    handleList(player);          break;
-			case "accept":  handleAccept(player, args);  break;
-			case "deliver": handleDeliver(player);       break;
-			case "status":  handleStatus(player);        break;
-			case "cancel":  handleCancel(player, args);  break;
-			default:        showHelp(player);
+			case "post":     handlePost(player, args);    break;
+			case "mentor":   handleMentorPost(player, args); break;
+			case "buildjob": handleBuildJobPost(player, args); break;
+			case "build":    handleBuildExec(player);     break;
+			case "list":     handleList(player);          break;
+			case "accept":   handleAccept(player, args);  break;
+			case "deliver":  handleDeliver(player);       break;
+			case "status":   handleStatus(player);        break;
+			case "cancel":   handleCancel(player, args);  break;
+			default:         showHelp(player);
 		}
 	}
 
 	private static void showHelp(final Player p) {
 		p.message("@gre@Contracts — chat commands (MVP):");
-		p.message("  ::contract post <itemId> <amt> <gold> <hours> — post resource delivery");
-		p.message("  ::contract mentor <skillId> <minLevel> <bondHrs> <gold> <deadlineHrs>");
-		p.message("    — post a mentorship contract (bonded play with apprentice)");
-		p.message("  ::contract list — show open contracts");
+		p.message("  ::contract post <itemId> <amt> <gold> <hours> — resource delivery");
+		p.message("  ::contract mentor <skillId> <minLvl> <bondHrs> <gold> <deadlineHrs>");
+		p.message("    — mentorship: bonded play with apprentice");
+		p.message("  ::contract buildjob <feature> <plotId> <targetX> <targetY> <gold> <hours>");
+		p.message("    — pay a worker to build a feature on your plot (XP credits YOU)");
+		p.message("  ::contract list   — show open contracts");
 		p.message("  ::contract accept <id> — claim one (1 active per worker)");
 		p.message("  ::contract deliver — turn in items (at Job Board)");
-		p.message("  ::contract status — show your active contract");
+		p.message("  ::contract build   — execute a construction-job (worker, at target tile)");
+		p.message("  ::contract status  — show your active contract");
 		p.message("  ::contract cancel <id> — refund a contract you posted");
 	}
 
@@ -142,6 +147,116 @@ public final class ContractCommands implements CommandTrigger {
 			+ " can ::contract accept " + c.id);
 	}
 
+	private static void handleBuildJobPost(final Player p, final String[] args) {
+		if (args.length < 7) {
+			p.message("Usage: ::contract buildjob <feature> <plotId> <targetX> <targetY> <gold> <hours>");
+			p.message("Feature: bankchest | forge");
+			return;
+		}
+		final com.openrsc.server.plugins.custom.plots.PlotFeature.Type ftype;
+		switch (args[1].toLowerCase()) {
+			case "bankchest": case "bank":
+				ftype = com.openrsc.server.plugins.custom.plots.PlotFeature.Type.BANK_CHEST; break;
+			case "forge": case "anvil":
+				ftype = com.openrsc.server.plugins.custom.plots.PlotFeature.Type.FORGE; break;
+			default:
+				p.message("@red@Unknown feature type. Try: bankchest, forge."); return;
+		}
+		final int plotId, tx, ty, gold, hours;
+		try {
+			plotId = Integer.parseInt(args[2]);
+			tx     = Integer.parseInt(args[3]);
+			ty     = Integer.parseInt(args[4]);
+			gold   = Integer.parseInt(args[5]);
+			hours  = Integer.parseInt(args[6]);
+		} catch (NumberFormatException e) {
+			p.message("@red@All numeric args must parse as int."); return;
+		}
+		final com.openrsc.server.plugins.custom.plots.Plot pl =
+			com.openrsc.server.plugins.custom.plots.PlotRegistry.byId(plotId);
+		if (pl == null) { p.message("@red@No plot #" + plotId + "."); return; }
+		if (pl.deedHolder == null || !pl.deedHolder.equalsIgnoreCase(p.getUsername())) {
+			p.message("@red@You don't own that plot.");
+			return;
+		}
+		if (!pl.contains(tx, ty)) {
+			p.message("@red@(" + tx + "," + ty + ") is outside your plot's bounding box.");
+			return;
+		}
+		if (pl.featureAt(tx, ty) != null) {
+			p.message("@red@A feature already exists at (" + tx + "," + ty + ")."); return;
+		}
+		if (pl.features.size() >= pl.tier.featureSlots()) {
+			p.message("@red@Plot is at its " + pl.tier.featureSlots() + " feature slot limit."); return;
+		}
+		if (gold <= 0 || hours <= 0 || hours > 168) {
+			p.message("@red@Bad gold/hours."); return;
+		}
+		final int coinsId = ItemId.COINS.id();
+		if (p.getCarriedItems().getInventory().countId(coinsId) < gold) {
+			p.message("@red@You don't have " + gold + "gp to escrow."); return;
+		}
+		p.getCarriedItems().getInventory().remove(new Item(coinsId, gold), true);
+		final Contract c = ContractRegistry.postConstructionJob(
+			p, ftype.ordinal(), plotId, tx, ty, gold, hours);
+		p.message("@gre@Construction job #" + c.id + " posted: " + ftype.displayName
+			+ " on plot #" + plotId + " at (" + tx + "," + ty + ") for " + gold + "gp.");
+		p.message("Workers with Construction lvl " + ftype.minConstructionLevel + "+ can ::contract accept " + c.id);
+		p.message("The build's XP credits to YOU (employer-side Construction XP).");
+	}
+
+	private static void handleBuildExec(final Player p) {
+		final Contract c = ContractRegistry.activeForWorker(p.getUsername());
+		if (c == null) { p.message("@red@You have no active contract."); return; }
+		if (c.type != Contract.Type.CONSTRUCTION_JOB) {
+			p.message("@red@Active contract isn't a construction-job. Use ::contract deliver instead.");
+			return;
+		}
+		final com.openrsc.server.plugins.custom.plots.Plot pl =
+			com.openrsc.server.plugins.custom.plots.PlotRegistry.byId(c.constructionPlotId);
+		if (pl == null) { p.message("@red@Plot vanished — contract is broken."); return; }
+		if (p.getX() != c.constructionTargetX || p.getY() != c.constructionTargetY) {
+			p.message("@red@You must stand on the exact target tile (" + c.constructionTargetX + ","
+				+ c.constructionTargetY + ") to build.");
+			return;
+		}
+		if (pl.featureAt(p.getX(), p.getY()) != null) {
+			p.message("@red@A feature already exists here (race?)."); return;
+		}
+		final com.openrsc.server.plugins.custom.plots.PlotFeature.Type ftype =
+			com.openrsc.server.plugins.custom.plots.PlotFeature.Type.values()[c.constructionFeatureTypeOrdinal];
+		final int constructionLvl = p.getSkills().getLevel(
+			com.openrsc.server.constants.Skill.CONSTRUCTION.id());
+		if (constructionLvl < ftype.minConstructionLevel) {
+			p.message("@red@Need Construction lvl " + ftype.minConstructionLevel
+				+ " (you have " + constructionLvl + ")."); return;
+		}
+		// Spawn scenery + record feature.
+		final com.openrsc.server.model.Point loc = com.openrsc.server.model.Point.location(p.getX(), p.getY());
+		final com.openrsc.server.model.entity.GameObject obj =
+			new com.openrsc.server.model.entity.GameObject(p.getWorld(), loc, ftype.sceneryId, 0, 0);
+		p.getWorld().registerGameObject(obj);
+		final com.openrsc.server.plugins.custom.plots.PlotFeature pf =
+			new com.openrsc.server.plugins.custom.plots.PlotFeature(pl.id, ftype, p.getX(), p.getY(), p.getUsername());
+		pl.features.put(com.openrsc.server.plugins.custom.plots.Plot.featureKey(p.getX(), p.getY()), pf);
+		// XP credits the EMPLOYER — the narrow exception per design.
+		final long employerHash = com.openrsc.server.util.rsc.DataConversions.usernameToHash(c.posterName);
+		final Player employer = p.getWorld().getPlayer(employerHash);
+		final int xp = ftype.minConstructionLevel * 250 * 4;
+		if (employer != null) {
+			employer.getSkills().addExperience(com.openrsc.server.constants.Skill.CONSTRUCTION.id(), xp);
+			employer.message("@gre@Worker @whi@" + p.getUsername() + "@gre@ completed your construction job on plot #"
+				+ pl.id + ". You gained " + (xp / 4) + " Construction XP.");
+		}
+		// Pay the worker.
+		p.getCarriedItems().getInventory().add(new Item(ItemId.COINS.id(), c.goldReward));
+		p.message("@gre@Built " + ftype.displayName + ". Paid " + c.goldReward + "gp.");
+		if (employer == null) {
+			p.message("@yel@(Employer offline — XP deferred. Will land when they log in.)");
+		}
+		ContractRegistry.completeConstructionJob(c);
+	}
+
 	private static void handleList(final Player p) {
 		final List<Contract> open = ContractRegistry.listOpen();
 		if (open.isEmpty()) {
@@ -181,6 +296,19 @@ public final class ContractCommands implements CommandTrigger {
 				return;
 			}
 		}
+		// Construction-job-specific gate: worker must meet the feature's
+		// Construction min-level.
+		if (c.type == Contract.Type.CONSTRUCTION_JOB) {
+			final com.openrsc.server.plugins.custom.plots.PlotFeature.Type ftype =
+				com.openrsc.server.plugins.custom.plots.PlotFeature.Type.values()[c.constructionFeatureTypeOrdinal];
+			final int workerLvl = p.getSkills().getLevel(
+				com.openrsc.server.constants.Skill.CONSTRUCTION.id());
+			if (workerLvl < ftype.minConstructionLevel) {
+				p.message("@red@Need Construction lvl " + ftype.minConstructionLevel
+					+ " to take this job (you have " + workerLvl + ").");
+				return;
+			}
+		}
 		if (!ContractRegistry.accept(c, p)) {
 			p.message("@red@Contract #" + id + " can't be accepted (already taken or closed).");
 			return;
@@ -189,7 +317,13 @@ public final class ContractCommands implements CommandTrigger {
 			p.message("@gre@Accepted mentorship #" + id + ". Bond with @whi@" + c.posterName
 				+ "@gre@ within 20 tiles + perform skill " + c.mentorSkillId
 				+ " activity for " + c.mentorDurationHrs + "h to earn " + c.goldReward + "gp.");
-			p.message("(Bonded XP-bonus + auto-completion land in phase 1D-β; v1 just records the contract.)");
+		} else if (c.type == Contract.Type.CONSTRUCTION_JOB) {
+			p.message("@gre@Accepted construction job #" + id + ". Walk to plot #"
+				+ c.constructionPlotId + " tile (" + c.constructionTargetX + ","
+				+ c.constructionTargetY + ") and ::contract build to construct + claim "
+				+ c.goldReward + "gp.");
+			p.message("@yel@Note: the Construction XP credits to @whi@" + c.posterName
+				+ "@yel@ (employer), not you. You earn gold.");
 		} else {
 			p.message("@gre@Accepted contract #" + id + ". Gather " + c.itemAmount + " of item " + c.itemId);
 			p.message("then ::contract deliver at the Job Board to claim " + c.goldReward + "gp.");

@@ -1,0 +1,19 @@
+# OGRS scenery: Lodge Forge.
+#
+# Phase 1F-δ. Built on a plot by a deed holder (Construction-skill
+# gated). When clicked, opens the Smithing interface — same as
+# upstream anvils. Permission gate in OgrsPlotForge: deed holder
+# only (unless in a communal lodge).
+#
+# Reuses upstream `anvil` model.
+
+id: 1329
+name: Lodge Forge
+description: A heavy iron anvil mounted on a wooden block. Hammer metal here to shape it.
+command1: "Use"
+command2: "Examine"
+type: 1
+width: 1
+height: 1
+ground_item_var: 0
+model: anvil

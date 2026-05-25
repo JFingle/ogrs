@@ -80,6 +80,37 @@ public final class ContractRegistry {
 		return c;
 	}
 
+	/** Post a construction-job contract. Employer (plot owner) pays
+	 *  goldReward for a worker to build featureType at (targetX, targetY)
+	 *  on plotId. The XP from the build credits the EMPLOYER — the
+	 *  narrow exception to "XP isn't transferable" per the design doc. */
+	public static synchronized Contract postConstructionJob(final Player employer,
+	                                                         final int featureTypeOrdinal,
+	                                                         final int plotId, final int targetX, final int targetY,
+	                                                         final int goldReward, final int hoursDeadline) {
+		final long now = System.currentTimeMillis();
+		final long deadline = now + hoursDeadline * 3600L * 1000L;
+		final Contract c = new Contract(NEXT_ID.getAndIncrement(),
+			Contract.Type.CONSTRUCTION_JOB, employer.getUsername(),
+			-1, 0, goldReward, now, deadline);
+		c.constructionFeatureTypeOrdinal = featureTypeOrdinal;
+		c.constructionPlotId = plotId;
+		c.constructionTargetX = targetX;
+		c.constructionTargetY = targetY;
+		CONTRACTS.put(c.id, c);
+		return c;
+	}
+
+	/** Mark a construction-job complete and remove the contract. Caller
+	 *  is responsible for: paying the worker, awarding XP to the
+	 *  employer, spawning the feature scenery, recording on the plot. */
+	public static synchronized void completeConstructionJob(final Contract c) {
+		if (c.type != Contract.Type.CONSTRUCTION_JOB) return;
+		c.status = Contract.Status.COMPLETED;
+		c.completedEpochMs = System.currentTimeMillis();
+		CONTRACTS.remove(c.id);
+	}
+
 	public static synchronized List<Contract> listOpen() {
 		final List<Contract> out = new ArrayList<>();
 		final long now = System.currentTimeMillis();
@@ -196,12 +227,20 @@ public final class ContractRegistry {
 	/** Format a one-line summary of a contract for chat display. */
 	public static String summary(final Contract c) {
 		final int hoursLeft = Math.max(0, (int) ((c.deadlineEpochMs - System.currentTimeMillis()) / 3600000L));
-		if (c.type == Contract.Type.MENTORSHIP) {
-			return String.format("#%d MENTOR — skill:%d lvl%d+, %dh bonded, %dgp (%dh left, by @whi@%s@yel@)",
-				c.id, c.mentorSkillId, c.mentorMinLevel, c.mentorDurationHrs,
-				c.goldReward, hoursLeft, c.posterName);
+		switch (c.type) {
+			case MENTORSHIP:
+				return String.format("#%d MENTOR — skill:%d lvl%d+, %dh bonded, %dgp (%dh left, by @whi@%s@yel@)",
+					c.id, c.mentorSkillId, c.mentorMinLevel, c.mentorDurationHrs,
+					c.goldReward, hoursLeft, c.posterName);
+			case CONSTRUCTION_JOB:
+				return String.format("#%d BUILD — feature %d on plot #%d at (%d,%d), %dgp (%dh left, by @whi@%s@yel@)",
+					c.id, c.constructionFeatureTypeOrdinal, c.constructionPlotId,
+					c.constructionTargetX, c.constructionTargetY,
+					c.goldReward, hoursLeft, c.posterName);
+			case RESOURCE_DELIVERY:
+			default:
+				return String.format("#%d DELIV — %dx item:%d for %dgp (%dh left, by @whi@%s@yel@)",
+					c.id, c.itemAmount, c.itemId, c.goldReward, hoursLeft, c.posterName);
 		}
-		return String.format("#%d DELIV — %dx item:%d for %dgp (%dh left, by @whi@%s@yel@)",
-			c.id, c.itemAmount, c.itemId, c.goldReward, hoursLeft, c.posterName);
 	}
 }

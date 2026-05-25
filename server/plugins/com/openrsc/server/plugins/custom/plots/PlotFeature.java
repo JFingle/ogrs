@@ -15,7 +15,7 @@ public final class PlotFeature {
 
 	public enum Type {
 		BANK_CHEST(1328, 30_000, 20, "Bank Chest"),
-		// FORGE       (1329, 80_000, 40, "Forge"),
+		FORGE     (1329, 80_000, 40, "Forge"),
 		// PORTAL      (1330, 150_000, 50, "Portal Nexus"),
 		// FARM_PATCH  (1331, 60_000, 30, "Farm Patch"),
 		;

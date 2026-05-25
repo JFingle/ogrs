@@ -177,8 +177,11 @@ public final class PlotCommands implements CommandTrigger {
 			case "bankchest": case "bank":
 				featureType = com.openrsc.server.plugins.custom.plots.PlotFeature.Type.BANK_CHEST;
 				break;
+			case "forge": case "anvil":
+				featureType = com.openrsc.server.plugins.custom.plots.PlotFeature.Type.FORGE;
+				break;
 			default:
-				p.message("@red@Unknown feature type. Try: bankchest.");
+				p.message("@red@Unknown feature type. Try: bankchest, forge.");
 				return;
 		}
 
