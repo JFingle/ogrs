@@ -116,6 +116,9 @@ public final class OgrsClientScenery {
 		// id 1327 — from content/scenery/deed_pillar.yaml
 		objects.add(new GameObjectDef("Deed Pillar", "A weathered wooden post bearing the deed-shaped parchment of an estate plot.", "Inspect", "Bid", 1, 1, 1, 0, "signpost", ++i));
 
+		// id 1328 — from content/scenery/lodge_bank_chest.yaml
+		objects.add(new GameObjectDef("Lodge Bank Chest", "A heavy oak chest reinforced with iron bands. Allows you to access your bank.", "Use", "Examine", 1, 1, 1, 0, "gravestone1", ++i));
+
 		return i;
 	}
 }

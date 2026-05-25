@@ -43,6 +43,7 @@ public final class PlotCommands implements CommandTrigger {
 			case "bid":      handleBid(player, args);     break;
 			case "withdraw": handleWithdraw(player, args); break;
 			case "mine":     handleMine(player);          break;
+			case "build":    handleBuild(player, args);   break;
 			case "close":    handleAdminClose(player, args); break;
 			default:         showHelp(player);
 		}
@@ -55,6 +56,8 @@ public final class PlotCommands implements CommandTrigger {
 		p.message("  ::plot bid <id> <gold>  — place a bid (escrowed)");
 		p.message("  ::plot withdraw <id>    — refund your bid");
 		p.message("  ::plot mine             — info on your owned plot");
+		p.message("  ::plot build <type>     — build a feature on your plot");
+		p.message("                            (types: bankchest — more coming)");
 		p.message("  ::plot close <id>       — ADMIN: close auction now");
 	}
 
@@ -162,6 +165,66 @@ public final class PlotCommands implements CommandTrigger {
 		final Plot pl = PlotRegistry.byHolder(p.getUsername());
 		if (pl == null) { p.message("@yel@You don't own a plot. Bid on one — ::plot list to see what's open."); return; }
 		showInfo(p, pl);
+	}
+
+	private static void handleBuild(final Player p, final String[] args) {
+		if (args.length < 2) {
+			p.message("Usage: ::plot build <type>   (type: bankchest)");
+			return;
+		}
+		final com.openrsc.server.plugins.custom.plots.PlotFeature.Type featureType;
+		switch (args[1].toLowerCase()) {
+			case "bankchest": case "bank":
+				featureType = com.openrsc.server.plugins.custom.plots.PlotFeature.Type.BANK_CHEST;
+				break;
+			default:
+				p.message("@red@Unknown feature type. Try: bankchest.");
+				return;
+		}
+
+		final Plot pl = PlotRegistry.byHolder(p.getUsername());
+		if (pl == null) { p.message("@red@You don't own a plot. Win an auction first."); return; }
+		if (!pl.contains(p.getX(), p.getY())) {
+			p.message("@red@You must be standing inside your plot (" + pl.boxMinX + "," + pl.boxMinY
+				+ ")..(" + pl.boxMaxX + "," + pl.boxMaxY + ") to build.");
+			return;
+		}
+		if (pl.features.size() >= pl.tier.featureSlots()) {
+			p.message("@red@Plot is at its " + pl.tier.featureSlots() + " feature slot limit.");
+			return;
+		}
+		if (pl.featureAt(p.getX(), p.getY()) != null) {
+			p.message("@red@There's already a feature on this tile.");
+			return;
+		}
+		final int constructionLvl = p.getSkills().getLevel(
+			com.openrsc.server.constants.Skill.CONSTRUCTION.id());
+		if (constructionLvl < featureType.minConstructionLevel) {
+			p.message("@red@Need Construction level " + featureType.minConstructionLevel
+				+ " to build " + featureType.displayName + " (you have " + constructionLvl + ").");
+			return;
+		}
+		final int coinsId = ItemId.COINS.id();
+		if (p.getCarriedItems().getInventory().countId(coinsId) < featureType.goldCost) {
+			p.message("@red@Need " + featureType.goldCost + "gp in materials to build " + featureType.displayName + ".");
+			return;
+		}
+		p.getCarriedItems().getInventory().remove(new Item(coinsId, featureType.goldCost), true);
+
+		// Spawn the scenery + record the feature.
+		final com.openrsc.server.model.Point loc = com.openrsc.server.model.Point.location(p.getX(), p.getY());
+		final com.openrsc.server.model.entity.GameObject obj =
+			new com.openrsc.server.model.entity.GameObject(p.getWorld(), loc, featureType.sceneryId, 0, 0);
+		p.getWorld().registerGameObject(obj);
+		final com.openrsc.server.plugins.custom.plots.PlotFeature pf =
+			new com.openrsc.server.plugins.custom.plots.PlotFeature(pl.id, featureType, p.getX(), p.getY(), p.getUsername());
+		pl.features.put(Plot.featureKey(p.getX(), p.getY()), pf);
+
+		// Construction XP — 250 per level required, scales with feature tier.
+		final int xp = featureType.minConstructionLevel * 250 * 4; // *4 = engine storage units
+		p.getSkills().addExperience(com.openrsc.server.constants.Skill.CONSTRUCTION.id(), xp);
+		p.message("@gre@Built " + featureType.displayName + " on your plot. Cost " + featureType.goldCost
+			+ "gp. Right-click Use to access (deed-holder only).");
 	}
 
 	private static void handleAdminClose(final Player p, final String[] args) {

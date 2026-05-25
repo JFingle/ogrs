@@ -1,0 +1,21 @@
+# OGRS scenery: Lodge Bank Chest.
+#
+# Built by deed holders inside their plot (Construction-skill gated)
+# or placed in communal lodges at town centers. Right-click "Use" to
+# access bank. Permission check in OgrsPlotBank plugin — only the
+# deed holder can use it when placed on a plot; communal lodge ones
+# (placed at fixed coords by SceneryLocsCustom) are usable by anyone.
+#
+# Reuses upstream `gravestone1` model — same model the authentic
+# "Bank Chest" def uses, so the visual reads as a bank chest.
+
+id: 1328
+name: Lodge Bank Chest
+description: A heavy oak chest reinforced with iron bands. Allows you to access your bank.
+command1: "Use"
+command2: "Examine"
+type: 1
+width: 1
+height: 1
+ground_item_var: 0
+model: gravestone1

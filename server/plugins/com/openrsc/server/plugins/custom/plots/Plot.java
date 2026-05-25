@@ -70,6 +70,19 @@ public final class Plot {
 	 *  close (highest bidder wins, others refunded). */
 	public final java.util.Map<String, Integer> openBids = new java.util.HashMap<>();
 
+	/** Features built on this plot — Phase 1F-γ. Keyed by tile-packed
+	 *  (x,y) so the OgrsPlotBank plugin can answer "what feature is at
+	 *  this scenery, and is the user the deed holder?". */
+	public final java.util.Map<Long, PlotFeature> features = new java.util.HashMap<>();
+
+	public static long featureKey(final int x, final int y) {
+		return (((long) x) << 32) | (y & 0xffffffffL);
+	}
+
+	public PlotFeature featureAt(final int x, final int y) {
+		return features.get(featureKey(x, y));
+	}
+
 	public Plot(final int id, final String name, final Tier tier,
 	            final int deedPillarX, final int deedPillarY,
 	            final int boxMinX, final int boxMinY, final int boxMaxX, final int boxMaxY,
