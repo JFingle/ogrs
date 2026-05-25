@@ -57,6 +57,7 @@ public final class ContractCommands implements CommandTrigger {
 			case "mentor":   handleMentorPost(player, args); break;
 			case "buildjob": handleBuildJobPost(player, args); break;
 			case "build":    handleBuildExec(player);     break;
+			case "bounty":   handleBountyPost(player, args); break;
 			case "list":     handleList(player);          break;
 			case "accept":   handleAccept(player, args);  break;
 			case "deliver":  handleDeliver(player);       break;
@@ -73,6 +74,8 @@ public final class ContractCommands implements CommandTrigger {
 		p.message("    — mentorship: bonded play with apprentice");
 		p.message("  ::contract buildjob <feature> <plotId> <targetX> <targetY> <gold> <hours>");
 		p.message("    — pay a worker to build a feature on your plot (XP credits YOU)");
+		p.message("  ::contract bounty <player> <gold> <hours>");
+		p.message("    — bounty: anyone who kills <player> in the Wilderness collects the gold");
 		p.message("  ::contract list   — show open contracts");
 		p.message("  ::contract accept <id> — claim one (1 active per worker)");
 		p.message("  ::contract deliver — turn in items (at Job Board)");
@@ -369,5 +372,35 @@ public final class ContractCommands implements CommandTrigger {
 		}
 		p.getCarriedItems().getInventory().add(new Item(ItemId.COINS.id(), c.goldReward));
 		p.message("@gre@Cancelled #" + id + ". " + c.goldReward + "gp refunded.");
+	}
+
+	private static void handleBountyPost(final Player p, final String[] args) {
+		if (args.length < 4) {
+			p.message("Usage: ::contract bounty <player> <gold> <hours>");
+			return;
+		}
+		final String target = args[1];
+		if (target.equalsIgnoreCase(p.getUsername())) {
+			p.message("@red@You can't put a bounty on yourself.");
+			return;
+		}
+		final int gold, hours;
+		try {
+			gold = Integer.parseInt(args[2]);
+			hours = Integer.parseInt(args[3]);
+		} catch (NumberFormatException e) {
+			p.message("Bad args."); return;
+		}
+		if (gold < 1000) { p.message("@red@Bounty minimum is 1000gp."); return; }
+		if (hours < 1 || hours > 168) { p.message("@red@Hours must be 1-168 (week max)."); return; }
+		final int coinsId = ItemId.COINS.id();
+		if (p.getCarriedItems().getInventory().countId(coinsId) < gold) {
+			p.message("@red@You don't have " + gold + "gp.");
+			return;
+		}
+		p.getCarriedItems().getInventory().remove(new Item(coinsId, gold), true);
+		final Contract c = ContractRegistry.postBounty(p, target, gold, hours);
+		p.message("@gre@Bounty posted: " + gold + "gp on @whi@" + target + "@gre@ for " + hours + "h. Contract #" + c.id + ".");
+		p.message("Anyone who kills " + target + " in the Wilderness collects the reward at the Job Board.");
 	}
 }

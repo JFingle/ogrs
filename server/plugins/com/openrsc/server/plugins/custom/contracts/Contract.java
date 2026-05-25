@@ -22,6 +22,7 @@ public final class Contract {
 		RESOURCE_DELIVERY,   // worker gathers and delivers itemId × amount
 		MENTORSHIP,          // mentor bonds with apprentice for skillId for N hours
 		CONSTRUCTION_JOB,    // worker builds a feature on employer's plot; employer gets XP
+		BOUNTY,              // killer in Wilderness collects gold for slaying targetName
 	}
 
 	public enum Status {
@@ -55,6 +56,10 @@ public final class Contract {
 	public int     constructionPlotId  = -1;
 	public int     constructionTargetX = -1;
 	public int     constructionTargetY = -1;
+
+	// Bounty-only field. Username of the kill target. Empty for other
+	// types.
+	public String  bountyTargetName = "";
 
 	public Contract(final int id, final Type type, final String posterName,
 	                final int itemId, final int itemAmount, final int goldReward,

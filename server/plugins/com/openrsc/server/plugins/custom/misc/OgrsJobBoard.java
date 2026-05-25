@@ -53,6 +53,13 @@ public final class OgrsJobBoard implements OpLocTrigger {
 			player.message("@gre@Collected " + mentorGold + "gp in mentorship payouts.");
 			return;
 		}
+		// Priority 1a-bis: bounty payouts from PvP kills.
+		final int bountyGold = ContractRegistry.collectBountyPayout(player.getUsername());
+		if (bountyGold > 0) {
+			player.getCarriedItems().getInventory().add(new Item(ItemId.COINS.id(), bountyGold));
+			player.message("@gre@Collected " + bountyGold + "gp in bounty payouts.");
+			return;
+		}
 		// Priority 1b: collect pending deliveries (employer's reward from resource contracts).
 		final List<Contract> ready = ContractRegistry.readyForCollection(player.getUsername());
 		if (!ready.isEmpty()) {

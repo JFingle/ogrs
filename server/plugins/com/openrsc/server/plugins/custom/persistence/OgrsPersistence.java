@@ -100,6 +100,7 @@ public final class OgrsPersistence {
 		final List<Contract> contracts = new ArrayList<>();
 		final Map<Integer, List<Item>> deliveryByContract = new HashMap<>();
 		final Map<String, Integer> mentorPayouts = new HashMap<>();
+		final Map<String, Integer> bountyPayouts = new HashMap<>();
 
 		try (PreparedStatement ps = db.preparedStatement("SELECT * FROM ogrs_contracts");
 		     ResultSet rs = ps.executeQuery()) {
@@ -125,6 +126,7 @@ public final class OgrsPersistence {
 				c.constructionPlotId = rs.getInt("construction_plot_id");
 				c.constructionTargetX = rs.getInt("construction_target_x");
 				c.constructionTargetY = rs.getInt("construction_target_y");
+				c.bountyTargetName = nonNull(rs.getString("bounty_target_name"));
 				contracts.add(c);
 			}
 		}
@@ -146,11 +148,18 @@ public final class OgrsPersistence {
 			}
 		}
 
+		try (PreparedStatement ps = db.preparedStatement("SELECT killer_name, gold_pending FROM ogrs_contract_bounty_payouts");
+		     ResultSet rs = ps.executeQuery()) {
+			while (rs.next()) {
+				bountyPayouts.put(rs.getString("killer_name"), rs.getInt("gold_pending"));
+			}
+		}
+
 		final Map<Integer, Item[]> deliveryArrays = new HashMap<>();
 		for (Map.Entry<Integer, List<Item>> e : deliveryByContract.entrySet()) {
 			deliveryArrays.put(e.getKey(), e.getValue().toArray(new Item[0]));
 		}
-		ContractRegistry.loadFromPersistence(contracts, deliveryArrays, mentorPayouts);
+		ContractRegistry.loadFromPersistence(contracts, deliveryArrays, mentorPayouts, bountyPayouts);
 	}
 
 	// ─── Load: guilds ────────────────────────────────────────────────
@@ -188,6 +197,15 @@ public final class OgrsPersistence {
 				final Guild g = byId.get(rs.getInt("guild_id"));
 				if (g == null) continue;
 				g.pendingInvites.put(rs.getString("invitee").toLowerCase(), rs.getString("inviter"));
+			}
+		}
+
+		try (PreparedStatement ps = db.preparedStatement("SELECT guild_id, gold_balance FROM ogrs_guild_bank");
+		     ResultSet rs = ps.executeQuery()) {
+			while (rs.next()) {
+				final Guild g = byId.get(rs.getInt("guild_id"));
+				if (g == null) continue;
+				g.bankGold = rs.getLong("gold_balance");
 			}
 		}
 
@@ -246,14 +264,15 @@ public final class OgrsPersistence {
 		exec(conn, "DELETE FROM ogrs_contracts");
 		exec(conn, "DELETE FROM ogrs_contract_delivery");
 		exec(conn, "DELETE FROM ogrs_contract_mentor_payouts");
+		exec(conn, "DELETE FROM ogrs_contract_bounty_payouts");
 
 		final List<Contract> contracts = ContractRegistry.snapshotAll();
 		if (!contracts.isEmpty()) {
 			try (PreparedStatement ps = conn.prepareStatement(
 					"INSERT INTO ogrs_contracts(id, type, poster_name, worker_name, item_id, item_amount, gold_reward, status, " +
 					"created_ms, deadline_ms, accepted_ms, completed_ms, mentor_skill_id, mentor_min_level, mentor_duration_hrs, " +
-					"bonded_ticks_accrued, construction_feature_type_ordinal, construction_plot_id, construction_target_x, construction_target_y) " +
-					"VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)")) {
+					"bonded_ticks_accrued, construction_feature_type_ordinal, construction_plot_id, construction_target_x, construction_target_y, bounty_target_name) " +
+					"VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)")) {
 				for (Contract c : contracts) {
 					ps.setInt   (1,  c.id);
 					ps.setInt   (2,  c.type.ordinal());
@@ -275,6 +294,7 @@ public final class OgrsPersistence {
 					ps.setInt   (18, c.constructionPlotId);
 					ps.setInt   (19, c.constructionTargetX);
 					ps.setInt   (20, c.constructionTargetY);
+					ps.setString(21, c.bountyTargetName == null ? "" : c.bountyTargetName);
 					ps.addBatch();
 				}
 				ps.executeBatch();
@@ -316,11 +336,25 @@ public final class OgrsPersistence {
 				ps.executeBatch();
 			}
 		}
+
+		final Map<String, Integer> bountyPayouts = ContractRegistry.snapshotBountyPayouts();
+		if (!bountyPayouts.isEmpty()) {
+			try (PreparedStatement ps = conn.prepareStatement(
+					"INSERT INTO ogrs_contract_bounty_payouts(killer_name, gold_pending) VALUES (?,?)")) {
+				for (Map.Entry<String, Integer> e : bountyPayouts.entrySet()) {
+					ps.setString(1, e.getKey());
+					ps.setInt(2, e.getValue());
+					ps.addBatch();
+				}
+				ps.executeBatch();
+			}
+		}
 	}
 
 	// ─── Flush: guilds ───────────────────────────────────────────────
 
 	private static void flushGuilds(final Connection conn) throws SQLException {
+		exec(conn, "DELETE FROM ogrs_guild_bank");
 		exec(conn, "DELETE FROM ogrs_guild_invites");
 		exec(conn, "DELETE FROM ogrs_guild_members");
 		exec(conn, "DELETE FROM ogrs_guilds");
@@ -362,6 +396,20 @@ public final class OgrsPersistence {
 					ps.setInt   (1, g.id);
 					ps.setString(2, e.getKey());
 					ps.setString(3, e.getValue());
+					ps.addBatch();
+					any = true;
+				}
+			}
+			if (any) ps.executeBatch();
+		}
+
+		try (PreparedStatement ps = conn.prepareStatement(
+				"INSERT INTO ogrs_guild_bank(guild_id, gold_balance) VALUES (?,?)")) {
+			boolean any = false;
+			for (Guild g : guilds) {
+				if (g.bankGold > 0) {
+					ps.setInt (1, g.id);
+					ps.setLong(2, g.bankGold);
 					ps.addBatch();
 					any = true;
 				}

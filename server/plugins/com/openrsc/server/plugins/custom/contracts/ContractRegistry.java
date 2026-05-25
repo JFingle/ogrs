@@ -169,6 +169,69 @@ public final class ContractRegistry {
 		return gold == null ? 0 : gold;
 	}
 
+	// ─── Bounty payouts (mirrors mentor payout queue) ────────────────
+
+	private static final Map<String, Integer> BOUNTY_PENDING_GOLD = new HashMap<>();
+
+	/** Post a bounty on targetName. Caller (ContractCommands) must have
+	 *  already escrowed the poster's gold from inventory. */
+	public static synchronized Contract postBounty(final Player poster,
+	                                                final String targetName,
+	                                                final int goldReward,
+	                                                final int hoursDeadline) {
+		final long now = System.currentTimeMillis();
+		final long deadline = now + hoursDeadline * 3600L * 1000L;
+		final Contract c = new Contract(NEXT_ID.getAndIncrement(),
+			Contract.Type.BOUNTY, poster.getUsername(),
+			-1, 0, goldReward, now, deadline);
+		c.bountyTargetName = targetName;
+		CONTRACTS.put(c.id, c);
+		return c;
+	}
+
+	/** Snapshot of OPEN bounties currently targeting username. Used by
+	 *  the PvP-kill trigger when checking whether to award. */
+	public static synchronized List<Contract> openBountiesOn(final String targetName) {
+		final List<Contract> out = new ArrayList<>();
+		final long now = System.currentTimeMillis();
+		for (Contract c : CONTRACTS.values()) {
+			if (c.type != Contract.Type.BOUNTY) continue;
+			if (c.status != Contract.Status.OPEN) continue;
+			if (c.isExpired(now)) continue;
+			if (c.bountyTargetName.equalsIgnoreCase(targetName)) out.add(c);
+		}
+		return out;
+	}
+
+	/** Settle bounties on targetName: mark them COMPLETED, queue
+	 *  payouts for killerName. Bounties posted BY the killer themselves
+	 *  are skipped (no self-snipe). Returns total gold queued for
+	 *  killer. */
+	public static synchronized int claimBounties(final String killerName, final String targetName) {
+		int queued = 0;
+		for (Contract c : openBountiesOn(targetName)) {
+			if (c.posterName.equalsIgnoreCase(killerName)) continue;
+			c.status = Contract.Status.COMPLETED;
+			c.completedEpochMs = System.currentTimeMillis();
+			c.workerName = killerName;
+			BOUNTY_PENDING_GOLD.merge(killerName.toLowerCase(), c.goldReward, Integer::sum);
+			queued += c.goldReward;
+			CONTRACTS.remove(c.id);
+		}
+		return queued;
+	}
+
+	/** Snapshot of pending bounty payouts. Used by persistence. */
+	public static synchronized Map<String, Integer> snapshotBountyPayouts() {
+		return new HashMap<>(BOUNTY_PENDING_GOLD);
+	}
+
+	/** Collect (and clear) queued bounty payouts for the named killer. */
+	public static synchronized int collectBountyPayout(final String username) {
+		final Integer gold = BOUNTY_PENDING_GOLD.remove(username.toLowerCase());
+		return gold == null ? 0 : gold;
+	}
+
 	/** Returns all completed contracts waiting for this employer to collect. */
 	public static synchronized List<Contract> readyForCollection(final String username) {
 		final List<Contract> out = new ArrayList<>();
@@ -246,10 +309,12 @@ public final class ContractRegistry {
 	 *  so newly-posted contracts don't collide with loaded ones. */
 	public static synchronized void loadFromPersistence(final List<Contract> contracts,
 	                                                     final Map<Integer, Item[]> deliveries,
-	                                                     final Map<String, Integer> mentorPayouts) {
+	                                                     final Map<String, Integer> mentorPayouts,
+	                                                     final Map<String, Integer> bountyPayouts) {
 		CONTRACTS.clear();
 		PENDING_DELIVERY.clear();
 		MENTOR_PENDING_GOLD.clear();
+		BOUNTY_PENDING_GOLD.clear();
 		int maxId = 0;
 		for (Contract c : contracts) {
 			CONTRACTS.put(c.id, c);
@@ -258,6 +323,9 @@ public final class ContractRegistry {
 		PENDING_DELIVERY.putAll(deliveries);
 		for (Map.Entry<String, Integer> e : mentorPayouts.entrySet()) {
 			MENTOR_PENDING_GOLD.put(e.getKey().toLowerCase(), e.getValue());
+		}
+		for (Map.Entry<String, Integer> e : bountyPayouts.entrySet()) {
+			BOUNTY_PENDING_GOLD.put(e.getKey().toLowerCase(), e.getValue());
 		}
 		NEXT_ID.set(maxId + 1);
 	}
@@ -277,6 +345,9 @@ public final class ContractRegistry {
 					c.id, c.constructionFeatureTypeOrdinal, c.constructionPlotId,
 					c.constructionTargetX, c.constructionTargetY,
 					c.goldReward, hoursLeft, c.posterName);
+			case BOUNTY:
+				return String.format("#%d BOUNTY — slay @whi@%s@yel@ in the Wilderness for %dgp (%dh left, by @whi@%s@yel@)",
+					c.id, c.bountyTargetName, c.goldReward, hoursLeft, c.posterName);
 			case RESOURCE_DELIVERY:
 			default:
 				return String.format("#%d DELIV — %dx item:%d for %dgp (%dh left, by @whi@%s@yel@)",
