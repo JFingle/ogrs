@@ -32,25 +32,30 @@ if [ ! -f "$ANDROID_TREE/local.properties" ]; then
     echo "sdk.dir=/home/sparky/android-sdk" > "$ANDROID_TREE/local.properties"
 fi
 
-# OGRS — targeted landscape overlay: bundle JUST Authentic_Landscape.orsc
-# (sparky 2026-05-21). The full-cache bundle attempt earlier hung the
-# phone on "Unpacking Library", so we ship only this one file as an
-# overlay. CacheUpdater downloads everything from rsc.vet normally, then
-# overwrites Authentic_Landscape.orsc with the bundled OGRS version so
-# our crypt sector patch reaches the phone client.
+# OGRS — targeted overlays. Bundle ONLY the cache files we've patched
+# (sparky 2026-05-21 / extended 2026-05-25). Full-cache bundle previously
+# hung the phone on "Unpacking Library", so we ship just these as overlay
+# files. CacheUpdater downloads everything from rsc.vet normally, then
+# overwrites these with the bundled OGRS versions:
+#   Authentic_Landscape.orsc — crypt sector patch + walkable tiles
+#   Authentic_Sprites.orsc   — UI icons (slots 3837-3890) + new item sprites
 ASSETS_DEST="$ANDROID_TREE/Open RSC Android Client/src/main/assets"
 # Clean any prior big bundle.
 if [ -d "$ASSETS_DEST/video" ] || [ -d "$ASSETS_DEST/audio" ]; then
     echo "Removing stale bundled cache from Android assets..."
     rm -rf "$ASSETS_DEST/video" "$ASSETS_DEST/audio"
 fi
-# Bundle just the landscape archive.
-LANDSCAPE_SRC="$REPO_ROOT/client/Cache/video/Authentic_Landscape.orsc"
-if [ -f "$LANDSCAPE_SRC" ]; then
-    mkdir -p "$ASSETS_DEST/ogrs-overlay"
-    cp "$LANDSCAPE_SRC" "$ASSETS_DEST/ogrs-overlay/Authentic_Landscape.orsc"
-    echo "  Bundled landscape overlay: $(du -sh "$LANDSCAPE_SRC" | cut -f1)"
-fi
+# Bundle landscape + sprites overlay archives.
+mkdir -p "$ASSETS_DEST/ogrs-overlay"
+for OVERLAY_FILE in Authentic_Landscape.orsc Authentic_Sprites.orsc; do
+    SRC="$REPO_ROOT/client/Cache/video/$OVERLAY_FILE"
+    if [ -f "$SRC" ]; then
+        cp "$SRC" "$ASSETS_DEST/ogrs-overlay/$OVERLAY_FILE"
+        echo "  Bundled $OVERLAY_FILE overlay: $(du -sh "$SRC" | cut -f1)"
+    else
+        echo "  WARN: $SRC not found — overlay skipped"
+    fi
+done
 
 echo "Building APK (Java 17 + Android SDK 34)..."
 cd "$ANDROID_TREE"
