@@ -141,6 +141,82 @@ public final class GuildRegistry {
 		return actual;
 	}
 
+	// ─── Role management (promote / demote / transfer) ───────────────
+
+	public enum PromoteResult {
+		OK, NOT_AUTHORIZED, TARGET_NOT_MEMBER, ALREADY_TOP, CANNOT_PROMOTE_TO_FOUNDER
+	}
+
+	public enum DemoteResult {
+		OK, NOT_AUTHORIZED, TARGET_NOT_MEMBER, ALREADY_BOTTOM, CANNOT_DEMOTE_FOUNDER, OFFICER_CANT_DEMOTE_OFFICER
+	}
+
+	public enum TransferResult {
+		OK, NOT_FOUNDER, TARGET_NOT_MEMBER, TARGET_IS_SELF
+	}
+
+	/** Promote target one tier (RECRUIT → MEMBER → OFFICER).
+	 *  - FOUNDER can promote any non-founder up to OFFICER.
+	 *  - OFFICER can only promote RECRUIT → MEMBER (not MEMBER → OFFICER).
+	 *  - No promotion path to FOUNDER (use transfer instead). */
+	public static synchronized PromoteResult promote(final Guild g, final String byUsername, final String targetUsername) {
+		final Guild.Role by = g.roleOf(byUsername);
+		if (by == null) return PromoteResult.NOT_AUTHORIZED;
+		final Guild.Role tgt = g.roleOf(targetUsername);
+		if (tgt == null) return PromoteResult.TARGET_NOT_MEMBER;
+		final Guild.Role nextTier;
+		switch (tgt) {
+			case RECRUIT: nextTier = Guild.Role.MEMBER;  break;
+			case MEMBER:  nextTier = Guild.Role.OFFICER; break;
+			case OFFICER: return PromoteResult.CANNOT_PROMOTE_TO_FOUNDER;
+			case FOUNDER:
+			default:      return PromoteResult.ALREADY_TOP;
+		}
+		// Authorisation: OFFICER can only do RECRUIT→MEMBER.
+		if (by == Guild.Role.OFFICER && nextTier == Guild.Role.OFFICER) return PromoteResult.NOT_AUTHORIZED;
+		if (by != Guild.Role.FOUNDER && by != Guild.Role.OFFICER)        return PromoteResult.NOT_AUTHORIZED;
+		g.members.put(targetUsername.toLowerCase(), nextTier);
+		return PromoteResult.OK;
+	}
+
+	/** Demote target one tier (OFFICER → MEMBER → RECRUIT).
+	 *  - FOUNDER can demote anyone (not themselves).
+	 *  - OFFICER can only demote MEMBER → RECRUIT (not other officers). */
+	public static synchronized DemoteResult demote(final Guild g, final String byUsername, final String targetUsername) {
+		final Guild.Role by = g.roleOf(byUsername);
+		if (by == null) return DemoteResult.NOT_AUTHORIZED;
+		final Guild.Role tgt = g.roleOf(targetUsername);
+		if (tgt == null) return DemoteResult.TARGET_NOT_MEMBER;
+		if (tgt == Guild.Role.FOUNDER)  return DemoteResult.CANNOT_DEMOTE_FOUNDER;
+		if (tgt == Guild.Role.RECRUIT)  return DemoteResult.ALREADY_BOTTOM;
+		// Officer can't demote a fellow officer.
+		if (by == Guild.Role.OFFICER && tgt == Guild.Role.OFFICER) return DemoteResult.OFFICER_CANT_DEMOTE_OFFICER;
+		if (by != Guild.Role.FOUNDER && by != Guild.Role.OFFICER)  return DemoteResult.NOT_AUTHORIZED;
+		final Guild.Role nextTier = (tgt == Guild.Role.OFFICER) ? Guild.Role.MEMBER : Guild.Role.RECRUIT;
+		g.members.put(targetUsername.toLowerCase(), nextTier);
+		return DemoteResult.OK;
+	}
+
+	/** Hand off the founder role. Caller becomes OFFICER, target becomes
+	 *  FOUNDER. Only the current founder can call this. */
+	public static synchronized TransferResult transferFounder(final Guild g, final String byUsername, final String targetUsername) {
+		if (g.roleOf(byUsername) != Guild.Role.FOUNDER) return TransferResult.NOT_FOUNDER;
+		if (byUsername.equalsIgnoreCase(targetUsername)) return TransferResult.TARGET_IS_SELF;
+		if (g.roleOf(targetUsername) == null)            return TransferResult.TARGET_NOT_MEMBER;
+		g.members.put(targetUsername.toLowerCase(), Guild.Role.FOUNDER);
+		g.members.put(byUsername.toLowerCase(),     Guild.Role.OFFICER);
+		return TransferResult.OK;
+	}
+
+	/** Set the guild motto. Founder/officer only. Caller is responsible
+	 *  for length / sanitisation. */
+	public static synchronized boolean setMotto(final Guild g, final String byUsername, final String motto) {
+		final Guild.Role r = g.roleOf(byUsername);
+		if (r == null || !r.canManageEstate()) return false;
+		g.motto = motto;
+		return true;
+	}
+
 	/** Bulk-load registry state from persistence on server startup.
 	 *  Wipes the in-memory state first and resets NEXT_ID past any
 	 *  loaded guild id. The supplied guilds must arrive with their

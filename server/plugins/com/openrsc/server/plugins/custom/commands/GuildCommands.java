@@ -59,6 +59,10 @@ public final class GuildCommands implements CommandTrigger {
 			case "bank":     handleBankShow(player);       break;
 			case "deposit":  handleDeposit(player, args);  break;
 			case "withdraw": handleWithdraw(player, args); break;
+			case "promote":  handlePromote(player, args);  break;
+			case "demote":   handleDemote(player, args);   break;
+			case "transfer": handleTransfer(player, args); break;
+			case "motto":    handleSetMotto(player, args); break;
 			default:         showHelp(player);
 		}
 	}
@@ -76,6 +80,10 @@ public final class GuildCommands implements CommandTrigger {
 		p.message("  ::guild bank               — show treasury balance");
 		p.message("  ::guild deposit <gold>     — add to treasury");
 		p.message("  ::guild withdraw <gold>    — pull from treasury (member+)");
+		p.message("  ::guild promote <player>   — bump up one tier (officer+)");
+		p.message("  ::guild demote <player>    — bump down one tier (officer+)");
+		p.message("  ::guild transfer <player>  — pass founder role (founder)");
+		p.message("  ::guild motto <text>       — set guild motto (officer+)");
 		p.message("  ::gc <message>             — speak to your guild channel");
 	}
 
@@ -147,6 +155,7 @@ public final class GuildCommands implements CommandTrigger {
 		p.message("@gre@Guild: " + g.name);
 		p.message("  Founder: @whi@" + g.founderUsername);
 		p.message("  Members: @whi@" + g.memberCount());
+		p.message("  Treasury: @whi@" + g.bankGold + "gp");
 		if (g.motto != null && !g.motto.isEmpty()) {
 			p.message("  Motto: @whi@" + g.motto);
 		}
@@ -282,5 +291,84 @@ public final class GuildCommands implements CommandTrigger {
 		}
 		p.getCarriedItems().getInventory().add(new Item(ItemId.COINS.id(), (int) actual));
 		p.message("@gre@Withdrew " + actual + "gp. Treasury: @whi@" + g.bankGold + "gp");
+	}
+
+	private static void handlePromote(final Player p, final String[] args) {
+		if (args.length < 2) { p.message("Usage: ::guild promote <player>"); return; }
+		final Guild g = GuildRegistry.byMember(p.getUsername());
+		if (g == null) { p.message("@red@You're not in a guild."); return; }
+		final String target = args[1];
+		final GuildRegistry.PromoteResult r = GuildRegistry.promote(g, p.getUsername(), target);
+		switch (r) {
+			case OK:
+				p.message("@gre@Promoted @whi@" + target + "@gre@. New role: " + g.roleOf(target));
+				notify(p, target, "@gre@You've been promoted in '" + g.name + "' — new role: " + g.roleOf(target));
+				break;
+			case NOT_AUTHORIZED:           p.message("@red@Your role can't promote to that tier."); break;
+			case TARGET_NOT_MEMBER:        p.message("@red@" + target + " isn't in your guild."); break;
+			case ALREADY_TOP:              p.message("@red@" + target + " is already the founder."); break;
+			case CANNOT_PROMOTE_TO_FOUNDER: p.message("@red@Use ::guild transfer to hand off founder."); break;
+		}
+	}
+
+	private static void handleDemote(final Player p, final String[] args) {
+		if (args.length < 2) { p.message("Usage: ::guild demote <player>"); return; }
+		final Guild g = GuildRegistry.byMember(p.getUsername());
+		if (g == null) { p.message("@red@You're not in a guild."); return; }
+		final String target = args[1];
+		final GuildRegistry.DemoteResult r = GuildRegistry.demote(g, p.getUsername(), target);
+		switch (r) {
+			case OK:
+				p.message("@yel@Demoted @whi@" + target + "@yel@. New role: " + g.roleOf(target));
+				notify(p, target, "@yel@You've been demoted in '" + g.name + "' — new role: " + g.roleOf(target));
+				break;
+			case NOT_AUTHORIZED:              p.message("@red@Your role can't demote.");                break;
+			case TARGET_NOT_MEMBER:           p.message("@red@" + target + " isn't in your guild.");    break;
+			case ALREADY_BOTTOM:              p.message("@red@" + target + " is already a recruit.");   break;
+			case CANNOT_DEMOTE_FOUNDER:       p.message("@red@Can't demote the founder.");              break;
+			case OFFICER_CANT_DEMOTE_OFFICER: p.message("@red@Officers can't demote other officers.");  break;
+		}
+	}
+
+	private static void handleTransfer(final Player p, final String[] args) {
+		if (args.length < 2) { p.message("Usage: ::guild transfer <player>"); return; }
+		final Guild g = GuildRegistry.byMember(p.getUsername());
+		if (g == null) { p.message("@red@You're not in a guild."); return; }
+		final String target = args[1];
+		final GuildRegistry.TransferResult r = GuildRegistry.transferFounder(g, p.getUsername(), target);
+		switch (r) {
+			case OK:
+				p.message("@gre@Handed off founder role to @whi@" + target + "@gre@. You're now an officer.");
+				notify(p, target, "@gre@You are now the FOUNDER of '" + g.name + "' (handed off by " + p.getUsername() + ").");
+				break;
+			case NOT_FOUNDER:       p.message("@red@Only the current founder can transfer."); break;
+			case TARGET_NOT_MEMBER: p.message("@red@" + target + " isn't in your guild.");    break;
+			case TARGET_IS_SELF:    p.message("@red@Can't transfer to yourself.");            break;
+		}
+	}
+
+	private static void handleSetMotto(final Player p, final String[] args) {
+		if (args.length < 2) { p.message("Usage: ::guild motto <text>"); return; }
+		final Guild g = GuildRegistry.byMember(p.getUsername());
+		if (g == null) { p.message("@red@You're not in a guild."); return; }
+		final StringBuilder mb = new StringBuilder();
+		for (int i = 1; i < args.length; i++) {
+			if (i > 1) mb.append(' ');
+			mb.append(args[i]);
+		}
+		String motto = mb.toString().replace('\r', ' ').replace('\n', ' ').trim();
+		if (motto.length() > 120) motto = motto.substring(0, 120);
+		if (!GuildRegistry.setMotto(g, p.getUsername(), motto)) {
+			p.message("@red@Only founder/officers can set the motto.");
+			return;
+		}
+		p.message("@gre@Motto updated: @whi@" + motto);
+	}
+
+	/** Helper — message the named player if they're online. */
+	private static void notify(final Player from, final String username, final String msg) {
+		final long hash = com.openrsc.server.util.rsc.DataConversions.usernameToHash(username);
+		final Player tgt = from.getWorld().getPlayer(hash);
+		if (tgt != null) tgt.message(msg);
 	}
 }
