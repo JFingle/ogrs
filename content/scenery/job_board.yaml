@@ -1,0 +1,23 @@
+# OGRS scenery: Job Board.
+#
+# Physical bulletin board where players post + accept contracts. Phase
+# 1B of the housing/contract arc (sparky 2026-05-24). One placed in each
+# major town; v1 ships Lumbridge first.
+#
+# Reuses upstream `signpost` model — a wooden post that reads as
+# "noticeboard" without needing a new 3D model. Future polish: author
+# a dedicated bulletin board with parchment scraps pinned to it.
+#
+# Plugin: OgrsJobBoard handles the View/Post commands. Contract storage,
+# UI panel, and per-type mechanics ship in subsequent phases (1C-1E).
+
+id: 1326
+name: Job Board
+description: A weathered wooden board pinned with parchment job postings.
+command1: "View"
+command2: "Post"
+type: 1
+width: 1
+height: 1
+ground_item_var: 0
+model: signpost

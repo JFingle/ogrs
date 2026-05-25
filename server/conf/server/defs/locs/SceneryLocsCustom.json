@@ -870,6 +870,15 @@
         "Y": 3743
       },
       "direction": 0
+    },
+    {
+      "_n": "OGRS Job Board \u2014 Lumbridge castle courtyard",
+      "id": 1326,
+      "pos": {
+        "X": 124,
+        "Y": 648
+      },
+      "direction": 0
     }
   ]
 }
