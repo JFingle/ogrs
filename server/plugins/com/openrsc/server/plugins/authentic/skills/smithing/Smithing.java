@@ -26,12 +26,17 @@ public class Smithing implements UseLocTrigger {
 	private final int DORICS_ANVIL = 177;
 	private final int ANVIL = 50;
 	private final int LAVA_ANVIL = 1285;
+	// OGRS — plot/lodge forge. Counts as a regular anvil for smithing
+	// purposes; permission to use it is gated by PlotPermissions so
+	// non-owners can't smith on private estate forges.
+	private final int OGRS_FORGE = 1329;
 
 	@Override
 	public boolean blockUseLoc(Player player, GameObject obj, Item item) {
 		return obj.getID() == ANVIL
 			|| obj.getID() == DORICS_ANVIL
-			|| obj.getID() == LAVA_ANVIL;
+			|| obj.getID() == LAVA_ANVIL
+			|| obj.getID() == OGRS_FORGE;
 	}
 
 	@Override
@@ -39,6 +44,11 @@ public class Smithing implements UseLocTrigger {
 		if ((obj.getID() == DORICS_ANVIL || obj.getID() == ANVIL)
 			&& item.getCatalogId() == ItemId.ALUMINIUM_BAR.id()) {
 			ABoneToPick.makeAluminiumCog(player);
+			return;
+		}
+
+		if (obj.getID() == OGRS_FORGE && !com.openrsc.server.plugins.custom.plots.PlotPermissions.canUseFeatureAt(
+				player, obj.getX(), obj.getY(), "forge")) {
 			return;
 		}
 
@@ -87,8 +97,8 @@ public class Smithing implements UseLocTrigger {
 
 	private boolean smithingChecks(final GameObject obj, final Item item, final Player player) {
 
-		// Not an anvil or Doric's Anvil...
-		if (!(obj.getID() == 50 || obj.getID() == 177)) return false;
+		// Not an anvil, Doric's Anvil, or an OGRS forge...
+		if (!(obj.getID() == ANVIL || obj.getID() == DORICS_ANVIL || obj.getID() == OGRS_FORGE)) return false;
 
 		if (!player.withinRange(obj, 1)) {
 			return false;

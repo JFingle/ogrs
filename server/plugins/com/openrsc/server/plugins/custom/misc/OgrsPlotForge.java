@@ -2,22 +2,19 @@ package com.openrsc.server.plugins.custom.misc;
 
 import com.openrsc.server.model.entity.GameObject;
 import com.openrsc.server.model.entity.player.Player;
-import com.openrsc.server.plugins.custom.plots.Plot;
-import com.openrsc.server.plugins.custom.plots.PlotFeature;
-import com.openrsc.server.plugins.custom.plots.PlotRegistry;
+import com.openrsc.server.plugins.custom.plots.PlotPermissions;
 import com.openrsc.server.plugins.triggers.OpLocTrigger;
 
 /**
- * OGRS — Lodge Forge interaction. Phase 1F-δ.
+ * OGRS — Lodge Forge right-click "Use" interaction. Scenery id 1329.
  *
- * Scenery id 1329. Right-click Use is permission-gated like the bank
- * chest (deed holder only on plots; anyone in a communal lodge).
+ * Right-click "Use" (no item) prints a hint pointing the player at
+ * the actual smithing flow: use a metal bar on the forge to start
+ * smithing — the upstream Smithing plugin handles the bar-on-forge
+ * UseLocTrigger and treats id 1329 just like an anvil.
  *
- * v1 = visual + permission gate. The actual smithing pipeline lives
- * in upstream Smithing.java (UseLocTrigger on the authentic anvil
- * scenery ids). Routing OGRS forge ID 1329 through that flow is a
- * v2 work item — for v1, deed holders get a placeholder message
- * confirming the forge is built and theirs, with a roadmap pointer.
+ * The permission check sits in PlotPermissions and is enforced both
+ * here and in Smithing — keeping the rules in one place.
  */
 public final class OgrsPlotForge implements OpLocTrigger {
 
@@ -31,32 +28,7 @@ public final class OgrsPlotForge implements OpLocTrigger {
 	@Override
 	public void onOpLoc(final Player player, final GameObject obj, final String command) {
 		if (obj.getID() != FORGE_ID) return;
-
-		// Find the plot (if any) that contains this scenery.
-		Plot owning = null;
-		for (Plot pl : PlotRegistry.listAll()) {
-			if (pl.contains(obj.getX(), obj.getY())) { owning = pl; break; }
-		}
-
-		if (owning != null) {
-			final PlotFeature pf = owning.featureAt(obj.getX(), obj.getY());
-			if (pf == null) return;
-			if (owning.deedHolder == null) return;
-			if (owning.tier == Plot.Tier.WILDERNESS) {
-				final com.openrsc.server.plugins.custom.guilds.Guild g =
-					com.openrsc.server.plugins.custom.guilds.GuildRegistry.byName(owning.deedHolder);
-				if (g == null || !g.hasMember(player.getUsername())) {
-					player.message("@red@This forge belongs to guild @whi@" + owning.deedHolder + "@red@.");
-					return;
-				}
-			} else if (!owning.deedHolder.equalsIgnoreCase(player.getUsername())) {
-				player.message("@red@This forge belongs to @whi@" + owning.deedHolder + "@red@.");
-				return;
-			}
-		}
-
-		// Permission OK.
-		player.message("@gre@You stand at your forge. Bring iron bars + a hammer to smith here.");
-		player.message("(v1 visual + permission only — full smithing integration ships as a follow-up.)");
+		if (!PlotPermissions.canUseFeatureAt(player, obj.getX(), obj.getY(), "forge")) return;
+		player.message("@gre@A bright forge waits for your work. Use a metal bar on it (with a hammer in your pack) to begin smithing.");
 	}
 }
