@@ -54,6 +54,7 @@ public final class ContractCommands implements CommandTrigger {
 		final String sub = args[0].toLowerCase();
 		switch (sub) {
 			case "post":    handlePost(player, args);    break;
+			case "mentor":  handleMentorPost(player, args); break;
 			case "list":    handleList(player);          break;
 			case "accept":  handleAccept(player, args);  break;
 			case "deliver": handleDeliver(player);       break;
@@ -66,6 +67,8 @@ public final class ContractCommands implements CommandTrigger {
 	private static void showHelp(final Player p) {
 		p.message("@gre@Contracts — chat commands (MVP):");
 		p.message("  ::contract post <itemId> <amt> <gold> <hours> — post resource delivery");
+		p.message("  ::contract mentor <skillId> <minLevel> <bondHrs> <gold> <deadlineHrs>");
+		p.message("    — post a mentorship contract (bonded play with apprentice)");
 		p.message("  ::contract list — show open contracts");
 		p.message("  ::contract accept <id> — claim one (1 active per worker)");
 		p.message("  ::contract deliver — turn in items (at Job Board)");
@@ -104,6 +107,41 @@ public final class ContractCommands implements CommandTrigger {
 		p.message("Workers can ::contract accept " + c.id + " to claim it.");
 	}
 
+	private static void handleMentorPost(final Player p, final String[] args) {
+		if (args.length < 6) {
+			p.message("Usage: ::contract mentor <skillId> <minLevel> <bondHrs> <gold> <deadlineHrs>");
+			p.message("skillId: e.g. 14=Mining, 7=Cooking. See ::stats.");
+			return;
+		}
+		final int skillId, minLevel, bondHrs, gold, deadlineHrs;
+		try {
+			skillId   = Integer.parseInt(args[1]);
+			minLevel  = Integer.parseInt(args[2]);
+			bondHrs   = Integer.parseInt(args[3]);
+			gold      = Integer.parseInt(args[4]);
+			deadlineHrs = Integer.parseInt(args[5]);
+		} catch (NumberFormatException e) {
+			p.message("All five args must be integers.");
+			return;
+		}
+		if (minLevel < 1 || minLevel > 99 || bondHrs <= 0 || gold <= 0 || deadlineHrs <= 0 || deadlineHrs > 168) {
+			p.message("Bad args. minLevel 1-99, bondHrs/gold/deadlineHrs all > 0, deadlineHrs <= 168.");
+			return;
+		}
+		final int coinsId = com.openrsc.server.constants.ItemId.COINS.id();
+		if (p.getCarriedItems().getInventory().countId(coinsId) < gold) {
+			p.message("@red@You don't have " + gold + " coins to escrow.");
+			return;
+		}
+		p.getCarriedItems().getInventory().remove(new com.openrsc.server.model.container.Item(coinsId, gold), true);
+		final com.openrsc.server.plugins.custom.contracts.Contract c =
+			com.openrsc.server.plugins.custom.contracts.ContractRegistry.postMentorship(
+				p, skillId, minLevel, bondHrs, gold, deadlineHrs);
+		p.message("@gre@Mentorship contract #" + c.id + " posted. " + gold + "gp escrowed.");
+		p.message("Mentors with lvl " + minLevel + "+ in skill " + skillId
+			+ " can ::contract accept " + c.id);
+	}
+
 	private static void handleList(final Player p) {
 		final List<Contract> open = ContractRegistry.listOpen();
 		if (open.isEmpty()) {
@@ -134,12 +172,28 @@ public final class ContractCommands implements CommandTrigger {
 			p.message("@red@You already have an active contract. Finish or it'll expire.");
 			return;
 		}
+		// Mentorship-specific gate: mentor must meet the min skill level.
+		if (c.type == Contract.Type.MENTORSHIP) {
+			final int mentorLvl = p.getSkills().getLevel(c.mentorSkillId);
+			if (mentorLvl < c.mentorMinLevel) {
+				p.message("@red@You need lvl " + c.mentorMinLevel + " in skill " + c.mentorSkillId
+					+ " to mentor (you have " + mentorLvl + ").");
+				return;
+			}
+		}
 		if (!ContractRegistry.accept(c, p)) {
 			p.message("@red@Contract #" + id + " can't be accepted (already taken or closed).");
 			return;
 		}
-		p.message("@gre@Accepted contract #" + id + ". Gather " + c.itemAmount + " of item " + c.itemId);
-		p.message("then ::contract deliver at the Job Board to claim " + c.goldReward + "gp.");
+		if (c.type == Contract.Type.MENTORSHIP) {
+			p.message("@gre@Accepted mentorship #" + id + ". Bond with @whi@" + c.posterName
+				+ "@gre@ within 20 tiles + perform skill " + c.mentorSkillId
+				+ " activity for " + c.mentorDurationHrs + "h to earn " + c.goldReward + "gp.");
+			p.message("(Bonded XP-bonus + auto-completion land in phase 1D-β; v1 just records the contract.)");
+		} else {
+			p.message("@gre@Accepted contract #" + id + ". Gather " + c.itemAmount + " of item " + c.itemId);
+			p.message("then ::contract deliver at the Job Board to claim " + c.goldReward + "gp.");
+		}
 	}
 
 	static void handleDeliver(final Player p) {

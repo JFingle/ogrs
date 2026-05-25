@@ -20,7 +20,7 @@ public final class Contract {
 
 	public enum Type {
 		RESOURCE_DELIVERY,   // worker gathers and delivers itemId × amount
-		// MENTORSHIP,       // Phase 1D
+		MENTORSHIP,          // mentor bonds with apprentice for skillId for N hours
 		// CONSTRUCTION_JOB, // Phase 1E
 	}
 
@@ -41,6 +41,12 @@ public final class Contract {
 	public String  workerName = "";     // empty until accepted
 	public long    acceptedEpochMs = 0;
 	public long    completedEpochMs = 0;
+
+	// Mentorship-only fields. Unused for RESOURCE_DELIVERY contracts.
+	public int     mentorSkillId    = -1;
+	public int     mentorMinLevel   = 0;
+	public int     mentorDurationHrs = 0;
+	public long    bondedTicksAccrued = 0;  // for the future XP-bonus integration
 
 	public Contract(final int id, final Type type, final String posterName,
 	                final int itemId, final int itemAmount, final int goldReward,

@@ -60,6 +60,26 @@ public final class ContractRegistry {
 		return c;
 	}
 
+	/** Post a mentorship contract. Apprentice (employer) pays goldReward
+	 *  to a mentor who has skillId at minLevel+ to bond with them for
+	 *  durationHours of in-game play within 20 tiles. v1 just records
+	 *  the contract; bonded XP-bonus + auto-completion ship in 1D-β. */
+	public static synchronized Contract postMentorship(final Player apprentice,
+	                                                    final int skillId, final int minLevel,
+	                                                    final int durationHours,
+	                                                    final int goldReward, final int hoursDeadline) {
+		final long now = System.currentTimeMillis();
+		final long deadline = now + hoursDeadline * 3600L * 1000L;
+		final Contract c = new Contract(NEXT_ID.getAndIncrement(),
+			Contract.Type.MENTORSHIP, apprentice.getUsername(),
+			-1, 0, goldReward, now, deadline);
+		c.mentorSkillId = skillId;
+		c.mentorMinLevel = minLevel;
+		c.mentorDurationHrs = durationHours;
+		CONTRACTS.put(c.id, c);
+		return c;
+	}
+
 	public static synchronized List<Contract> listOpen() {
 		final List<Contract> out = new ArrayList<>();
 		final long now = System.currentTimeMillis();
@@ -141,9 +161,13 @@ public final class ContractRegistry {
 
 	/** Format a one-line summary of a contract for chat display. */
 	public static String summary(final Contract c) {
-		final String typeShort = c.type == Contract.Type.RESOURCE_DELIVERY ? "DELIV" : "?";
 		final int hoursLeft = Math.max(0, (int) ((c.deadlineEpochMs - System.currentTimeMillis()) / 3600000L));
-		return String.format("#%d %s — %dx item:%d for %dgp (%dh left, by @whi@%s@yel@)",
-			c.id, typeShort, c.itemAmount, c.itemId, c.goldReward, hoursLeft, c.posterName);
+		if (c.type == Contract.Type.MENTORSHIP) {
+			return String.format("#%d MENTOR — skill:%d lvl%d+, %dh bonded, %dgp (%dh left, by @whi@%s@yel@)",
+				c.id, c.mentorSkillId, c.mentorMinLevel, c.mentorDurationHrs,
+				c.goldReward, hoursLeft, c.posterName);
+		}
+		return String.format("#%d DELIV — %dx item:%d for %dgp (%dh left, by @whi@%s@yel@)",
+			c.id, c.itemAmount, c.itemId, c.goldReward, hoursLeft, c.posterName);
 	}
 }
