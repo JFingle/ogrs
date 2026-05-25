@@ -905,6 +905,10 @@ public abstract class Mob extends Entity {
 				}
 			}
 		}
+		// OGRS — UI track P1: push cleared poison state to client.
+		if (me.isPlayer()) {
+			ActionSender.sendPoisonState((Player) me);
+		}
 	}
 
 	public void damage(final int damage) {
@@ -932,6 +936,10 @@ public abstract class Mob extends Entity {
 		final PoisonEvent poisonEvent = new PoisonEvent(getWorld(), this, getPoisonDamage());
 		setAttribute("poisonEvent", poisonEvent);
 		getWorld().getServer().getGameEventHandler().add(poisonEvent);
+		// OGRS — UI track P1: push active poison state to client.
+		if (this.isPlayer()) {
+			ActionSender.sendPoisonState((Player) this);
+		}
 	}
 
 	// part of NPC poison feature

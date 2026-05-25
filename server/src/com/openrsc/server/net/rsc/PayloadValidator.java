@@ -53,6 +53,8 @@ public class PayloadValidator {
 		put(OpcodeOut.SEND_IRONMAN, IronManStruct.class); // custom
 		put(OpcodeOut.SEND_FATIGUE, FatigueStruct.class);
 		put(OpcodeOut.SEND_RUN_ENERGY, RunEnergyStruct.class); // OGRS — #37 Commit C
+		put(OpcodeOut.SEND_POISON_STATE, PoisonStateStruct.class); // OGRS — UI track P1
+		put(OpcodeOut.SEND_SLAYER_TASK, SlayerTaskStruct.class); // OGRS — UI track P1
 
 		put(OpcodeOut.SEND_ON_BLACK_HOLE, PlayerOnBlackHoleStruct.class); // custom
 		put(OpcodeOut.SEND_PARTY, PartyStruct.class); // custom

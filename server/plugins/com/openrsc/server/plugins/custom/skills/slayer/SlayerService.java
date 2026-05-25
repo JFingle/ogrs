@@ -135,11 +135,27 @@ public class SlayerService {
 		player.getCache().store(KEY_TASK_NAME, t.name);
 		player.getCache().set(KEY_TASK_TOTAL, total);
 		player.getCache().set(KEY_TASK_REMAINING, total);
+		// OGRS — UI track P1: push updated task to the HUD widget.
+		ogrsPushSlayerTask(player);
 		return new SlayerData(t.npcIds[0], t.name, total, total);
 	}
 
 	public static void clearTask(final Player player) {
 		player.getCache().remove(KEY_TASK_NAME, KEY_TASK_TOTAL, KEY_TASK_REMAINING);
+		// OGRS — UI track P1: push cleared task to the HUD widget.
+		ogrsPushSlayerTask(player);
+	}
+
+	/** OGRS — UI track P1: send current slayer task to the client for
+	 *  the HUD widget. Lives here (not in ActionSender) because the
+	 *  engine-core ActionSender can't depend on plugin types. */
+	public static void ogrsPushSlayerTask(final Player player) {
+		final SlayerData task = getActiveTask(player);
+		final boolean has = task != null;
+		final String npcName = has ? task.npcName : "";
+		final int remaining  = has ? task.remaining : 0;
+		final int level      = getPlayerLevel(player);
+		com.openrsc.server.net.rsc.ActionSender.sendSlayerTask(player, has, npcName, remaining, level);
 	}
 
 	/**
@@ -170,6 +186,8 @@ public class SlayerService {
 			return false;
 		}
 		player.getCache().set(KEY_TASK_REMAINING, remaining - 1);
+		// OGRS — UI track P1: push updated remaining count to the HUD.
+		ogrsPushSlayerTask(player);
 		return true;
 	}
 

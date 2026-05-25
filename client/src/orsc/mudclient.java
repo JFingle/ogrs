@@ -73,6 +73,67 @@ public final class mudclient implements Runnable {
 		this.getSurface().drawSpriteClipping(s, x, y, 16, 16, 0, 0xffffff, 0, false, 0, 1);
 	}
 
+	// OGRS — UI track P5 dialog 9-slice composer. Draws an ornate frame at
+	// the given rect using the 9 tileable corner/edge/center pieces packed
+	// at slots 3878-3886 (per art/_specs/UI_INTEGRATION.md). Each piece is
+	// 8×8 native. The 4 corners draw at exact positions; T/B edges tile
+	// horizontally; L/R edges tile vertically; C fills the interior.
+	//
+	// Caller passes the OUTER rect (x, y, w, h). The frame is rendered
+	// in-place; text/content goes ON TOP at (x+8, y+8) with usable size
+	// (w-16, h-16).
+	//
+	// If any slice sprite is missing, falls back to a solid dark box +
+	// gold border (the previous chat-frame style) — guarantees the UI
+	// still renders if the archive is mid-rebuild.
+	private static final int OGRS_DIALOG_TL = 3878, OGRS_DIALOG_T  = 3879, OGRS_DIALOG_TR = 3880;
+	private static final int OGRS_DIALOG_L  = 3881, OGRS_DIALOG_C  = 3882, OGRS_DIALOG_R  = 3883;
+	private static final int OGRS_DIALOG_BL = 3884, OGRS_DIALOG_B  = 3885, OGRS_DIALOG_BR = 3886;
+
+	private void ogrsDraw9SliceFrame(final int x, final int y, final int w, final int h) {
+		if (w < 16 || h < 16) return;   // smaller than 2 corners; bail
+		final com.openrsc.client.model.Sprite[] sps = this.getSurface().sprites;
+		final int[] ids = {OGRS_DIALOG_TL, OGRS_DIALOG_T, OGRS_DIALOG_TR,
+		                   OGRS_DIALOG_L,  OGRS_DIALOG_C, OGRS_DIALOG_R,
+		                   OGRS_DIALOG_BL, OGRS_DIALOG_B, OGRS_DIALOG_BR};
+		// Verify all 9 pieces present; otherwise fall back.
+		for (int id : ids) {
+			if (id >= sps.length || sps[id] == null) {
+				this.getSurface().drawBoxAlpha(x, y, w, h, 0x1A1612, 200);
+				this.getSurface().drawBoxBorder(x, w, y, h, 0x000000);
+				this.getSurface().drawBoxBorder(x + 1, w - 2, y + 1, h - 2, 0xD4A64A);
+				return;
+			}
+		}
+		// Interior fill — C tiled across (w-16) × (h-16) starting at (x+8, y+8).
+		final int innerX = x + 8, innerY = y + 8;
+		final int innerW = w - 16, innerH = h - 16;
+		for (int dy = 0; dy < innerH; dy += 8) {
+			final int dh = Math.min(8, innerH - dy);
+			for (int dx = 0; dx < innerW; dx += 8) {
+				final int dw = Math.min(8, innerW - dx);
+				this.getSurface().drawSpriteClipping(sps[OGRS_DIALOG_C], innerX + dx, innerY + dy, dw, dh, 0, 0xffffff, 0, false, 0, 1);
+			}
+		}
+		// Top + bottom edges (T/B) — tile horizontally between corners.
+		for (int dx = 0; dx < innerW; dx += 8) {
+			final int dw = Math.min(8, innerW - dx);
+			this.getSurface().drawSpriteClipping(sps[OGRS_DIALOG_T], innerX + dx, y,            dw, 8, 0, 0xffffff, 0, false, 0, 1);
+			this.getSurface().drawSpriteClipping(sps[OGRS_DIALOG_B], innerX + dx, y + h - 8,    dw, 8, 0, 0xffffff, 0, false, 0, 1);
+		}
+		// Left + right edges (L/R) — tile vertically between corners.
+		for (int dy = 0; dy < innerH; dy += 8) {
+			final int dh = Math.min(8, innerH - dy);
+			this.getSurface().drawSpriteClipping(sps[OGRS_DIALOG_L], x,           innerY + dy, 8, dh, 0, 0xffffff, 0, false, 0, 1);
+			this.getSurface().drawSpriteClipping(sps[OGRS_DIALOG_R], x + w - 8,   innerY + dy, 8, dh, 0, 0xffffff, 0, false, 0, 1);
+		}
+		// 4 corners — exact positions.
+		this.getSurface().drawSprite(sps[OGRS_DIALOG_TL], x,           y);
+		this.getSurface().drawSprite(sps[OGRS_DIALOG_TR], x + w - 8,   y);
+		this.getSurface().drawSprite(sps[OGRS_DIALOG_BL], x,           y + h - 8);
+		this.getSurface().drawSprite(sps[OGRS_DIALOG_BR], x + w - 8,   y + h - 8);
+	}
+
 	// OGRS — UI track P2 skill icon slot mapping. Names match the engine's
 	// skill registry (Skill enum + dynamic OGRS additions). 'Herblaw' and
 	// 'Herblore' both map to the same icon since the spec doc uses the
@@ -434,6 +495,16 @@ public final class mudclient implements Runnable {
 	// and the live energy bar above it.
 	private boolean ogrsRunButtonVisual = false;
 	private int ogrsRunEnergyPercent = 100;
+
+	// OGRS — UI track P1 HUD state (pushed by server packets 252/253).
+	// Kept here so the main render loop can paint the poison overlay and
+	// slayer-task widget without per-frame state reads.
+	private boolean ogrsPoisoned = false;
+	private int     ogrsPoisonPower = 0;
+	private boolean ogrsSlayerHasTask = false;
+	private String  ogrsSlayerNpcName = "";
+	private int     ogrsSlayerRemaining = 0;
+	private int     ogrsSlayerLevel = 1;
 	// OGRS §3C — active impact animations spawned when a projectile lands.
 	// Each entry stores world position, the sprite-archive base ID of the
 	// impact's 4-frame strip, and frame counter. Drawn in 3D scene space
@@ -3736,6 +3807,14 @@ public final class mudclient implements Runnable {
 					optionsMenuShow = false;
 					return;
 				}
+				// OGRS \u2014 UI track P5 ornate frame around the options list
+				// (sparky 2026-05-24). 8px inner padding; frame sized to
+				// fit the widest option + line count.
+				final int frX = Math.max(0, startX - 8);
+				final int frY = Math.max(0, startY - 22);
+				final int frW = highest + 16;
+				final int frH = optionsMenuCount * spread + 14;
+				ogrsDraw9SliceFrame(frX, frY, frW, frH);
 				for (int j = 0; j < optionsMenuCount; j++) {
 					int k = 65535;
 					if (mouseX > startX && mouseX < startX + highest && mouseY > startY + j * spread - 15
@@ -3753,6 +3832,20 @@ public final class mudclient implements Runnable {
 					startY = getGameHeight() - 100;
 				}
 				if (this.mouseButtonClick == 0) {
+					// OGRS \u2014 UI track P5 ornate frame around the options list.
+					// Width derived from widest option string + 8px padding;
+					// height from option count.
+					int ogrsMaxW = 0;
+					for (int k = 0; k < this.optionsMenuCount; k++) {
+						final int tw = this.getSurface().stringWidth(1, this.optionsMenuText[k])
+							+ (S_WANT_KEYBOARD_SHORTCUTS > 1 ? 24 : 9);
+						if (tw > ogrsMaxW) ogrsMaxW = tw;
+					}
+					final int ogrsFrX = 0;
+					final int ogrsFrY = Math.max(0, startY + 1);
+					final int ogrsFrW = ogrsMaxW + 14;
+					final int ogrsFrH = this.optionsMenuCount * 12 + 12;
+					ogrsDraw9SliceFrame(ogrsFrX, ogrsFrY, ogrsFrW, ogrsFrH);
 					// Draw
 					var2 = 0;
 					while (this.optionsMenuCount > var2) {
@@ -5519,6 +5612,14 @@ public final class mudclient implements Runnable {
 						//i += 14;
 						this.getSurface().drawString(
 							"Hits: " + this.playerStatCurrent[3] + "@gre@/@whi@" + this.playerStatBase[3], 7, i, 0xffffff, 1);
+						// OGRS — UI track P1 poison icon next to HP row when poisoned.
+						// Alternates between 2 frames every ~500ms for a slight pulse.
+						if (this.ogrsPoisoned) {
+							final int poisonSlot = ((this.getFrameCounter() / 8) % 2 == 0) ? 3837 : 3838;
+							if (this.getSurface().sprites[poisonSlot] != null) {
+								this.getSurface().drawSprite(this.getSurface().sprites[poisonSlot], 78, i - 4);
+							}
+						}
 						i += 14;
 						this.getSurface().drawString(
 							"Prayer: " + this.playerStatCurrent[5] + "@gre@/@whi@" + this.playerStatBase[5], 7, i, 0xffffff, 1);
@@ -7711,6 +7812,11 @@ public final class mudclient implements Runnable {
 				// is drawn by drawOgrsUnifiedTabs in the world-render
 				// phase along with the rest of the tab trim.
 				drawOgrsRunIcon();
+
+				// OGRS UI track P1 — slayer task HUD widget at top-left,
+				// shown only while a task is active. Server pushes state
+				// via SEND_SLAYER_TASK (opcode 253).
+				drawOgrsSlayerWidget();
 
 				if (!this.topMouseMenuVisible && !this.optionsMenuShow) {
 					this.createTopMouseMenu(-128);
@@ -14953,6 +15059,34 @@ public final class mudclient implements Runnable {
 	private static final boolean OGRS_IMPACTS_ENABLED = true;
 	private static final boolean OGRS_DIR_PICKER_ENABLED = true;
 
+	// OGRS — UI track P1 slayer task HUD widget. Renders at top-left of
+	// the game viewport when the server says the player has an active
+	// task. Sprite is the painted gem widget at slot 3839; the count
+	// text overlays the gold counter plate area.
+	//
+	// Server-side state is pushed via SEND_SLAYER_TASK (opcode 253) on
+	// login, task assign, task kill, task complete, and task clear.
+	// While idle this method early-returns so the HUD stays clean.
+	private void drawOgrsSlayerWidget() {
+		if (!this.ogrsSlayerHasTask) return;
+		final com.openrsc.client.model.Sprite gem = this.getSurface().sprites[3839];
+		final int x = 6;
+		final int y = 6;
+		if (gem != null) {
+			this.getSurface().drawSprite(gem, x, y);
+			// Remaining count painted over the counter plate.
+			final String remaining = Integer.toString(this.ogrsSlayerRemaining);
+			final int rW = this.getSurface().stringWidth(1, remaining);
+			this.getSurface().drawString(remaining, x + (32 - rW) / 2, y + 28, 0xFFFFFF, 1);
+		} else {
+			// Fallback if the sprite slot is missing — plain text widget.
+			this.getSurface().drawBoxAlpha(x, y, 100, 22, 0x1A1612, 200);
+			this.getSurface().drawBoxBorder(x, 100, y, 22, 0xD4A64A);
+			final String label = this.ogrsSlayerNpcName + " x " + this.ogrsSlayerRemaining;
+			this.getSurface().drawString(label, x + 4, y + 14, 0xD4A64A, 1);
+		}
+	}
+
 	private void drawOgrsRunIcon() {
 		// OGRS — run pill v4. Sparky feedback (this session): icon wasn't
 		// showing on mobile. Root cause: it was hard-coded to top-right
@@ -17981,6 +18115,19 @@ public final class mudclient implements Runnable {
 	public void setOgrsRunState(boolean running, int energyPercent) {
 		this.ogrsRunButtonVisual = running;
 		this.ogrsRunEnergyPercent = Math.max(0, Math.min(100, energyPercent));
+	}
+
+	// OGRS — UI track P1 setters (server packets 252/253).
+	public void setOgrsPoisonState(boolean poisoned, int power) {
+		this.ogrsPoisoned = poisoned;
+		this.ogrsPoisonPower = Math.max(0, Math.min(255, power));
+	}
+
+	public void setOgrsSlayerTask(boolean hasTask, String npcName, int remaining, int level) {
+		this.ogrsSlayerHasTask = hasTask;
+		this.ogrsSlayerNpcName = npcName == null ? "" : npcName;
+		this.ogrsSlayerRemaining = remaining;
+		this.ogrsSlayerLevel = level;
 	}
 
 	public void setStatFatigueAuthentic(int fatigue) {

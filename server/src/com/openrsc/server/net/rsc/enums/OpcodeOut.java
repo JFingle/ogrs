@@ -104,4 +104,6 @@ public enum OpcodeOut {
 	SEND_INVENTORY_SIZE, // known to be in mudclient69 to 75
     SEND_UNLOCKED_APPEARANCES, // custom
     SEND_RUN_ENERGY, // OGRS — pushes {running:byte, energy:byte 0-100} to client; #37
+    SEND_POISON_STATE, // OGRS — pushes {poisoned:byte, power:byte 0-255} to client for the HUD poison icon
+    SEND_SLAYER_TASK, // OGRS — pushes {hasTask:byte, npcName:string, remaining:short, level:byte} for the HUD slayer widget
 }

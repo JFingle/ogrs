@@ -31,6 +31,9 @@ public class PoisonEvent extends GameTickEvent {
 			Player player = (Player) mob;
 			player.message("@gr3@You @gr2@are @gr1@poisioned! @gr2@You @gr3@lose @gr2@" + damage + " @gr1@health.");
 			player.getCache().set("poisoned", poisonPower);
+			// OGRS — UI track P1: push updated poison power so the HUD
+			// icon stays in sync as the poison ticks down.
+			com.openrsc.server.net.rsc.ActionSender.sendPoisonState(player);
 		}
 		mob.damage(damage);
 	}

@@ -480,6 +480,40 @@ public class ActionSender {
 		tryFinalizeAndSendPacket(OpcodeOut.SEND_RUN_ENERGY, s, player);
 	}
 
+	/**
+	 * OGRS — push poison state to the client (UI track P1).
+	 * Two-byte packet (poisoned flag + power 0-255). Fired on poison
+	 * start, cure, and on PoisonEvent tick-down so the HUD icon stays
+	 * in sync with the engine's PoisonEvent state.
+	 */
+	public static void sendPoisonState(Player player) {
+		com.openrsc.server.net.rsc.struct.outgoing.PoisonStateStruct s =
+			new com.openrsc.server.net.rsc.struct.outgoing.PoisonStateStruct();
+		final int power = player.getCurrentPoisonPower();
+		s.poisoned = power > 0;
+		s.power = Math.max(0, Math.min(255, power));
+		tryFinalizeAndSendPacket(OpcodeOut.SEND_POISON_STATE, s, player);
+	}
+
+	/**
+	 * OGRS — push slayer task state to the client (UI track P1).
+	 * Fired on login, task assign, task kill update, task complete,
+	 * task clear. Primitives only so the engine-core class doesn't
+	 * depend on plugin types (SlayerService lives in plugins).
+	 *
+	 * Caller (typically SlayerService in plugins) passes the values
+	 * directly; this method just packs and sends.
+	 */
+	public static void sendSlayerTask(Player player, boolean hasTask, String npcName, int remaining, int level) {
+		com.openrsc.server.net.rsc.struct.outgoing.SlayerTaskStruct s =
+			new com.openrsc.server.net.rsc.struct.outgoing.SlayerTaskStruct();
+		s.hasTask = hasTask;
+		s.npcName = npcName == null ? "" : npcName;
+		s.remaining = Math.max(0, Math.min(32767, remaining));
+		s.level = Math.max(0, Math.min(99, level));
+		tryFinalizeAndSendPacket(OpcodeOut.SEND_SLAYER_TASK, s, player);
+	}
+
 	public static void showPointsToGp(Player player) {
 		NoPayloadStruct struct = new NoPayloadStruct();
 		tryFinalizeAndSendPacket(OpcodeOut.SEND_OPENPK_POINTS_TO_GP_RATIO, struct, player);

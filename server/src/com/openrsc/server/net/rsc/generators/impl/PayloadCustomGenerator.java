@@ -62,6 +62,8 @@ public class PayloadCustomGenerator implements PayloadGenerator<OpcodeOut> {
 		put(OpcodeOut.SEND_IRONMAN, 113); // custom
 		put(OpcodeOut.SEND_FATIGUE, 114);
 		put(OpcodeOut.SEND_RUN_ENERGY, 251); // OGRS — #37 Commit C
+		put(OpcodeOut.SEND_POISON_STATE, 252); // OGRS — UI track P1
+		put(OpcodeOut.SEND_SLAYER_TASK, 253); // OGRS — UI track P1
 
 		put(OpcodeOut.SEND_ON_BLACK_HOLE, 115); // custom
 		put(OpcodeOut.SEND_PARTY, 116); // custom
@@ -396,6 +398,26 @@ public class PayloadCustomGenerator implements PayloadGenerator<OpcodeOut> {
 						(com.openrsc.server.net.rsc.struct.outgoing.RunEnergyStruct) payload;
 					builder.writeByte((byte) (res.running ? 1 : 0));
 					builder.writeByte((byte) (res.energyPercent & 0xFF));
+					break;
+				}
+
+				case SEND_POISON_STATE: {
+					// OGRS UI track P1 — two bytes, poisoned flag + power.
+					com.openrsc.server.net.rsc.struct.outgoing.PoisonStateStruct ogrsPs =
+						(com.openrsc.server.net.rsc.struct.outgoing.PoisonStateStruct) payload;
+					builder.writeByte((byte) (ogrsPs.poisoned ? 1 : 0));
+					builder.writeByte((byte) (ogrsPs.power & 0xFF));
+					break;
+				}
+
+				case SEND_SLAYER_TASK: {
+					// OGRS UI track P1 — boolean + npcName string + remaining short + level byte.
+					com.openrsc.server.net.rsc.struct.outgoing.SlayerTaskStruct st =
+						(com.openrsc.server.net.rsc.struct.outgoing.SlayerTaskStruct) payload;
+					builder.writeByte((byte) (st.hasTask ? 1 : 0));
+					builder.writeString(st.npcName == null ? "" : st.npcName);
+					builder.writeShort(st.remaining & 0xFFFF);
+					builder.writeByte((byte) (st.level & 0xFF));
 					break;
 				}
 

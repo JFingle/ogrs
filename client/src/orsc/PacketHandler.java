@@ -436,6 +436,22 @@ public class PacketHandler {
 				mc.setOgrsRunState(runByte == 1, energyByte);
 			}
 
+				// OGRS — Poison state push (UI track P1).
+			else if (opcode == 252) {
+				int poisonByte = packetsIncoming.getUnsignedByte();
+				int powerByte = packetsIncoming.getUnsignedByte();
+				mc.setOgrsPoisonState(poisonByte == 1, powerByte);
+			}
+
+				// OGRS — Slayer task state push (UI track P1).
+			else if (opcode == 253) {
+				int hasByte = packetsIncoming.getUnsignedByte();
+				String npcName = packetsIncoming.readString();
+				int remaining = packetsIncoming.getShort();
+				int level = packetsIncoming.getUnsignedByte();
+				mc.setOgrsSlayerTask(hasByte == 1, npcName, remaining, level);
+			}
+
 				// Kills2
 			else if (opcode == 147) {
 				mc.setStatKills2(packetsIncoming.get32());
