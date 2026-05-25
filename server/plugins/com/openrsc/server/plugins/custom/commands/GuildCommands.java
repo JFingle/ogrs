@@ -70,6 +70,7 @@ public final class GuildCommands implements CommandTrigger {
 		p.message("  ::guild leave              — leave (not as founder)");
 		p.message("  ::guild kick <player>      — remove (founder/officer)");
 		p.message("  ::guild disband            — delete the guild (founder)");
+		p.message("  ::gc <message>             — speak to your guild channel");
 	}
 
 	private static void handleCreate(final Player p, final String[] args) {
