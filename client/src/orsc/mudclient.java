@@ -5589,13 +5589,20 @@ public final class mudclient implements Runnable {
 							&& this.mouseY >= kbY && this.mouseY < kbY + kbH;
 						final int kbBg = kbActive ? 0x4B3F1A : (kbHover ? 0x3A331A : 0x2D2C24);
 						this.getSurface().drawBoxAlpha(kbX, kbY, kbW, kbH, kbBg, 230);
+						// UI track P4 keyboard tab icon (slot 3873). Falls back
+						// to the old "KEY/BD" text label if sprite unavailable.
+						final com.openrsc.client.model.Sprite kbIcon = this.getSurface().sprites[3873];
+						if (kbIcon != null) {
+							this.getSurface().drawSpriteClipping(kbIcon, kbX + 2, kbY + 2, 28, 28, 0, 0xffffff, 0, false, 0, 1);
+						} else {
+							this.getSurface().drawColoredStringCentered(
+								kbX + kbW / 2, "KEY", 0xFFFFFF, 1, 3, kbY + 14);
+							this.getSurface().drawColoredStringCentered(
+								kbX + kbW / 2, "BD", 0xFFFFFF, 1, 3, kbY + 26);
+						}
 						this.getSurface().drawBoxBorder(kbX, kbW, kbY, kbH, 0x000000);
 						this.getSurface().drawBoxBorder(kbX + 1, kbW - 2, kbY + 1, kbH - 2,
 							kbActive ? 0xD4A64A : 0x706452);
-						this.getSurface().drawColoredStringCentered(
-							kbX + kbW / 2, "KEY", 0xFFFFFF, 1, 3, kbY + 14);
-						this.getSurface().drawColoredStringCentered(
-							kbX + kbW / 2, "BD", 0xFFFFFF, 1, 3, kbY + 26);
 						if (this.mouseButtonClick != 0 && kbHover) {
 							this.mouseButtonClick = 0;
 							if (!osConfig.F_SHOWING_KEYBOARD) {
@@ -14491,45 +14498,34 @@ public final class mudclient implements Runnable {
 	 *  tab gets a gold border + faint highlight. */
 	private void drawOgrsUnifiedTabs() {
 		final int tabY = Config.C_CUSTOM_UI ? getUITabsY() : 3;
-		// {label-or-null (CB only), showUiTab value, distance-from-right-edge}.
-		final Object[][] tabs = {
-			{ null,  Config.INVENTORY_TAB,           Integer.valueOf(35)  },
-			{ null,  Config.MINIMAP_AND_COMPASS_TAB, Integer.valueOf(68)  },
-			{ null,  Config.SKILLS_AND_QUESTS_TAB,   Integer.valueOf(101) },
-			{ null,  Config.MAGIC_AND_PRAYER_TAB,    Integer.valueOf(134) },
-			{ null,  Config.FRIENDS_TAB,             Integer.valueOf(167) },
-			{ null,  Config.OPTIONS_TAB,             Integer.valueOf(200) },
-			{ "CB",  Config.COMBAT_TAB,              Integer.valueOf(233) },
+		// {showUiTab value, distance-from-right-edge, ui-track-sprite-slot}.
+		// Slots come from art/_specs/UI_INTEGRATION.md (P4 tab strip).
+		// Magic+Prayer combined tab uses the Magic icon (3868).
+		final int[][] tabs = {
+			{ Config.INVENTORY_TAB,           35,  3865 },  // tab_inv
+			{ Config.MINIMAP_AND_COMPASS_TAB, 68,  3866 },  // tab_map
+			{ Config.SKILLS_AND_QUESTS_TAB,   101, 3867 },  // tab_skills
+			{ Config.MAGIC_AND_PRAYER_TAB,    134, 3868 },  // tab_magic
+			{ Config.FRIENDS_TAB,             167, 3870 },  // tab_friends
+			{ Config.OPTIONS_TAB,             200, 3872 },  // tab_options
+			{ Config.COMBAT_TAB,              233, 3871 },  // tab_combat (CB)
 		};
-		for (Object[] t : tabs) {
-			final String label = (String) t[0];
-			final int tabId = (Integer) t[1];
-			final int rightEdge = (Integer) t[2];
+		for (int[] t : tabs) {
+			final int tabId = t[0];
+			final int rightEdge = t[1];
+			final int slot = t[2];
 			final int tabX = this.getSurface().width2 - rightEdge;
 			final boolean active = (this.showUiTab == tabId);
-			// CB tab needs its own dark fill (MENUBAR doesn't cover it).
-			if (label != null) {
-				final int bg = active ? 0x4B3F1A : 0x2D2C24;
-				this.getSurface().drawBoxAlpha(tabX, tabY, 32, 32, bg, 230);
-				// Use the SKULL projectile sprite (3164) as a placeholder
-				// combat glyph — purple/dark, reads as combat at a glance.
-				// A proper crossed-swords icon is on the art-agent wishlist.
-				final int cbSpriteId = 3164;
-				if (cbSpriteId < this.getSurface().sprites.length
-					&& this.getSurface().sprites[cbSpriteId] != null) {
-					this.getSurface().drawSprite(
-						this.getSurface().sprites[cbSpriteId],
-						tabX + 1, tabY + 1, 30, 30, 0);
-				} else {
-					// Fallback if the sprite didn't load.
-					this.getSurface().drawColoredStringCentered(
-						tabX + 16, label, 0xD4A64A, 1, 3, tabY + 19);
-				}
-			} else if (active) {
-				// Subtle gold-tinted vignette on the active MENUBAR tab —
-				// transparent enough that the underlying icon stays
-				// readable.
-				this.getSurface().drawBoxAlpha(tabX + 2, tabY + 2, 28, 28, 0x4B3F1A, 80);
+			// Dark fill behind the icon — gold-tinted when active.
+			final int bg = active ? 0x4B3F1A : 0x2D2C24;
+			this.getSurface().drawBoxAlpha(tabX, tabY, 32, 32, bg, 230);
+			// New tab icon from the UI track (24×24 native, scaled to 28×28
+			// to fill the 32×32 tile with 2px padding).
+			final com.openrsc.client.model.Sprite icon = (slot >= 0 && slot < this.getSurface().sprites.length)
+				? this.getSurface().sprites[slot]
+				: null;
+			if (icon != null) {
+				this.getSurface().drawSpriteClipping(icon, tabX + 2, tabY + 2, 28, 28, 0, 0xffffff, 0, false, 0, 1);
 			}
 			// Trim border — beige inner, dark outer. Active tabs get a
 			// gold accent so the player can tell at a glance.
