@@ -358,6 +358,108 @@ public final class OgrsClientItems {
 		// id 1704 — from content/items/sacred_sacred_fig.yaml
 		items.add(new ItemDef("Sacred fig", "A purple fig from a tree mentioned in the old stories. Heals 12 HP.", "Eat", 60, 249, "items:249", false, false, 0, 0x6A1A6E, true, false, true, i++));
 
+		// id 1705 — from content/items/thief_wearable_brown_boots.yaml
+		items.add(new ItemDef("Brown Thief Boots", "Soft leather boots for quiet feet.", "", 200, 600, "items:600", false, true, 600, 0x6C4828, false, false, true, i++));
+
+		// id 1706 — from content/items/thief_wearable_brown_bottom.yaml
+		items.add(new ItemDef("Brown Thief Chaps", "Brown leather chaps. Comfortable in alleyways.", "", 300, 601, "items:601", false, true, 601, 0x8C6438, false, false, true, i++));
+
+		// id 1707 — from content/items/thief_wearable_brown_cape.yaml
+		items.add(new ItemDef("Brown Thief Cape", "A plain brown cape — easy to disappear into.", "", 150, 602, "items:602", false, true, 602, 0x8C6438, false, false, true, i++));
+
+		// id 1708 — from content/items/thief_wearable_brown_gloves.yaml
+		items.add(new ItemDef("Brown Thief Gloves", "Fingerless leather gloves for nimble work.", "", 120, 603, "items:603", false, true, 603, 0x6C4828, false, false, true, i++));
+
+		// id 1709 — from content/items/thief_wearable_brown_hood.yaml
+		items.add(new ItemDef("Brown Thief Hood", "A modest hood that hides your face.", "", 180, 604, "items:604", false, true, 604, 0x6C4828, false, false, true, i++));
+
+		// id 1710 — from content/items/thief_wearable_brown_top.yaml
+		items.add(new ItemDef("Brown Thief Vest", "A worn leather vest, brown as forest dirt.", "", 400, 605, "items:605", false, true, 605, 0x8C6438, false, false, true, i++));
+
+		// id 1711 — from content/items/thief_wearable_master_boots.yaml
+		items.add(new ItemDef("Master Thief Boots", "Boots so silent they whisper to the floor.", "", 12000, 606, "items:606", false, true, 606, 0x1A1810, false, false, true, i++));
+
+		// id 1712 — from content/items/thief_wearable_master_bottom.yaml
+		items.add(new ItemDef("Master Thief Chaps", "Charcoal chaps with hidden pockets.", "", 18000, 607, "items:607", false, true, 607, 0x1F1A0C, false, false, true, i++));
+
+		// id 1713 — from content/items/thief_wearable_master_cape.yaml
+		items.add(new ItemDef("Master Thief Cape", "A master thief's cape, blacker than night.", "", 9000, 608, "items:608", false, true, 608, 0x1F1A0C, false, false, true, i++));
+
+		// id 1714 — from content/items/thief_wearable_master_gloves.yaml
+		items.add(new ItemDef("Master Thief Gloves", "Gloves so fine you can feel a coin's date.", "", 7200, 609, "items:609", false, true, 609, 0x1A1810, false, false, true, i++));
+
+		// id 1715 — from content/items/thief_wearable_master_hood.yaml
+		items.add(new ItemDef("Master Thief Hood", "A hood that drinks the light.", "", 10800, 610, "items:610", false, true, 610, 0x1A1810, false, false, true, i++));
+
+		// id 1716 — from content/items/thief_wearable_master_top.yaml
+		items.add(new ItemDef("Master Thief Doublet", "A reinforced doublet, midnight-black with faint gold warmth.", "", 24000, 611, "items:611", false, true, 611, 0x1F1A0C, false, false, true, i++));
+
+		// id 1717 — from content/items/thief_wearable_rogue_boots.yaml
+		items.add(new ItemDef("Rogue Boots", "Worn black boots a rogue would die in.", "", 3000, 612, "items:612", false, true, 612, 0x1A1A20, false, false, true, i++));
+
+		// id 1718 — from content/items/thief_wearable_rogue_bottom.yaml
+		items.add(new ItemDef("Rogue Chaps", "Dark leather chaps stained with city soot.", "", 4500, 613, "items:613", false, true, 613, 0x202028, false, false, true, i++));
+
+		// id 1719 — from content/items/thief_wearable_rogue_cape.yaml
+		items.add(new ItemDef("Rogue Cape", "A dark cape stained with a faint copper smell.", "", 2250, 614, "items:614", false, true, 614, 0x3A1010, false, false, true, i++));
+
+		// id 1720 — from content/items/thief_wearable_rogue_gloves.yaml
+		items.add(new ItemDef("Rogue Gloves", "Dark fingerless gloves with reinforced palms.", "", 1800, 615, "items:615", false, true, 615, 0x1A1A20, false, false, true, i++));
+
+		// id 1721 — from content/items/thief_wearable_rogue_hood.yaml
+		items.add(new ItemDef("Rogue Hood", "A sinister hood. Few who see it live to recall.", "", 2700, 616, "items:616", false, true, 616, 0x1A1A20, false, false, true, i++));
+
+		// id 1722 — from content/items/thief_wearable_rogue_top.yaml
+		items.add(new ItemDef("Rogue Vest", "A dark leather vest for the working criminal.", "", 6000, 617, "items:617", false, true, 617, 0x202028, false, false, true, i++));
+
+		// id 1723 — from content/items/ranger_black_d_hide_body.yaml
+		items.add(new ItemDef("Black Dragonhide Body", "A leather body made from black dragonhide.", "", 16000, 618, "items:618", false, true, 618, 0x384048, false, false, true, i++));
+
+		// id 1724 — from content/items/ranger_black_d_hide_chaps.yaml
+		items.add(new ItemDef("Black Dragonhide Chaps", "Form-fitting chaps cut from black dragonhide.", "", 12000, 619, "items:619", false, true, 619, 0x384048, false, false, true, i++));
+
+		// id 1725 — from content/items/ranger_black_d_hide_coif.yaml
+		items.add(new ItemDef("Black Dragonhide Coif", "A hooded coif lined with black dragonhide.", "", 6000, 620, "items:620", false, true, 620, 0x384048, false, false, true, i++));
+
+		// id 1726 — from content/items/ranger_black_d_hide_vambraces.yaml
+		items.add(new ItemDef("Black Dragonhide Vambraces", "Forearm guards plated with black dragonhide.", "", 5000, 621, "items:621", false, true, 621, 0x384048, false, false, true, i++));
+
+		// id 1727 — from content/items/ranger_blue_d_hide_body.yaml
+		items.add(new ItemDef("Blue Dragonhide Body", "A leather body made from blue dragonhide.", "", 9000, 622, "items:622", false, true, 622, 0x3070C8, false, false, true, i++));
+
+		// id 1728 — from content/items/ranger_blue_d_hide_chaps.yaml
+		items.add(new ItemDef("Blue Dragonhide Chaps", "Form-fitting chaps cut from blue dragonhide.", "", 6800, 623, "items:623", false, true, 623, 0x3070C8, false, false, true, i++));
+
+		// id 1729 — from content/items/ranger_blue_d_hide_coif.yaml
+		items.add(new ItemDef("Blue Dragonhide Coif", "A hooded coif lined with blue dragonhide.", "", 3400, 624, "items:624", false, true, 624, 0x3070C8, false, false, true, i++));
+
+		// id 1730 — from content/items/ranger_blue_d_hide_vambraces.yaml
+		items.add(new ItemDef("Blue Dragonhide Vambraces", "Forearm guards plated with blue dragonhide.", "", 2800, 625, "items:625", false, true, 625, 0x3070C8, false, false, true, i++));
+
+		// id 1731 — from content/items/ranger_green_d_hide_body.yaml
+		items.add(new ItemDef("Green Dragonhide Body", "A leather body made from green dragonhide.", "", 4000, 626, "items:626", false, true, 626, 0x388928, false, false, true, i++));
+
+		// id 1732 — from content/items/ranger_green_d_hide_chaps.yaml
+		items.add(new ItemDef("Green Dragonhide Chaps", "Form-fitting chaps cut from green dragonhide.", "", 3000, 627, "items:627", false, true, 627, 0x388928, false, false, true, i++));
+
+		// id 1733 — from content/items/ranger_green_d_hide_coif.yaml
+		items.add(new ItemDef("Green Dragonhide Coif", "A hooded coif lined with green dragonhide.", "", 1500, 628, "items:628", false, true, 628, 0x388928, false, false, true, i++));
+
+		// id 1734 — from content/items/ranger_green_d_hide_vambraces.yaml
+		items.add(new ItemDef("Green Dragonhide Vambraces", "Forearm guards plated with green dragonhide.", "", 1200, 629, "items:629", false, true, 629, 0x388928, false, false, true, i++));
+
+		// id 1735 — from content/items/ranger_red_d_hide_body.yaml
+		items.add(new ItemDef("Red Dragonhide Body", "A leather body made from red dragonhide.", "", 12000, 630, "items:630", false, true, 630, 0xA82828, false, false, true, i++));
+
+		// id 1736 — from content/items/ranger_red_d_hide_chaps.yaml
+		items.add(new ItemDef("Red Dragonhide Chaps", "Form-fitting chaps cut from red dragonhide.", "", 9000, 631, "items:631", false, true, 631, 0xA82828, false, false, true, i++));
+
+		// id 1737 — from content/items/ranger_red_d_hide_coif.yaml
+		items.add(new ItemDef("Red Dragonhide Coif", "A hooded coif lined with red dragonhide.", "", 4500, 632, "items:632", false, true, 632, 0xA82828, false, false, true, i++));
+
+		// id 1738 — from content/items/ranger_red_d_hide_vambraces.yaml
+		items.add(new ItemDef("Red Dragonhide Vambraces", "Forearm guards plated with red dragonhide.", "", 3800, 633, "items:633", false, true, 633, 0xA82828, false, false, true, i++));
+
 		return i;
 	}
 }
