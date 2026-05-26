@@ -38,7 +38,11 @@ from PIL import Image
 REPO = Path(__file__).resolve().parents[2]
 ARCHIVE = REPO / "client" / "Cache" / "video" / "Authentic_Sprites.orsc"
 BACKUP = ARCHIVE.with_suffix(ARCHIVE.suffix + ".bak")
-ART_ROOT = REPO / "art" / "items" / "ui"
+# The artist moved the UI batch into _archive/ui_v1/ mid-2026-05-25
+# (signal that this art is up for retirement). The combat tab + run
+# energy icons in there are the ones sparky wants kept, so we still
+# pack from this location until v2 ships.
+ART_ROOT = REPO / "art" / "_archive" / "ui_v1"
 
 HEADER_FMT = ">IIbIIII"   # w, h, requiresShift, xShift, yShift, s1, s2
 HEADER_LEN = struct.calcsize(HEADER_FMT)  # 25
@@ -151,8 +155,10 @@ def main() -> int:
         shutil.copy2(ARCHIVE, BACKUP)
         print(f"Backed up archive -> {BACKUP}")
 
-    # Read existing entries
-    with zipfile.ZipFile(BACKUP, "r") as zin:
+    # Read from the CURRENT archive, not BACKUP. BACKUP is a one-time
+    # pristine snapshot — if we re-read it on every run we'd erase
+    # whatever previous pack scripts added (wearables, projectiles, etc).
+    with zipfile.ZipFile(ARCHIVE, "r") as zin:
         names = zin.namelist()
         entries = {n: zin.read(n) for n in names}
 

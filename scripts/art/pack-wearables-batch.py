@@ -56,11 +56,15 @@ def main() -> int:
     if not ARCHIVE.exists():
         print(f"FATAL: {ARCHIVE} not found", file=sys.stderr)
         return 1
+    # IMPORTANT — read from the CURRENT archive, not BACKUP. BACKUP is a
+    # one-time pristine snapshot; if we re-read it every run we'd erase
+    # whatever previous pack scripts added (UI sprites, projectiles,
+    # etc.). Only update BACKUP if it doesn't exist yet.
     if not BACKUP.exists():
         shutil.copy2(ARCHIVE, BACKUP)
         print(f"Backed up archive -> {BACKUP}")
 
-    with zipfile.ZipFile(BACKUP, "r") as zin:
+    with zipfile.ZipFile(ARCHIVE, "r") as zin:
         names = zin.namelist()
         entries = {n: zin.read(n) for n in names}
 

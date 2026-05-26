@@ -231,7 +231,10 @@ def main() -> int:
     else:
         print(f"Backup exists at {BACKUP} (leaving alone)")
 
-    with zipfile.ZipFile(BACKUP, "r") as zin:
+    # Read from the CURRENT archive — BACKUP is a one-time pristine
+    # snapshot. Re-reading BACKUP would erase whatever previous pack
+    # scripts added (UI sprites, wearables, etc.).
+    with zipfile.ZipFile(ARCHIVE, "r") as zin:
         names = zin.namelist()
         entries = {n: zin.read(n) for n in names}
 

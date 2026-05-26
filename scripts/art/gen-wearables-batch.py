@@ -32,7 +32,7 @@ CONTENT_ITEMS = REPO / "content" / "items"
 
 class Wearable(NamedTuple):
     sprite_file: str        # e.g. "brown_hood.png"
-    sprite_dir: str         # e.g. "thief_wearables" (under art/items/)
+    sprite_dir: str         # e.g. "equipment/thief_wearables" (under art/items/)
     display_name: str       # in-game item name
     description: str        # in-game hover description
     wear_slot: int          # 0=head 1=body 2=legs 3=cape 9=hands 10=feet
@@ -48,50 +48,52 @@ class Wearable(NamedTuple):
 # Thief wearables — order matches alphabetical-sorted file listing so
 # brown_boots is the first ID and rogue_top is the last of this batch.
 THIEF_WEARABLES: list[Wearable] = [
-    Wearable("brown_boots.png",   "thief_wearables", "Brown Thief Boots",   "Soft leather boots for quiet feet.",            10, "boots",         0x6C4828, 0, 1, 1, 0,  200),
-    Wearable("brown_bottom.png",  "thief_wearables", "Brown Thief Chaps",   "Brown leather chaps. Comfortable in alleyways.",  2, "leatherchaps",  0x8C6438, 0, 1, 1, 0,  300),
-    Wearable("brown_cape.png",    "thief_wearables", "Brown Thief Cape",    "A plain brown cape — easy to disappear into.",    3, "cape",          0x8C6438, 0, 1, 0, 0,  150),
-    Wearable("brown_gloves.png",  "thief_wearables", "Brown Thief Gloves",  "Fingerless leather gloves for nimble work.",      9, "leathergloves", 0x6C4828, 0, 1, 1, 0,  120),
-    Wearable("brown_hood.png",    "thief_wearables", "Brown Thief Hood",    "A modest hood that hides your face.",             0, "hood1",         0x6C4828, 0, 1, 1, 0,  180),
-    Wearable("brown_top.png",     "thief_wearables", "Brown Thief Vest",    "A worn leather vest, brown as forest dirt.",      1, "leathervest",   0x8C6438, 0, 1, 2, 0,  400),
+    # NOTE: sprite_dir is relative to art/items/. Wearables moved into
+    # the equipment/ subtree mid-2026-05-25, so the prefix carries it.
+    Wearable("brown_boots.png",   "equipment/thief_wearables", "Brown Thief Boots",   "Soft leather boots for quiet feet.",            10, "boots",         0x6C4828, 0, 1, 1, 0,  200),
+    Wearable("brown_bottom.png",  "equipment/thief_wearables", "Brown Thief Chaps",   "Brown leather chaps. Comfortable in alleyways.",  2, "leatherchaps",  0x8C6438, 0, 1, 1, 0,  300),
+    Wearable("brown_cape.png",    "equipment/thief_wearables", "Brown Thief Cape",    "A plain brown cape — easy to disappear into.",    3, "cape",          0x8C6438, 0, 1, 0, 0,  150),
+    Wearable("brown_gloves.png",  "equipment/thief_wearables", "Brown Thief Gloves",  "Fingerless leather gloves for nimble work.",      9, "leathergloves", 0x6C4828, 0, 1, 1, 0,  120),
+    Wearable("brown_hood.png",    "equipment/thief_wearables", "Brown Thief Hood",    "A modest hood that hides your face.",             0, "hood1",         0x6C4828, 0, 1, 1, 0,  180),
+    Wearable("brown_top.png",     "equipment/thief_wearables", "Brown Thief Vest",    "A worn leather vest, brown as forest dirt.",      1, "leathervest",   0x8C6438, 0, 1, 2, 0,  400),
 
-    Wearable("master_boots.png",  "thief_wearables", "Master Thief Boots",  "Boots so silent they whisper to the floor.",    10, "boots",         0x1A1810, 0, 50, 3, 0, 12000),
-    Wearable("master_bottom.png", "thief_wearables", "Master Thief Chaps",  "Charcoal chaps with hidden pockets.",            2, "leatherchaps",  0x1F1A0C, 0, 50, 3, 0, 18000),
-    Wearable("master_cape.png",   "thief_wearables", "Master Thief Cape",   "A master thief's cape, blacker than night.",     3, "thievingcape",  0x1F1A0C, 0, 50, 1, 0,  9000),
-    Wearable("master_gloves.png", "thief_wearables", "Master Thief Gloves", "Gloves so fine you can feel a coin's date.",     9, "leathergloves", 0x1A1810, 0, 50, 3, 0,  7200),
-    Wearable("master_hood.png",   "thief_wearables", "Master Thief Hood",   "A hood that drinks the light.",                  0, "evilhoodie",    0x1A1810, 0, 50, 3, 0, 10800),
-    Wearable("master_top.png",    "thief_wearables", "Master Thief Doublet","A reinforced doublet, midnight-black with faint gold warmth.", 1, "leatherarmour", 0x1F1A0C, 0, 50, 4, 0, 24000),
+    Wearable("master_boots.png",  "equipment/thief_wearables", "Master Thief Boots",  "Boots so silent they whisper to the floor.",    10, "boots",         0x1A1810, 0, 50, 3, 0, 12000),
+    Wearable("master_bottom.png", "equipment/thief_wearables", "Master Thief Chaps",  "Charcoal chaps with hidden pockets.",            2, "leatherchaps",  0x1F1A0C, 0, 50, 3, 0, 18000),
+    Wearable("master_cape.png",   "equipment/thief_wearables", "Master Thief Cape",   "A master thief's cape, blacker than night.",     3, "thievingcape",  0x1F1A0C, 0, 50, 1, 0,  9000),
+    Wearable("master_gloves.png", "equipment/thief_wearables", "Master Thief Gloves", "Gloves so fine you can feel a coin's date.",     9, "leathergloves", 0x1A1810, 0, 50, 3, 0,  7200),
+    Wearable("master_hood.png",   "equipment/thief_wearables", "Master Thief Hood",   "A hood that drinks the light.",                  0, "evilhoodie",    0x1A1810, 0, 50, 3, 0, 10800),
+    Wearable("master_top.png",    "equipment/thief_wearables", "Master Thief Doublet","A reinforced doublet, midnight-black with faint gold warmth.", 1, "leatherarmour", 0x1F1A0C, 0, 50, 4, 0, 24000),
 
-    Wearable("rogue_boots.png",   "thief_wearables", "Rogue Boots",         "Worn black boots a rogue would die in.",        10, "boots",         0x1A1A20, 0, 25, 2, 0,  3000),
-    Wearable("rogue_bottom.png",  "thief_wearables", "Rogue Chaps",         "Dark leather chaps stained with city soot.",     2, "leatherchaps",  0x202028, 0, 25, 2, 0,  4500),
-    Wearable("rogue_cape.png",    "thief_wearables", "Rogue Cape",          "A dark cape stained with a faint copper smell.", 3, "cape",          0x3A1010, 0, 25, 1, 0,  2250),
-    Wearable("rogue_gloves.png",  "thief_wearables", "Rogue Gloves",        "Dark fingerless gloves with reinforced palms.",  9, "leathergloves", 0x1A1A20, 0, 25, 2, 0,  1800),
-    Wearable("rogue_hood.png",    "thief_wearables", "Rogue Hood",          "A sinister hood. Few who see it live to recall.", 0, "evilhoodie",    0x1A1A20, 0, 25, 2, 0,  2700),
-    Wearable("rogue_top.png",     "thief_wearables", "Rogue Vest",          "A dark leather vest for the working criminal.",  1, "leathervest",   0x202028, 0, 25, 3, 0,  6000),
+    Wearable("rogue_boots.png",   "equipment/thief_wearables", "Rogue Boots",         "Worn black boots a rogue would die in.",        10, "boots",         0x1A1A20, 0, 25, 2, 0,  3000),
+    Wearable("rogue_bottom.png",  "equipment/thief_wearables", "Rogue Chaps",         "Dark leather chaps stained with city soot.",     2, "leatherchaps",  0x202028, 0, 25, 2, 0,  4500),
+    Wearable("rogue_cape.png",    "equipment/thief_wearables", "Rogue Cape",          "A dark cape stained with a faint copper smell.", 3, "cape",          0x3A1010, 0, 25, 1, 0,  2250),
+    Wearable("rogue_gloves.png",  "equipment/thief_wearables", "Rogue Gloves",        "Dark fingerless gloves with reinforced palms.",  9, "leathergloves", 0x1A1A20, 0, 25, 2, 0,  1800),
+    Wearable("rogue_hood.png",    "equipment/thief_wearables", "Rogue Hood",          "A sinister hood. Few who see it live to recall.", 0, "evilhoodie",    0x1A1A20, 0, 25, 2, 0,  2700),
+    Wearable("rogue_top.png",     "equipment/thief_wearables", "Rogue Vest",          "A dark leather vest for the working criminal.",  1, "leathervest",   0x202028, 0, 25, 3, 0,  6000),
 ]
 
 # Dragonhide — alphabetical (black/blue/green/red) × (body/chaps/coif/vambraces).
 # Ranged skill id = 5. Tier levels: green 40, blue 50, red 60, black 70.
 DRAGONHIDE: list[Wearable] = [
-    Wearable("black_d_hide_body.png",       "dragonhide", "Black Dragonhide Body",       "A leather body made from black dragonhide.",       1, "leatherarmour", 0x384048, 5, 70, 6, 18, 16000),
-    Wearable("black_d_hide_chaps.png",      "dragonhide", "Black Dragonhide Chaps",      "Form-fitting chaps cut from black dragonhide.",    2, "leatherchaps",  0x384048, 5, 70, 5, 16, 12000),
-    Wearable("black_d_hide_coif.png",       "dragonhide", "Black Dragonhide Coif",       "A hooded coif lined with black dragonhide.",       0, "hood1",         0x384048, 5, 70, 3, 10,  6000),
-    Wearable("black_d_hide_vambraces.png",  "dragonhide", "Black Dragonhide Vambraces",  "Forearm guards plated with black dragonhide.",     9, "leathergloves", 0x384048, 5, 70, 3, 12,  5000),
+    Wearable("black_d_hide_body.png",       "equipment/dragonhide", "Black Dragonhide Body",       "A leather body made from black dragonhide.",       1, "leatherarmour", 0x384048, 5, 70, 6, 18, 16000),
+    Wearable("black_d_hide_chaps.png",      "equipment/dragonhide", "Black Dragonhide Chaps",      "Form-fitting chaps cut from black dragonhide.",    2, "leatherchaps",  0x384048, 5, 70, 5, 16, 12000),
+    Wearable("black_d_hide_coif.png",       "equipment/dragonhide", "Black Dragonhide Coif",       "A hooded coif lined with black dragonhide.",       0, "hood1",         0x384048, 5, 70, 3, 10,  6000),
+    Wearable("black_d_hide_vambraces.png",  "equipment/dragonhide", "Black Dragonhide Vambraces",  "Forearm guards plated with black dragonhide.",     9, "leathergloves", 0x384048, 5, 70, 3, 12,  5000),
 
-    Wearable("blue_d_hide_body.png",        "dragonhide", "Blue Dragonhide Body",        "A leather body made from blue dragonhide.",        1, "leatherarmour", 0x3070C8, 5, 50, 5, 14,  9000),
-    Wearable("blue_d_hide_chaps.png",       "dragonhide", "Blue Dragonhide Chaps",       "Form-fitting chaps cut from blue dragonhide.",     2, "leatherchaps",  0x3070C8, 5, 50, 4, 12,  6800),
-    Wearable("blue_d_hide_coif.png",        "dragonhide", "Blue Dragonhide Coif",        "A hooded coif lined with blue dragonhide.",        0, "hood1",         0x3070C8, 5, 50, 2,  8,  3400),
-    Wearable("blue_d_hide_vambraces.png",   "dragonhide", "Blue Dragonhide Vambraces",   "Forearm guards plated with blue dragonhide.",      9, "leathergloves", 0x3070C8, 5, 50, 2,  9,  2800),
+    Wearable("blue_d_hide_body.png",        "equipment/dragonhide", "Blue Dragonhide Body",        "A leather body made from blue dragonhide.",        1, "leatherarmour", 0x3070C8, 5, 50, 5, 14,  9000),
+    Wearable("blue_d_hide_chaps.png",       "equipment/dragonhide", "Blue Dragonhide Chaps",       "Form-fitting chaps cut from blue dragonhide.",     2, "leatherchaps",  0x3070C8, 5, 50, 4, 12,  6800),
+    Wearable("blue_d_hide_coif.png",        "equipment/dragonhide", "Blue Dragonhide Coif",        "A hooded coif lined with blue dragonhide.",        0, "hood1",         0x3070C8, 5, 50, 2,  8,  3400),
+    Wearable("blue_d_hide_vambraces.png",   "equipment/dragonhide", "Blue Dragonhide Vambraces",   "Forearm guards plated with blue dragonhide.",      9, "leathergloves", 0x3070C8, 5, 50, 2,  9,  2800),
 
-    Wearable("green_d_hide_body.png",       "dragonhide", "Green Dragonhide Body",       "A leather body made from green dragonhide.",       1, "leatherarmour", 0x388928, 5, 40, 4, 12,  4000),
-    Wearable("green_d_hide_chaps.png",      "dragonhide", "Green Dragonhide Chaps",      "Form-fitting chaps cut from green dragonhide.",    2, "leatherchaps",  0x388928, 5, 40, 3, 10,  3000),
-    Wearable("green_d_hide_coif.png",       "dragonhide", "Green Dragonhide Coif",       "A hooded coif lined with green dragonhide.",       0, "hood1",         0x388928, 5, 40, 2,  7,  1500),
-    Wearable("green_d_hide_vambraces.png",  "dragonhide", "Green Dragonhide Vambraces",  "Forearm guards plated with green dragonhide.",     9, "leathergloves", 0x388928, 5, 40, 2,  8,  1200),
+    Wearable("green_d_hide_body.png",       "equipment/dragonhide", "Green Dragonhide Body",       "A leather body made from green dragonhide.",       1, "leatherarmour", 0x388928, 5, 40, 4, 12,  4000),
+    Wearable("green_d_hide_chaps.png",      "equipment/dragonhide", "Green Dragonhide Chaps",      "Form-fitting chaps cut from green dragonhide.",    2, "leatherchaps",  0x388928, 5, 40, 3, 10,  3000),
+    Wearable("green_d_hide_coif.png",       "equipment/dragonhide", "Green Dragonhide Coif",       "A hooded coif lined with green dragonhide.",       0, "hood1",         0x388928, 5, 40, 2,  7,  1500),
+    Wearable("green_d_hide_vambraces.png",  "equipment/dragonhide", "Green Dragonhide Vambraces",  "Forearm guards plated with green dragonhide.",     9, "leathergloves", 0x388928, 5, 40, 2,  8,  1200),
 
-    Wearable("red_d_hide_body.png",         "dragonhide", "Red Dragonhide Body",         "A leather body made from red dragonhide.",         1, "leatherarmour", 0xA82828, 5, 60, 5, 16, 12000),
-    Wearable("red_d_hide_chaps.png",        "dragonhide", "Red Dragonhide Chaps",        "Form-fitting chaps cut from red dragonhide.",      2, "leatherchaps",  0xA82828, 5, 60, 4, 14,  9000),
-    Wearable("red_d_hide_coif.png",         "dragonhide", "Red Dragonhide Coif",         "A hooded coif lined with red dragonhide.",         0, "hood1",         0xA82828, 5, 60, 3,  9,  4500),
-    Wearable("red_d_hide_vambraces.png",    "dragonhide", "Red Dragonhide Vambraces",    "Forearm guards plated with red dragonhide.",       9, "leathergloves", 0xA82828, 5, 60, 2, 10,  3800),
+    Wearable("red_d_hide_body.png",         "equipment/dragonhide", "Red Dragonhide Body",         "A leather body made from red dragonhide.",         1, "leatherarmour", 0xA82828, 5, 60, 5, 16, 12000),
+    Wearable("red_d_hide_chaps.png",        "equipment/dragonhide", "Red Dragonhide Chaps",        "Form-fitting chaps cut from red dragonhide.",      2, "leatherchaps",  0xA82828, 5, 60, 4, 14,  9000),
+    Wearable("red_d_hide_coif.png",         "equipment/dragonhide", "Red Dragonhide Coif",         "A hooded coif lined with red dragonhide.",         0, "hood1",         0xA82828, 5, 60, 3,  9,  4500),
+    Wearable("red_d_hide_vambraces.png",    "equipment/dragonhide", "Red Dragonhide Vambraces",    "Forearm guards plated with red dragonhide.",       9, "leathergloves", 0xA82828, 5, 60, 2, 10,  3800),
 ]
 
 ALL: list[Wearable] = THIEF_WEARABLES + DRAGONHIDE
@@ -115,9 +117,9 @@ def yaml_path(w: Wearable) -> Path:
     """Filename = sprite stem prefixed with category so they sort with
     siblings (thief_*.yaml lives next to other thieving items)."""
     stem = w.sprite_file[:-4]
-    if w.sprite_dir == "thief_wearables":
+    if w.sprite_dir == "equipment/thief_wearables":
         return CONTENT_ITEMS / f"thief_wearable_{stem}.yaml"
-    if w.sprite_dir == "dragonhide":
+    if w.sprite_dir == "equipment/dragonhide":
         return CONTENT_ITEMS / f"ranger_{stem}.yaml"
     raise ValueError(w.sprite_dir)
 
