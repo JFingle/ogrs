@@ -865,13 +865,20 @@ public abstract class GameDatabase {
 	}
 
 	public void savePlayerBank(Player player) throws GameDatabaseException {
-		final int bankSize = player.getBank().size();
+		// OGRS — null-safe (mirrors the savePlayerInventory fix). If the
+		// player's bank wasn't loaded before save fires (login-flow race),
+		// skip the save entirely. Writing an empty array would DELETE the
+		// player's real bank rows from DB; existing rows are still valid
+		// since we never loaded them.
+		final com.openrsc.server.model.container.Bank b = player.getBank();
+		if (b == null) return;
+		final int bankSize = b.size();
 		final PlayerBank[] bank = new PlayerBank[bankSize];
 
 		for (int i = 0; i < bankSize; i++) {
 			bank[i] = new PlayerBank();
-			bank[i].itemId = player.getBank().get(i).getItemId();
-			bank[i].itemStatus = player.getBank().get(i).getItemStatus();
+			bank[i].itemId = b.get(i).getItemId();
+			bank[i].itemStatus = b.get(i).getItemStatus();
 		}
 
 		savePlayerBank(player.getDatabaseID(), bank);
