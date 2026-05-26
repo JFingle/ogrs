@@ -1,0 +1,30 @@
+# OGRS wearable — Brown Thief Hood.
+# Paperdoll batch 2026-05-25 (sparky). Vanilla template + pictureMask
+# tint — no new worn-sprite art. See art/_specs/PAPERDOLL_MAPPING*.md
+# and scripts/art/gen-wearables-batch.py for the full mapping table.
+#
+# Template: hood1   pictureMask: #6C4828  (7096360)
+# Inventory icon: art/items/thief_wearables/brown_hood.png
+
+id: 1709
+name: Brown Thief Hood
+description: A modest hood that hides your face.
+command: ""
+stackable: false
+untradeable: false
+members_only: false
+noteable: true
+base_price: 180
+picture_mask: 0x6C4828
+wieldable: true
+wearable_id: 604
+weapon:
+  appearance_id: 604
+  wearable_id: 604
+  wear_slot: 0
+  required_skill: 0
+  required_level: 1
+  armour_bonus: 1
+sprite:
+  id: 604
+  location: "items:604"

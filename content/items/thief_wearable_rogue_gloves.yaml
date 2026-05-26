@@ -1,0 +1,30 @@
+# OGRS wearable — Rogue Gloves.
+# Paperdoll batch 2026-05-25 (sparky). Vanilla template + pictureMask
+# tint — no new worn-sprite art. See art/_specs/PAPERDOLL_MAPPING*.md
+# and scripts/art/gen-wearables-batch.py for the full mapping table.
+#
+# Template: leathergloves   pictureMask: #1A1A20  (1710624)
+# Inventory icon: art/items/thief_wearables/rogue_gloves.png
+
+id: 1720
+name: Rogue Gloves
+description: Dark fingerless gloves with reinforced palms.
+command: ""
+stackable: false
+untradeable: false
+members_only: false
+noteable: true
+base_price: 1800
+picture_mask: 0x1A1A20
+wieldable: true
+wearable_id: 615
+weapon:
+  appearance_id: 615
+  wearable_id: 615
+  wear_slot: 9
+  required_skill: 0
+  required_level: 25
+  armour_bonus: 2
+sprite:
+  id: 615
+  location: "items:615"

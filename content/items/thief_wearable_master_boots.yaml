@@ -1,0 +1,30 @@
+# OGRS wearable — Master Thief Boots.
+# Paperdoll batch 2026-05-25 (sparky). Vanilla template + pictureMask
+# tint — no new worn-sprite art. See art/_specs/PAPERDOLL_MAPPING*.md
+# and scripts/art/gen-wearables-batch.py for the full mapping table.
+#
+# Template: boots   pictureMask: #1A1810  (1710096)
+# Inventory icon: art/items/thief_wearables/master_boots.png
+
+id: 1711
+name: Master Thief Boots
+description: Boots so silent they whisper to the floor.
+command: ""
+stackable: false
+untradeable: false
+members_only: false
+noteable: true
+base_price: 12000
+picture_mask: 0x1A1810
+wieldable: true
+wearable_id: 606
+weapon:
+  appearance_id: 606
+  wearable_id: 606
+  wear_slot: 10
+  required_skill: 0
+  required_level: 50
+  armour_bonus: 3
+sprite:
+  id: 606
+  location: "items:606"

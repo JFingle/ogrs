@@ -1,0 +1,30 @@
+# OGRS wearable — Rogue Vest.
+# Paperdoll batch 2026-05-25 (sparky). Vanilla template + pictureMask
+# tint — no new worn-sprite art. See art/_specs/PAPERDOLL_MAPPING*.md
+# and scripts/art/gen-wearables-batch.py for the full mapping table.
+#
+# Template: leathervest   pictureMask: #202028  (2105384)
+# Inventory icon: art/items/thief_wearables/rogue_top.png
+
+id: 1722
+name: Rogue Vest
+description: A dark leather vest for the working criminal.
+command: ""
+stackable: false
+untradeable: false
+members_only: false
+noteable: true
+base_price: 6000
+picture_mask: 0x202028
+wieldable: true
+wearable_id: 617
+weapon:
+  appearance_id: 617
+  wearable_id: 617
+  wear_slot: 1
+  required_skill: 0
+  required_level: 25
+  armour_bonus: 3
+sprite:
+  id: 617
+  location: "items:617"

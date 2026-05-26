@@ -1,0 +1,31 @@
+# OGRS wearable — Red Dragonhide Vambraces.
+# Paperdoll batch 2026-05-25 (sparky). Vanilla template + pictureMask
+# tint — no new worn-sprite art. See art/_specs/PAPERDOLL_MAPPING*.md
+# and scripts/art/gen-wearables-batch.py for the full mapping table.
+#
+# Template: leathergloves   pictureMask: #A82828  (11020328)
+# Inventory icon: art/items/dragonhide/red_d_hide_vambraces.png
+
+id: 1738
+name: Red Dragonhide Vambraces
+description: Forearm guards plated with red dragonhide.
+command: ""
+stackable: false
+untradeable: false
+members_only: false
+noteable: true
+base_price: 3800
+picture_mask: 0xA82828
+wieldable: true
+wearable_id: 633
+weapon:
+  appearance_id: 633
+  wearable_id: 633
+  wear_slot: 9
+  required_skill: 5
+  required_level: 60
+  armour_bonus: 2
+  power_bonus: 10   # ranged accuracy/power
+sprite:
+  id: 633
+  location: "items:633"

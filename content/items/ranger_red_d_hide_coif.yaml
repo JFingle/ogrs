@@ -1,0 +1,31 @@
+# OGRS wearable — Red Dragonhide Coif.
+# Paperdoll batch 2026-05-25 (sparky). Vanilla template + pictureMask
+# tint — no new worn-sprite art. See art/_specs/PAPERDOLL_MAPPING*.md
+# and scripts/art/gen-wearables-batch.py for the full mapping table.
+#
+# Template: hood1   pictureMask: #A82828  (11020328)
+# Inventory icon: art/items/dragonhide/red_d_hide_coif.png
+
+id: 1737
+name: Red Dragonhide Coif
+description: A hooded coif lined with red dragonhide.
+command: ""
+stackable: false
+untradeable: false
+members_only: false
+noteable: true
+base_price: 4500
+picture_mask: 0xA82828
+wieldable: true
+wearable_id: 632
+weapon:
+  appearance_id: 632
+  wearable_id: 632
+  wear_slot: 0
+  required_skill: 5
+  required_level: 60
+  armour_bonus: 3
+  power_bonus: 9   # ranged accuracy/power
+sprite:
+  id: 632
+  location: "items:632"

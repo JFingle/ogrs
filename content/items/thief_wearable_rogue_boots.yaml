@@ -1,0 +1,30 @@
+# OGRS wearable — Rogue Boots.
+# Paperdoll batch 2026-05-25 (sparky). Vanilla template + pictureMask
+# tint — no new worn-sprite art. See art/_specs/PAPERDOLL_MAPPING*.md
+# and scripts/art/gen-wearables-batch.py for the full mapping table.
+#
+# Template: boots   pictureMask: #1A1A20  (1710624)
+# Inventory icon: art/items/thief_wearables/rogue_boots.png
+
+id: 1717
+name: Rogue Boots
+description: Worn black boots a rogue would die in.
+command: ""
+stackable: false
+untradeable: false
+members_only: false
+noteable: true
+base_price: 3000
+picture_mask: 0x1A1A20
+wieldable: true
+wearable_id: 612
+weapon:
+  appearance_id: 612
+  wearable_id: 612
+  wear_slot: 10
+  required_skill: 0
+  required_level: 25
+  armour_bonus: 2
+sprite:
+  id: 612
+  location: "items:612"

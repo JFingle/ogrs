@@ -1,0 +1,30 @@
+# OGRS wearable — Brown Thief Cape.
+# Paperdoll batch 2026-05-25 (sparky). Vanilla template + pictureMask
+# tint — no new worn-sprite art. See art/_specs/PAPERDOLL_MAPPING*.md
+# and scripts/art/gen-wearables-batch.py for the full mapping table.
+#
+# Template: cape   pictureMask: #8C6438  (9200696)
+# Inventory icon: art/items/thief_wearables/brown_cape.png
+
+id: 1707
+name: Brown Thief Cape
+description: A plain brown cape — easy to disappear into.
+command: ""
+stackable: false
+untradeable: false
+members_only: false
+noteable: true
+base_price: 150
+picture_mask: 0x8C6438
+wieldable: true
+wearable_id: 602
+weapon:
+  appearance_id: 602
+  wearable_id: 602
+  wear_slot: 3
+  required_skill: 0
+  required_level: 1
+  armour_bonus: 0
+sprite:
+  id: 602
+  location: "items:602"

@@ -4955,6 +4955,53 @@ public class EntityHandler {
 			animations.add(new AnimationDef("boomstick", "equipment", 0, 0, true, false, 0));//556
 			animations.add(new AnimationDef("ashtorso", "equipment", 0, 0, true, false, 0));//557
 			animations.add(new AnimationDef("amulet", "equipment", 16763980, 3,0, true, false, 0)); //558
+
+			// OGRS wearables batch 2026-05-25 (sparky). Indices 600-633 cover
+			// 18 thief wearables (brown/rogue/master tiers) + 16 dragonhide
+			// pieces (green/blue/red/black). Gap 559-599 is reserved for
+			// upstream merges. Generated from
+			// scripts/art/gen-wearables-batch.py — do NOT hand-edit;
+			// regenerate from that script if the mapping changes.
+			while (animations.size() < 600) {
+				// Pad indices 559-599 with a harmless placeholder so the
+				// OGRS block always lands at 600 regardless of what
+				// upstream adds between 558 and us.
+				animations.add(new AnimationDef("head1", "player", 0, 0, true, false, 0));
+			}
+			animations.add(new AnimationDef("boots", "equipment", 7096360, 0, true, false, 0)); //600  brown_boots
+			animations.add(new AnimationDef("leatherchaps", "equipment", 9201720, 0, true, false, 0)); //601  brown_bottom
+			animations.add(new AnimationDef("cape", "equipment", 9201720, 0, true, false, 0)); //602  brown_cape
+			animations.add(new AnimationDef("leathergloves", "equipment", 7096360, 0, true, false, 0)); //603  brown_gloves
+			animations.add(new AnimationDef("hood1", "equipment", 7096360, 0, true, false, 0)); //604  brown_hood
+			animations.add(new AnimationDef("leathervest", "equipment", 9201720, 0, true, false, 0)); //605  brown_top
+			animations.add(new AnimationDef("boots", "equipment", 1738256, 0, true, false, 0)); //606  master_boots
+			animations.add(new AnimationDef("leatherchaps", "equipment", 2038284, 0, true, false, 0)); //607  master_bottom
+			animations.add(new AnimationDef("thievingcape", "equipment", 2038284, 0, true, false, 0)); //608  master_cape
+			animations.add(new AnimationDef("leathergloves", "equipment", 1738256, 0, true, false, 0)); //609  master_gloves
+			animations.add(new AnimationDef("evilhoodie", "equipment", 1738256, 0, true, false, 0)); //610  master_hood
+			animations.add(new AnimationDef("leatherarmour", "equipment", 2038284, 0, true, false, 0)); //611  master_top
+			animations.add(new AnimationDef("boots", "equipment", 1710624, 0, true, false, 0)); //612  rogue_boots
+			animations.add(new AnimationDef("leatherchaps", "equipment", 2105896, 0, true, false, 0)); //613  rogue_bottom
+			animations.add(new AnimationDef("cape", "equipment", 3805200, 0, true, false, 0)); //614  rogue_cape
+			animations.add(new AnimationDef("leathergloves", "equipment", 1710624, 0, true, false, 0)); //615  rogue_gloves
+			animations.add(new AnimationDef("evilhoodie", "equipment", 1710624, 0, true, false, 0)); //616  rogue_hood
+			animations.add(new AnimationDef("leathervest", "equipment", 2105896, 0, true, false, 0)); //617  rogue_top
+			animations.add(new AnimationDef("leatherarmour", "equipment", 3686472, 0, true, false, 0)); //618  black_d_hide_body
+			animations.add(new AnimationDef("leatherchaps", "equipment", 3686472, 0, true, false, 0)); //619  black_d_hide_chaps
+			animations.add(new AnimationDef("hood1", "equipment", 3686472, 0, true, false, 0)); //620  black_d_hide_coif
+			animations.add(new AnimationDef("leathergloves", "equipment", 3686472, 0, true, false, 0)); //621  black_d_hide_vambraces
+			animations.add(new AnimationDef("leatherarmour", "equipment", 3174600, 0, true, false, 0)); //622  blue_d_hide_body
+			animations.add(new AnimationDef("leatherchaps", "equipment", 3174600, 0, true, false, 0)); //623  blue_d_hide_chaps
+			animations.add(new AnimationDef("hood1", "equipment", 3174600, 0, true, false, 0)); //624  blue_d_hide_coif
+			animations.add(new AnimationDef("leathergloves", "equipment", 3174600, 0, true, false, 0)); //625  blue_d_hide_vambraces
+			animations.add(new AnimationDef("leatherarmour", "equipment", 3705128, 0, true, false, 0)); //626  green_d_hide_body
+			animations.add(new AnimationDef("leatherchaps", "equipment", 3705128, 0, true, false, 0)); //627  green_d_hide_chaps
+			animations.add(new AnimationDef("hood1", "equipment", 3705128, 0, true, false, 0)); //628  green_d_hide_coif
+			animations.add(new AnimationDef("leathergloves", "equipment", 3705128, 0, true, false, 0)); //629  green_d_hide_vambraces
+			animations.add(new AnimationDef("leatherarmour", "equipment", 11020328, 0, true, false, 0)); //630  red_d_hide_body
+			animations.add(new AnimationDef("leatherchaps", "equipment", 11020328, 0, true, false, 0)); //631  red_d_hide_chaps
+			animations.add(new AnimationDef("hood1", "equipment", 11020328, 0, true, false, 0)); //632  red_d_hide_coif
+			animations.add(new AnimationDef("leathergloves", "equipment", 11020328, 0, true, false, 0)); //633  red_d_hide_vambraces
 		}
 	}
 

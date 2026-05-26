@@ -1,0 +1,30 @@
+# OGRS wearable — Rogue Hood.
+# Paperdoll batch 2026-05-25 (sparky). Vanilla template + pictureMask
+# tint — no new worn-sprite art. See art/_specs/PAPERDOLL_MAPPING*.md
+# and scripts/art/gen-wearables-batch.py for the full mapping table.
+#
+# Template: evilhoodie   pictureMask: #1A1A20  (1710624)
+# Inventory icon: art/items/thief_wearables/rogue_hood.png
+
+id: 1721
+name: Rogue Hood
+description: A sinister hood. Few who see it live to recall.
+command: ""
+stackable: false
+untradeable: false
+members_only: false
+noteable: true
+base_price: 2700
+picture_mask: 0x1A1A20
+wieldable: true
+wearable_id: 616
+weapon:
+  appearance_id: 616
+  wearable_id: 616
+  wear_slot: 0
+  required_skill: 0
+  required_level: 25
+  armour_bonus: 2
+sprite:
+  id: 616
+  location: "items:616"

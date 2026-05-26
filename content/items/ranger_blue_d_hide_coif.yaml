@@ -1,0 +1,31 @@
+# OGRS wearable — Blue Dragonhide Coif.
+# Paperdoll batch 2026-05-25 (sparky). Vanilla template + pictureMask
+# tint — no new worn-sprite art. See art/_specs/PAPERDOLL_MAPPING*.md
+# and scripts/art/gen-wearables-batch.py for the full mapping table.
+#
+# Template: hood1   pictureMask: #3070C8  (3174600)
+# Inventory icon: art/items/dragonhide/blue_d_hide_coif.png
+
+id: 1729
+name: Blue Dragonhide Coif
+description: A hooded coif lined with blue dragonhide.
+command: ""
+stackable: false
+untradeable: false
+members_only: false
+noteable: true
+base_price: 3400
+picture_mask: 0x3070C8
+wieldable: true
+wearable_id: 624
+weapon:
+  appearance_id: 624
+  wearable_id: 624
+  wear_slot: 0
+  required_skill: 5
+  required_level: 50
+  armour_bonus: 2
+  power_bonus: 8   # ranged accuracy/power
+sprite:
+  id: 624
+  location: "items:624"

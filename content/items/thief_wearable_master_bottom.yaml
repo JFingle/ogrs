@@ -1,0 +1,30 @@
+# OGRS wearable — Master Thief Chaps.
+# Paperdoll batch 2026-05-25 (sparky). Vanilla template + pictureMask
+# tint — no new worn-sprite art. See art/_specs/PAPERDOLL_MAPPING*.md
+# and scripts/art/gen-wearables-batch.py for the full mapping table.
+#
+# Template: leatherchaps   pictureMask: #1F1A0C  (2038284)
+# Inventory icon: art/items/thief_wearables/master_bottom.png
+
+id: 1712
+name: Master Thief Chaps
+description: Charcoal chaps with hidden pockets.
+command: ""
+stackable: false
+untradeable: false
+members_only: false
+noteable: true
+base_price: 18000
+picture_mask: 0x1F1A0C
+wieldable: true
+wearable_id: 607
+weapon:
+  appearance_id: 607
+  wearable_id: 607
+  wear_slot: 2
+  required_skill: 0
+  required_level: 50
+  armour_bonus: 3
+sprite:
+  id: 607
+  location: "items:607"

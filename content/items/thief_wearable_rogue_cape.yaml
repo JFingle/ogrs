@@ -1,0 +1,30 @@
+# OGRS wearable — Rogue Cape.
+# Paperdoll batch 2026-05-25 (sparky). Vanilla template + pictureMask
+# tint — no new worn-sprite art. See art/_specs/PAPERDOLL_MAPPING*.md
+# and scripts/art/gen-wearables-batch.py for the full mapping table.
+#
+# Template: cape   pictureMask: #3A1010  (3805200)
+# Inventory icon: art/items/thief_wearables/rogue_cape.png
+
+id: 1719
+name: Rogue Cape
+description: A dark cape stained with a faint copper smell.
+command: ""
+stackable: false
+untradeable: false
+members_only: false
+noteable: true
+base_price: 2250
+picture_mask: 0x3A1010
+wieldable: true
+wearable_id: 614
+weapon:
+  appearance_id: 614
+  wearable_id: 614
+  wear_slot: 3
+  required_skill: 0
+  required_level: 25
+  armour_bonus: 1
+sprite:
+  id: 614
+  location: "items:614"

@@ -1,0 +1,31 @@
+# OGRS wearable — Green Dragonhide Body.
+# Paperdoll batch 2026-05-25 (sparky). Vanilla template + pictureMask
+# tint — no new worn-sprite art. See art/_specs/PAPERDOLL_MAPPING*.md
+# and scripts/art/gen-wearables-batch.py for the full mapping table.
+#
+# Template: leatherarmour   pictureMask: #388928  (3705128)
+# Inventory icon: art/items/dragonhide/green_d_hide_body.png
+
+id: 1731
+name: Green Dragonhide Body
+description: A leather body made from green dragonhide.
+command: ""
+stackable: false
+untradeable: false
+members_only: false
+noteable: true
+base_price: 4000
+picture_mask: 0x388928
+wieldable: true
+wearable_id: 626
+weapon:
+  appearance_id: 626
+  wearable_id: 626
+  wear_slot: 1
+  required_skill: 5
+  required_level: 40
+  armour_bonus: 4
+  power_bonus: 12   # ranged accuracy/power
+sprite:
+  id: 626
+  location: "items:626"

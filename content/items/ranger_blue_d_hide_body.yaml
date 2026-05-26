@@ -1,0 +1,31 @@
+# OGRS wearable — Blue Dragonhide Body.
+# Paperdoll batch 2026-05-25 (sparky). Vanilla template + pictureMask
+# tint — no new worn-sprite art. See art/_specs/PAPERDOLL_MAPPING*.md
+# and scripts/art/gen-wearables-batch.py for the full mapping table.
+#
+# Template: leatherarmour   pictureMask: #3070C8  (3174600)
+# Inventory icon: art/items/dragonhide/blue_d_hide_body.png
+
+id: 1727
+name: Blue Dragonhide Body
+description: A leather body made from blue dragonhide.
+command: ""
+stackable: false
+untradeable: false
+members_only: false
+noteable: true
+base_price: 9000
+picture_mask: 0x3070C8
+wieldable: true
+wearable_id: 622
+weapon:
+  appearance_id: 622
+  wearable_id: 622
+  wear_slot: 1
+  required_skill: 5
+  required_level: 50
+  armour_bonus: 5
+  power_bonus: 14   # ranged accuracy/power
+sprite:
+  id: 622
+  location: "items:622"

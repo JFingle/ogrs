@@ -1,0 +1,31 @@
+# OGRS wearable — Green Dragonhide Vambraces.
+# Paperdoll batch 2026-05-25 (sparky). Vanilla template + pictureMask
+# tint — no new worn-sprite art. See art/_specs/PAPERDOLL_MAPPING*.md
+# and scripts/art/gen-wearables-batch.py for the full mapping table.
+#
+# Template: leathergloves   pictureMask: #388928  (3705128)
+# Inventory icon: art/items/dragonhide/green_d_hide_vambraces.png
+
+id: 1734
+name: Green Dragonhide Vambraces
+description: Forearm guards plated with green dragonhide.
+command: ""
+stackable: false
+untradeable: false
+members_only: false
+noteable: true
+base_price: 1200
+picture_mask: 0x388928
+wieldable: true
+wearable_id: 629
+weapon:
+  appearance_id: 629
+  wearable_id: 629
+  wear_slot: 9
+  required_skill: 5
+  required_level: 40
+  armour_bonus: 2
+  power_bonus: 8   # ranged accuracy/power
+sprite:
+  id: 629
+  location: "items:629"

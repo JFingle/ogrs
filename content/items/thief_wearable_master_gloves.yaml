@@ -1,0 +1,30 @@
+# OGRS wearable — Master Thief Gloves.
+# Paperdoll batch 2026-05-25 (sparky). Vanilla template + pictureMask
+# tint — no new worn-sprite art. See art/_specs/PAPERDOLL_MAPPING*.md
+# and scripts/art/gen-wearables-batch.py for the full mapping table.
+#
+# Template: leathergloves   pictureMask: #1A1810  (1710096)
+# Inventory icon: art/items/thief_wearables/master_gloves.png
+
+id: 1714
+name: Master Thief Gloves
+description: Gloves so fine you can feel a coin's date.
+command: ""
+stackable: false
+untradeable: false
+members_only: false
+noteable: true
+base_price: 7200
+picture_mask: 0x1A1810
+wieldable: true
+wearable_id: 609
+weapon:
+  appearance_id: 609
+  wearable_id: 609
+  wear_slot: 9
+  required_skill: 0
+  required_level: 50
+  armour_bonus: 3
+sprite:
+  id: 609
+  location: "items:609"

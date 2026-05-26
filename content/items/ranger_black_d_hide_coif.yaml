@@ -1,0 +1,31 @@
+# OGRS wearable — Black Dragonhide Coif.
+# Paperdoll batch 2026-05-25 (sparky). Vanilla template + pictureMask
+# tint — no new worn-sprite art. See art/_specs/PAPERDOLL_MAPPING*.md
+# and scripts/art/gen-wearables-batch.py for the full mapping table.
+#
+# Template: hood1   pictureMask: #384048  (3686472)
+# Inventory icon: art/items/dragonhide/black_d_hide_coif.png
+
+id: 1725
+name: Black Dragonhide Coif
+description: A hooded coif lined with black dragonhide.
+command: ""
+stackable: false
+untradeable: false
+members_only: false
+noteable: true
+base_price: 6000
+picture_mask: 0x384048
+wieldable: true
+wearable_id: 620
+weapon:
+  appearance_id: 620
+  wearable_id: 620
+  wear_slot: 0
+  required_skill: 5
+  required_level: 70
+  armour_bonus: 3
+  power_bonus: 10   # ranged accuracy/power
+sprite:
+  id: 620
+  location: "items:620"

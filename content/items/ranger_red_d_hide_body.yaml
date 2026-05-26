@@ -1,0 +1,31 @@
+# OGRS wearable — Red Dragonhide Body.
+# Paperdoll batch 2026-05-25 (sparky). Vanilla template + pictureMask
+# tint — no new worn-sprite art. See art/_specs/PAPERDOLL_MAPPING*.md
+# and scripts/art/gen-wearables-batch.py for the full mapping table.
+#
+# Template: leatherarmour   pictureMask: #A82828  (11020328)
+# Inventory icon: art/items/dragonhide/red_d_hide_body.png
+
+id: 1735
+name: Red Dragonhide Body
+description: A leather body made from red dragonhide.
+command: ""
+stackable: false
+untradeable: false
+members_only: false
+noteable: true
+base_price: 12000
+picture_mask: 0xA82828
+wieldable: true
+wearable_id: 630
+weapon:
+  appearance_id: 630
+  wearable_id: 630
+  wear_slot: 1
+  required_skill: 5
+  required_level: 60
+  armour_bonus: 5
+  power_bonus: 16   # ranged accuracy/power
+sprite:
+  id: 630
+  location: "items:630"

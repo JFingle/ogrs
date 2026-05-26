@@ -1,0 +1,30 @@
+# OGRS wearable — Master Thief Cape.
+# Paperdoll batch 2026-05-25 (sparky). Vanilla template + pictureMask
+# tint — no new worn-sprite art. See art/_specs/PAPERDOLL_MAPPING*.md
+# and scripts/art/gen-wearables-batch.py for the full mapping table.
+#
+# Template: thievingcape   pictureMask: #1F1A0C  (2038284)
+# Inventory icon: art/items/thief_wearables/master_cape.png
+
+id: 1713
+name: Master Thief Cape
+description: A master thief's cape, blacker than night.
+command: ""
+stackable: false
+untradeable: false
+members_only: false
+noteable: true
+base_price: 9000
+picture_mask: 0x1F1A0C
+wieldable: true
+wearable_id: 608
+weapon:
+  appearance_id: 608
+  wearable_id: 608
+  wear_slot: 3
+  required_skill: 0
+  required_level: 50
+  armour_bonus: 1
+sprite:
+  id: 608
+  location: "items:608"

@@ -1,0 +1,31 @@
+# OGRS wearable — Blue Dragonhide Chaps.
+# Paperdoll batch 2026-05-25 (sparky). Vanilla template + pictureMask
+# tint — no new worn-sprite art. See art/_specs/PAPERDOLL_MAPPING*.md
+# and scripts/art/gen-wearables-batch.py for the full mapping table.
+#
+# Template: leatherchaps   pictureMask: #3070C8  (3174600)
+# Inventory icon: art/items/dragonhide/blue_d_hide_chaps.png
+
+id: 1728
+name: Blue Dragonhide Chaps
+description: Form-fitting chaps cut from blue dragonhide.
+command: ""
+stackable: false
+untradeable: false
+members_only: false
+noteable: true
+base_price: 6800
+picture_mask: 0x3070C8
+wieldable: true
+wearable_id: 623
+weapon:
+  appearance_id: 623
+  wearable_id: 623
+  wear_slot: 2
+  required_skill: 5
+  required_level: 50
+  armour_bonus: 4
+  power_bonus: 12   # ranged accuracy/power
+sprite:
+  id: 623
+  location: "items:623"

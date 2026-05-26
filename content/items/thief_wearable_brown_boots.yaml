@@ -1,0 +1,30 @@
+# OGRS wearable — Brown Thief Boots.
+# Paperdoll batch 2026-05-25 (sparky). Vanilla template + pictureMask
+# tint — no new worn-sprite art. See art/_specs/PAPERDOLL_MAPPING*.md
+# and scripts/art/gen-wearables-batch.py for the full mapping table.
+#
+# Template: boots   pictureMask: #6C4828  (7096360)
+# Inventory icon: art/items/thief_wearables/brown_boots.png
+
+id: 1705
+name: Brown Thief Boots
+description: Soft leather boots for quiet feet.
+command: ""
+stackable: false
+untradeable: false
+members_only: false
+noteable: true
+base_price: 200
+picture_mask: 0x6C4828
+wieldable: true
+wearable_id: 600
+weapon:
+  appearance_id: 600
+  wearable_id: 600
+  wear_slot: 10
+  required_skill: 0
+  required_level: 1
+  armour_bonus: 1
+sprite:
+  id: 600
+  location: "items:600"

@@ -1,0 +1,30 @@
+# OGRS wearable — Master Thief Doublet.
+# Paperdoll batch 2026-05-25 (sparky). Vanilla template + pictureMask
+# tint — no new worn-sprite art. See art/_specs/PAPERDOLL_MAPPING*.md
+# and scripts/art/gen-wearables-batch.py for the full mapping table.
+#
+# Template: leatherarmour   pictureMask: #1F1A0C  (2038284)
+# Inventory icon: art/items/thief_wearables/master_top.png
+
+id: 1716
+name: Master Thief Doublet
+description: A reinforced doublet, midnight-black with faint gold warmth.
+command: ""
+stackable: false
+untradeable: false
+members_only: false
+noteable: true
+base_price: 24000
+picture_mask: 0x1F1A0C
+wieldable: true
+wearable_id: 611
+weapon:
+  appearance_id: 611
+  wearable_id: 611
+  wear_slot: 1
+  required_skill: 0
+  required_level: 50
+  armour_bonus: 4
+sprite:
+  id: 611
+  location: "items:611"
