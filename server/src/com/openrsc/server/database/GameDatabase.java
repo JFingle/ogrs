@@ -816,7 +816,11 @@ public abstract class GameDatabase {
 		final CarriedItems ci = player.getCarriedItems();
 		final com.openrsc.server.model.container.Inventory inv = (ci == null) ? null : ci.getInventory();
 		if (inv == null) {
-			savePlayerInventory(player.getDatabaseID(), new PlayerInventory[0]);
+			// Skip the save entirely — saving an empty array would
+			// DELETE the player's real inventory rows from DB. The
+			// existing rows are still good (we never loaded them, so
+			// they were never mutated). Just no-op and let the rest of
+			// the disconnect flow complete.
 			return;
 		}
 		final int invSize = inv.size();
