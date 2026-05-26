@@ -16,6 +16,7 @@ import com.openrsc.server.external.NPCLoc;
 import com.openrsc.server.external.SkillDef;
 import com.openrsc.server.model.Point;
 import com.openrsc.server.model.container.BankPreset;
+import com.openrsc.server.model.container.CarriedItems;
 import com.openrsc.server.model.container.Equipment;
 import com.openrsc.server.model.container.Item;
 import com.openrsc.server.model.entity.UnregisterForcefulness;
@@ -805,18 +806,31 @@ public abstract class GameDatabase {
 	}
 
 	public void savePlayerInventory(Player player) throws GameDatabaseException {
-		final int invSize = player.getCarriedItems().getInventory().size();
+		// OGRS — null-safe. If a player's inventory wasn't fully loaded
+		// before the save fires (happens on login-flow races: connection
+		// drops mid-load → save queued → NPE → save fails → in-memory
+		// cleanup never runs → the half-loaded Player stays pinned in
+		// the world.players map and blocks ALL future logins with
+		// "Account already logged in"). Treat null inventory as an
+		// empty save so the rest of the disconnect flow can complete.
+		final CarriedItems ci = player.getCarriedItems();
+		final com.openrsc.server.model.container.Inventory inv = (ci == null) ? null : ci.getInventory();
+		if (inv == null) {
+			savePlayerInventory(player.getDatabaseID(), new PlayerInventory[0]);
+			return;
+		}
+		final int invSize = inv.size();
 		final PlayerInventory[] inventory = new PlayerInventory[invSize];
 
 		for (int i = 0; i < invSize; i++) {
 			inventory[i] = new PlayerInventory();
-			inventory[i].itemId = player.getCarriedItems().getInventory().get(i).getItemId();
-			inventory[i].item = player.getCarriedItems().getInventory().get(i);
-			inventory[i].wielded = player.getCarriedItems().getInventory().get(i).isWielded();
+			inventory[i].itemId = inv.get(i).getItemId();
+			inventory[i].item = inv.get(i);
+			inventory[i].wielded = inv.get(i).isWielded();
 			inventory[i].slot = i;
-			inventory[i].amount = player.getCarriedItems().getInventory().get(i).getAmount();
-			inventory[i].noted = player.getCarriedItems().getInventory().get(i).getNoted();
-			inventory[i].catalogID = player.getCarriedItems().getInventory().get(i).getCatalogId();
+			inventory[i].amount = inv.get(i).getAmount();
+			inventory[i].noted = inv.get(i).getNoted();
+			inventory[i].catalogID = inv.get(i).getCatalogId();
 			inventory[i].durability = 100;
 		}
 
